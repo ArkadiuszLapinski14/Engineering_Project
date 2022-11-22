@@ -21,8 +21,7 @@ def main():
 
         handMovingKeyboard.update(lmList)
 
-        classic_keyboard.draw(img)
-        img = classic_keyboard.update()
+        img = classic_keyboard.draw_update(img, 10, 100, 20, 20)
 
         ###FPS###
         cTime = time.time()
@@ -30,10 +29,7 @@ def main():
         pTime = cTime
 
         ###DRAW RESULT###
-        try:
-            img = handMovingKeyboard.draw_result(img)
-        except:
-            print("nie dziala")
+        img = handMovingKeyboard.draw_result(img, 300, 300)
         #################
         
         cv2.putText(img, str(int(fps)),(0,15), cv2.FONT_HERSHEY_PLAIN, 1 ,(255,0,255), 2)

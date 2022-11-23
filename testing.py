@@ -16,12 +16,13 @@ def main():
     while True:
         success, img = cap.read()
         img = cv2.flip(img, 1)
+        img = cv2.resize(img, (1080, 766))
         img = detector.findHands(img)
         lmList = detector.findPosition(img)
 
         handMovingKeyboard.update(lmList)
 
-        img = classic_keyboard.draw_update(img, 10, 100, 20, 20)
+        img = classic_keyboard.draw_update(img, 10, 100, 30, 30)
 
         ###FPS###
         cTime = time.time()

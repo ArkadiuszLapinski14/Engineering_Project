@@ -7,14 +7,25 @@ class Keyboard:
         
     def draw_update(self, screen, x, y, w, h):
         '''Draws a keyboard on the screen'''
-        # length = len(self.keys)
-        # margin = 766 - (length * w)/2
-        # print(margin)
-        for el in self.keys:
+        height, width, c = screen.shape
+        x = int((width - (len(self.keys) * w + len(self.keys) * 2))/2)
+        for idx, el in enumerate(self.keys):
             cv2.rectangle(screen, (x, y), (x + w, y + h), (192,192,192), -1)
             cv2.putText(screen, el, (x + 5,y + 25), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
+            y = self.adjust_y(idx, y)
             x += 32
         return screen
+
+    def adjust_y(self, idx, y):
+        '''Changes y axis in order to display a "fancy keyboard"'''
+        if idx == (len(self.keys)/4) - 1 and len(self.keys) > 2:
+            return y + 10
+        elif idx == ((len(self.keys)/4) * 2) - 1 and len(self.keys) > 2:
+            return y - 20
+        elif idx == ((len(self.keys)/4) * 3) -1 and len(self.keys) > 2:
+            return y + 10
+        else:
+            return y
 
     def set_keys(self, keys):
         self.keys = keys

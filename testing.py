@@ -16,7 +16,7 @@ def main():
     while True:
         success, img = cap.read()
         img = cv2.flip(img, 1)
-        img = cv2.resize(img, (1080, 766))
+        img = cv2.resize(img, (1080, 768))
         img = detector.findHands(img)
         lmList = detector.findPosition(img)
 
@@ -30,7 +30,7 @@ def main():
         pTime = cTime
 
         ###DRAW RESULT###
-        img = handMovingKeyboard.draw_result(img, 300, 300)
+        img = handMovingKeyboard.draw_result(img, 600, 600)
         #################
         
         cv2.putText(img, str(int(fps)),(0,15), cv2.FONT_HERSHEY_PLAIN, 1 ,(255,0,255), 2)

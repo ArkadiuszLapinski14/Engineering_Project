@@ -16,29 +16,30 @@ class HandMovingKeyboard:
         '''Cut unecessary part of keyboard when len(keayboard) > 2'''
         try:
             if (self.Finger and self.prevFinger):
-                if self.Finger[1] < self.prevFinger[1] - 250:
+                if self.Finger[1] < 400:
                     self.keys = self.keys[0:int(len(self.keys)/4)]
                     self.keyboard.set_keys(self.keys)
-                elif self.Finger[1] > self.prevFinger[1] + 250:
+                elif self.Finger[1] > 650:
+                    print(self.Finger[2])
                     self.keys = self.keys[int(len(self.keys)*(3/4)):len(self.keys)]
                     self.keyboard.set_keys(self.keys)
-                elif self.Finger[2] > self.prevFinger[2] + 200:
+                elif self.Finger[2] > 500:
                     self.keys = self.keys[int(len(self.keys)*(1/4)):int(len(self.keys)*(2/4))]
                     self.keyboard.set_keys(self.keys)
-                elif self.Finger[2] < self.prevFinger[2] - 200:
+                elif self.Finger[2] < 200:
                     self.keys = self.keys[int(len(self.keys)*(2/4)):int(len(self.keys)*(3/4))]
                     self.keyboard.set_keys(self.keys)
         except:
-            print("Cut by 3/4 doesnt work/Fingers lists out of range")
+            print("Cut by 3/4 doesnt work/Fingers lists out of range")  
     
     def cut_by_2(self):
         '''Cut unecessary part of keyboard when len(keayboard) == 2'''
         try:
             if (self.Finger and self.prevFinger):
-                if self.Finger[1] < self.prevFinger[1] - 250:
+                if self.Finger[1] < 400:
                     self.keys = self.keys[0:1]
                     self.keyboard.set_keys(self.keys)
-                elif self.Finger[1] > self.prevFinger[1] + 250:
+                elif self.Finger[1] > 650:
                     self.keys = self.keys[1:2]
                     self.keyboard.set_keys(self.keys)
         except:
@@ -55,10 +56,10 @@ class HandMovingKeyboard:
                 if self.is_calibrated == True:
                     if len(self.keys) != 2:
                         self.cut_by_4()
-                    elif len(self.keys) == 1:
-                        self.set_result(self.keys[0])
-                    else:
+                    elif len(self.keys) == 2:
                         self.cut_by_2()
+                    # elif len(self.keys) == 1:
+                    #     self.set_result(self.keys[0])
         except:
             print("Hand Moving Keyboard algorith doesnt work/lms out of range")
     
@@ -69,11 +70,10 @@ class HandMovingKeyboard:
         y, x = int((y-h)/2), int((x-w)/2)
         try:
             if (self.Finger):
-                if (self.Finger[1] > x and self.Finger[1] < x + w) and (self.Finger[2] > y and self.Finger[2] < y + h):    
+                if (self.Finger[1] > x and self.Finger[1] < x + w) and (self.Finger[2] > y and self.Finger[2] < y + h):
                     screen = self.draw_rec(screen, (0,255,0), x, y, w, h)
                     self.is_calibrated = True
                 else:
-                    print(self.Finger[1], self.Finger[2])
                     screen = self.draw_rec(screen, (0,0,189), x, y, w, h)
                     self.is_calibrated = False
             else:

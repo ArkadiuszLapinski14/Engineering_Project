@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import Modules.HandTrackingModule as htm
 import string
+import asyncio
 
 class HandMovingKeyboard:
     def __init__(self, keyboard):
@@ -11,22 +12,23 @@ class HandMovingKeyboard:
         self.KEYS = keyboard.get_keys() #const idk jak zrobic w pythonie
         self.res = []
         self.is_calibrated = False
+        self.cnt = 0
+        self.cnt1 = 0
 
     def cut_by_4(self):
         '''Cut unecessary part of keyboard when len(keayboard) > 2'''
         try:
             if (self.Finger and self.prevFinger):
-                if self.Finger[1] < 400:
+                if self.Finger[1] < self.prevFinger[1] - 100:
                     self.keys = self.keys[0:int(len(self.keys)/4)]
                     self.keyboard.set_keys(self.keys)
-                elif self.Finger[1] > 650:
-                    print(self.Finger[2])
+                elif self.Finger[1] > self.prevFinger[1] + 100:
                     self.keys = self.keys[int(len(self.keys)*(3/4)):len(self.keys)]
                     self.keyboard.set_keys(self.keys)
-                elif self.Finger[2] > 500:
+                elif self.Finger[2] > self.prevFinger[2] + 150:
                     self.keys = self.keys[int(len(self.keys)*(1/4)):int(len(self.keys)*(2/4))]
                     self.keyboard.set_keys(self.keys)
-                elif self.Finger[2] < 200:
+                elif self.Finger[2] < self.prevFinger[2] - 150:
                     self.keys = self.keys[int(len(self.keys)*(2/4)):int(len(self.keys)*(3/4))]
                     self.keyboard.set_keys(self.keys)
         except:
@@ -36,10 +38,10 @@ class HandMovingKeyboard:
         '''Cut unecessary part of keyboard when len(keayboard) == 2'''
         try:
             if (self.Finger and self.prevFinger):
-                if self.Finger[1] < 400:
+                if self.Finger[1] < self.prevFinger[1] - 80:
                     self.keys = self.keys[0:1]
                     self.keyboard.set_keys(self.keys)
-                elif self.Finger[1] > 650:
+                elif self.Finger[1] > self.prevFinger[1] + 80:
                     self.keys = self.keys[1:2]
                     self.keyboard.set_keys(self.keys)
         except:
@@ -49,8 +51,11 @@ class HandMovingKeyboard:
         '''Updates a keyboard according to our algorithm when calibrated'''
         try:
             if (lms):
-                self.prevFinger = self.Finger
                 self.Finger = lms[8]
+                if (self.cnt == 7 or self.cnt == 0):
+                    self.prevFinger = self.Finger
+                    self.cnt = 0
+                self.cnt += 1
                 if len(self.keys) == 1:
                     self.set_result(self.keys[0])
                 if self.is_calibrated == True:
@@ -71,14 +76,22 @@ class HandMovingKeyboard:
         try:
             if (self.Finger):
                 if (self.Finger[1] > x and self.Finger[1] < x + w) and (self.Finger[2] > y and self.Finger[2] < y + h):
-                    screen = self.draw_rec(screen, (0,255,0), x, y, w, h)
-                    self.is_calibrated = True
+                    if self.cnt1 > 10:
+                        screen = self.draw_rec(screen, (0,255,0), x, y, w, h)
+                        self.is_calibrated = True
+                    else:
+                        screen = self.draw_rec(screen, (0,0,189), x, y, w, h)
+                        self.cnt1 += 1
+                        self.is_calibrated = False
                 else:
                     screen = self.draw_rec(screen, (0,0,189), x, y, w, h)
                     self.is_calibrated = False
+                    self.cnt1 = 0
             else:
                 screen = self.draw_rec(screen, (0,0,189), x, y, w, h)
                 self.is_calibrated = False
+                self.cnt1 = 0
+
         except:
             print("?")
         return screen

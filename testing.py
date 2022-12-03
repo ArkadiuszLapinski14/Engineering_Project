@@ -20,7 +20,7 @@ def main():
         img = detector.findHands(img)
         lmList = detector.findPosition(img)
 
-        handMovingKeyboard.update(lmList)
+        handMovingKeyboard.update(img, lmList)
 
         img = classic_keyboard.draw_update(img, 10, 100, 30, 30)
 
@@ -30,7 +30,7 @@ def main():
         pTime = cTime
 
         ###DRAW RESULT###
-        img = handMovingKeyboard.draw_result(img, 600, 600)
+        img = handMovingKeyboard.drawResult(img, 600, 600)
         #################
         
         cv2.putText(img, str(int(fps)),(0,15), cv2.FONT_HERSHEY_PLAIN, 1 ,(255,0,255), 2)

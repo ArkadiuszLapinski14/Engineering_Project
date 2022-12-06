@@ -23,7 +23,7 @@ class HandMovingKeyboard:
                 elif len(self.keys) == 2:
                     self.cutBy2()
             else:
-                self.calibration_delay = 12 #długość delaya (12 najlepiej dziala)
+                self.calibration_delay = 10 #długość delaya (10 najlepiej dziala)
                 screen = self.calibrate(screen)
             return screen
         except:
@@ -51,17 +51,33 @@ class HandMovingKeyboard:
         return screen
 
     def setResult(self, res):
-        '''Append the result by the letter we picked, then set a keyboard to default values'''
-        self.res.append(res)
+        '''Append the result by the letter we picked or delete last of them, then set a keyboard to default values'''
+        ###Usuwanie
+        if res == "<":
+            if len(self.res) > 0:
+                del self.res[-1]
+        elif res == "_":
+            self.res.append(" ")
+        ###Dodawanie
+        else:
+            self.res.append(res)
         self.keys = self.KEYS
         self.keyboard.set_keys(self.KEYS)
 
     def drawResult(self, screen, x, y):
         '''Draws a result on the screen'''
+        screen, x, y = self.drawResultBox(screen)
         for el in self.res:
-            x += 30
             cv2.putText(screen, el, (x,y), cv2.FONT_HERSHEY_PLAIN, 3 ,(255,255,255), 2)
+            x += 30
         return screen
+
+    def drawResultBox(self, screen):
+        y, x , c = screen.shape
+        x = int((x - 400)/2)
+        y = int((y - 200))
+        screen = cv2.rectangle(screen, (x, y), (x + 400, y + 40), (255,255,255), 2)
+        return screen, x, y + 37
 
     def centerCoo(self, screen, w, h):
         '''return x, y at the center of the screen, based on width and height of your shape'''
@@ -77,8 +93,6 @@ class HandMovingKeyboard:
             self.updatePrevFingerList()
             if len(self.keys) == 1:
                 self.setResult(self.keys[0])
-        else:
-            pass
 
     def updatePrevFingerList(self, capacity = 20):
         '''Updates prevFinger[], capacity - length of list'''

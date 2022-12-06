@@ -2,7 +2,7 @@ import cv2
 import string
 
 class Keyboard:
-    def __init__(self, keys = list(string.ascii_uppercase + "." + ','+'/'+';'+'['+']')):
+    def __init__(self, keys = list(string.ascii_uppercase + "!" + '?'+','+'.'+'<'+"_")):
         self.keys = keys
         
     def draw_update(self, screen, x, y, w, h):

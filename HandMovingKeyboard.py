@@ -16,6 +16,7 @@ class HandMovingKeyboard:
         '''Updates a keyboard according to our algorithm when calibrated'''
         try:
             self.FingerUpdate(lms)
+            screen = self.backToDefault(screen)
             if self.is_calibrated == True:
                 screen = self.afterCalibrationDelay(screen, 100, 100)
                 if len(self.keys) != 2:
@@ -64,6 +65,25 @@ class HandMovingKeyboard:
         self.keys = self.KEYS
         self.keyboard.set_keys(self.KEYS)
 
+    def backToDefault(self, screen):
+        '''Back to the startin settings of keyboard after clicking button "Back"'''
+        screen, x, y = self.drawBackButton(screen)
+        if (self.Finger):
+            if (self.Finger[1] < x and self.Finger[1] > (x - 75)) and (self.Finger[2] > y and self.Finger[2] < (y + 23)):
+                self.keys = self.KEYS
+                self.keyboard.set_keys(self.KEYS)
+        return screen
+
+    def drawBackButton(self, screen):
+        '''Draws button "Back"'''
+        y, x , c = screen.shape
+        x = int(x - 10)
+        y = 10
+        screen = cv2.rectangle(screen, (x, y), (x - 75, y + 23), (0, 0, 0), 3)
+        screen = cv2.rectangle(screen, (x, y), (x - 75, y + 23), (192,192,192), -1)
+        cv2.putText(screen, "Back", (x-75, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
+        return screen, x, y
+
     def drawResult(self, screen, x, y):
         '''Draws a result on the screen'''
         screen, x, y = self.drawResultBox(screen)
@@ -73,6 +93,7 @@ class HandMovingKeyboard:
         return screen
 
     def drawResultBox(self, screen):
+        '''Draws Result Box'''
         y, x , c = screen.shape
         x = int((x - 400)/2)
         y = int((y - 200))

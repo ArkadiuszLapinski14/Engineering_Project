@@ -4,6 +4,7 @@ import time
 import Modules.HandTrackingModule as htm
 from Keyboard import Keyboard
 from HandMovingKeyboard import HandMovingKeyboard
+from HandMovingKeyboardStatic import HandMovingKeyboardStatic
 
 def main():
     pTime = 0
@@ -11,18 +12,16 @@ def main():
     cap = cv2.VideoCapture(0)
     detector = htm.handDetector(maxHands=1)
     classic_keyboard = Keyboard()
-    handMovingKeyboard = HandMovingKeyboard(classic_keyboard)
+    handMovingKeyboard = HandMovingKeyboardStatic(classic_keyboard)
 
     while True:
         success, img = cap.read()
         img = cv2.flip(img, 1)
         img = cv2.resize(img, (1080, 768))
-        img = detector.findHands(img)
+        img = detector.findHands(img, draw = False)
         lmList = detector.findPosition(img)
 
-        handMovingKeyboard.update(img, lmList)
-
-        img = classic_keyboard.draw_update(img, 10, 100, 30, 30)
+        img = handMovingKeyboard.update(img, lmList, classic_keyboard)
 
         ###FPS###
         cTime = time.time()

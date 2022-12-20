@@ -5,13 +5,24 @@ class Keyboard:
     def __init__(self, keys = list(string.ascii_uppercase + "!" + '?'+','+'.'+'<'+"_")):
         self.keys = keys
         
-    def draw_update(self, screen, x, y, w, h):
+    def draw_update(self, screen, x, y, w, h, color = (192,192,192)):
         '''Draws a keyboard on the screen'''
         height, width, c = screen.shape
         x = int((width - (len(self.keys) * w + len(self.keys) * 2))/2)
         for idx, el in enumerate(self.keys):
-            cv2.rectangle(screen, (x, y), (x + w, y + h), (192,192,192), -1)
+            cv2.rectangle(screen, (x, y), (x + w, y + h), color, -1)
             cv2.putText(screen, el, (x + 5,y + 25), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
+            y = self.adjust_y(idx, y)
+            x += 32
+        return screen
+    
+    def highlight(self, screen, bin_tab, x, y, w, h, color = (255,160,122)):
+        height, width, c = screen.shape
+        x = int((width - (len(self.keys) * w + len(self.keys) * 2))/2)
+        for idx, el in enumerate(self.keys):
+            if bin_tab[idx] == 1:
+                cv2.rectangle(screen, (x, y), (x + w, y + h), color, -1)
+                cv2.putText(screen, el, (x + 5,y + 25), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
             y = self.adjust_y(idx, y)
             x += 32
         return screen

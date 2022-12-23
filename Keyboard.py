@@ -17,6 +17,7 @@ class Keyboard:
         return screen
     
     def highlight(self, screen, bin_tab, x, y, w, h, color = (255,160,122)):
+        '''Highlights correct keys'''
         height, width, c = screen.shape
         x = int((width - (len(self.keys) * w + len(self.keys) * 2))/2)
         for idx, el in enumerate(self.keys):

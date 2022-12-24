@@ -78,7 +78,9 @@ class HandMovingKeyboardStatic:
         '''Back to the startin settings of keyboard after clicking button "Back"'''
         screen, x, y = self.drawBackButton(screen)
         if (self.Finger):
-            if (self.Finger[1] < x and self.Finger[1] > (x - 75)) and (self.Finger[2] > y and self.Finger[2] < (y + 23)):
+            if (self.Finger[1] < x and self.Finger[1] > (x - 78)) and (self.Finger[2] > y and self.Finger[2] < (y + 25)):        
+                screen = cv2.rectangle(screen, (x, y), (x - 78, y + 25), (0,252,124), -1)
+                cv2.putText(screen, "Back", (x-78, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
                 self.keyboard_bin_tab = np.ones(32)
                 self.mask = np.ones(32)
         return screen
@@ -88,9 +90,9 @@ class HandMovingKeyboardStatic:
         y, x , c = screen.shape
         x = int(x - 10)
         y = 10
-        screen = cv2.rectangle(screen, (x, y), (x - 75, y + 23), (0, 0, 0), 3)
-        screen = cv2.rectangle(screen, (x, y), (x - 75, y + 23), (192,192,192), -1)
-        cv2.putText(screen, "Back", (x-75, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
+        screen = cv2.rectangle(screen, (x, y), (x - 78, y + 25), (0, 0, 0), 3)
+        screen = cv2.rectangle(screen, (x, y), (x - 78, y + 25), (192,192,192), -1)
+        cv2.putText(screen, "Back", (x-78, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
         return screen, x, y
 
     def drawResult(self, screen, x, y):

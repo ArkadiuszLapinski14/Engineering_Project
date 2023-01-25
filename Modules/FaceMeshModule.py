@@ -32,6 +32,21 @@ class FaceMeshDetector():
                     face.append([x, y])
                 faces.append(face)
         return img, faces
+        
+    def findPosition(self, img, faceNo = 0, draw = False):
+        lmList = []
+
+        if self.results.multi_face_landmarks:
+            myFace = self.results.multi_face_landmarks[faceNo]
+
+            for id, lm in enumerate(myFace.landmark):
+                h, w, c = img.shape
+                cx, cy = int(lm.x*w), int(lm.y*h)
+                lmList.append([id, cx, cy])
+                if draw == True:
+                    cv2.circle(img, (cx, cy), 7, (255, 0, 0), cv2.FILLED)
+                lmList.append([id, cx, cy])
+        return lmList
 
 
 def main():

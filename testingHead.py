@@ -9,7 +9,7 @@ def main():
     pTime = 0
 
     cap = cv2.VideoCapture(0)
-   #detector = htm.handDetector(maxHands=1)
+    #detector = htm.handDetector(maxHands=1)
     classic_keyboard = Keyboard()
     headMovingKeyboard = HeadMovingKeyboard(classic_keyboard)
     mp_face_mesh = mp.solutions.face_mesh
@@ -26,8 +26,8 @@ def main():
         img = cv2.flip(img, 1)
         img = cv2.resize(img, (1080, 768))
         results = face_mesh.process(img)
-      #  img = detector.findHands(img)
-       # lmList = detector.findPosition(img)
+        #img = detector.findHands(img)
+        #lmList = detector.findPosition(img)
 
         img_h, img_w, img_c = img.shape
         face_3d = []
@@ -98,7 +98,7 @@ def main():
                 angles2 = [x, y]
 
                 headMovingKeyboard.update(img, angles2)
-               # handMovingKeyboard.update(img, lmList)
+                #handMovingKeyboard.update(img, lmList)
 
                 isCalibrated = " "
                 if(headMovingKeyboard.is_calibrated==True):

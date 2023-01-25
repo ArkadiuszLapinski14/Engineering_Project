@@ -1,7 +1,7 @@
 import cv2
 
 class HandMovingKeyboard:
-    def __init__(self, keyboard, point = 8):
+    def __init__(self, keyboard, point = 8, text="D"):
         self.Finger = None
         self.prevFinger = [] #zmiana na liste, aby sledzic ostanie x zmian polozenia palca w celu optymalizacji 
         self.keyboard = keyboard

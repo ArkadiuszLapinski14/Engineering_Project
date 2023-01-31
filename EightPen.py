@@ -105,7 +105,7 @@ def comparePosition(img, lm, rad):
     else:                                               #FIX FOR LEFT -> UP TURN
         return 1
 
-def main(methode=True):
+def main(methode=False):
     
     # SETTING BASE PARAMETERS 
     pTime = 0
@@ -170,6 +170,8 @@ def main(methode=True):
                         sentance.flushSentance()
                         holder.flushHolder()
                         start=False
+                    elif holder.getHolder()[1]==4 and holder.getHolder()[2]==0 and holder.getHolder()[3]==2: # EXIT
+                        break
                 if start==True:
                     if newPosition==0 and np.size(holder.getHolder())>3:
                         index=holder.getHolder()[1]
@@ -200,9 +202,12 @@ def main(methode=True):
 
         cv2.putText(img, str(int(fps)),(0,15), cv2.FONT_HERSHEY_PLAIN, 1 ,(255,0,255), 2)
         cv2.circle(img, (X, Y), 7, (255, 0, 0), cv2.FILLED)
-        cv2.imshow("Image", img)
+        cv2.imshow("EightPen", img)
         cv2.waitKey(1)
         #########
+        
+    cv2.destroyWindow("EightPen")
+    return
 
 if __name__ == '__main__':
-    main()
+    main(True)

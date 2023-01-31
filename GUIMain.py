@@ -1,5 +1,3 @@
-
-
 import csv
 import cv2
 import mediapipe as mp
@@ -170,8 +168,8 @@ class Menu():
 
     def head_keyboard(self,text='k'):
 
-        self.good_text = []
-        self.bad_text = str(text)
+        self.text_to_write = []
+        self.text_written = str(text)
         
         self.hide_components()
         self.textToInsert = text
@@ -379,8 +377,8 @@ class Menu():
 
     def launch(self,text = "k", isStatic = False):
         
-        self.good_text = []
-        self.bad_text = str(text)
+        self.text_to_write = []
+        self.text_written = str(text)
         
         self.hide_components()
        
@@ -406,7 +404,7 @@ class Menu():
 
         print("PUNKT: " + str(self.point))
 
-        self.bad_text = str(text)
+        self.text_written = str(text)
 
 
         while (self.detectionFlag == True):
@@ -430,14 +428,14 @@ class Menu():
             #################
            
             
-            self.good_text = handMovingKeyboard.get_result()
+            self.text_to_write = handMovingKeyboard.get_result()
             
             img_height, img_width, img_colors = img.shape
            
             cv2.putText(img, str(int(fps)),(0,15), cv2.FONT_HERSHEY_PLAIN, 1 ,(255,0,255), 2)
 
-            cv2.putText(img, str(self.bad_text),(300,80), cv2.FONT_HERSHEY_PLAIN, 3 ,(0,0,255), 2) #------------------------------
-            cv2.putText(img, str(self.good_text),(300,200), cv2.FONT_HERSHEY_PLAIN, 3 ,(0,255,0), 2) #-----------------------------
+            cv2.putText(img, str(self.text_written),(300,80), cv2.FONT_HERSHEY_PLAIN, 3 ,(0,0,255), 2) #------------------------------
+            cv2.putText(img, str(self.text_to_write),(300,200), cv2.FONT_HERSHEY_PLAIN, 3 ,(0,255,0), 2) #-----------------------------
 
             self.update_image(img)
 
@@ -448,7 +446,7 @@ class Menu():
         
         # SETTING BASE PARAMETERS 
         
-        self.good_text = []
+        self.text_to_write = []
         self.bad_text = str(text)
         
         self.hide_components()
@@ -584,7 +582,7 @@ def main():
 
     M = Menu()
     
-    F = Feedback()
+    F = Feedback(M.text_to_write, M.text_written)
 
     
 

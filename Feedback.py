@@ -24,8 +24,10 @@ class Feedback():
 
     
 
-    def __init__(self):
-        
+    def __init__(self, text_to_write, text_written):
+        self.text_to_write =  (''.join(text_written)).lower()
+        self.text_written = (''.join(text_written)).lower()
+        print(self.text_to_write, text_written)
         
         self.app = pq.QApplication([])
         self.window = pq.QWidget()
@@ -81,10 +83,17 @@ class Feedback():
     def get_fatigue(self):
         self.fatigue_level = self.comboFatigue.currentText()
      
-
+    def check_correction(self):
+        correct = 0
+        for idx, el in enumerate(self.text_to_write):
+            if el == self.text_written[idx]:
+                correct += 1
+            else:
+                continue
+        return (correct / len(self.text_to_write)) * 100
 
     def save_feedback(self):
-        
+       self.correction = self.check_correction()
        self.age = self.ageText.text()
        self.recommendation = self.futureText.text()
        self.get_fatigue()
@@ -92,7 +101,8 @@ class Feedback():
        df = pd.DataFrame({
             'Fatigue Level': [self.fatigue_level],
             'Future Usage': [self.recommendation],
-            'Age': [self.age]
+            'Age': [self.age],
+            'Correction':[str(self.correction) + "%"]
         })
 
        if (os.path.exists('feedback.csv')):

@@ -1,7 +1,7 @@
-import cv2
+﻿import cv2
 
 class HandMovingKeyboard:
-    def __init__(self, keyboard, point = 8, text="D"):
+    def __init__(self, keyboard, point = 8):
         self.Finger = None
         self.prevFinger = [] #zmiana na liste, aby sledzic ostanie x zmian polozenia palca w celu optymalizacji 
         self.keyboard = keyboard
@@ -13,6 +13,9 @@ class HandMovingKeyboard:
         self.calibration_loading = 0 #zmienna potrzebna do zaladowania kalibracji (podobnie ma to zajmowac kilka milisekund) //optymalizacja
         self.point = point
 
+    def get_result(self):
+        return self.res
+		
     def update(self, screen, lms, keyboard):
         '''Updates a keyboard according to our algorithm when calibrated'''
         try:
@@ -71,9 +74,7 @@ class HandMovingKeyboard:
         '''Back to the startin settings of keyboard after clicking button "Back"'''
         screen, x, y = self.drawBackButton(screen)
         if (self.Finger):
-            if (self.Finger[1] < x and self.Finger[1] > (x - 78)) and (self.Finger[2] > y and self.Finger[2] < (y + 25)):
-                screen = cv2.rectangle(screen, (x, y), (x - 78, y + 25), (0,252,124), -1)
-                cv2.putText(screen, "Back", (x-78, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
+            if (self.Finger[1] < x and self.Finger[1] > (x - 75)) and (self.Finger[2] > y and self.Finger[2] < (y + 23)):
                 self.keys = self.KEYS
                 self.keyboard.set_keys(self.KEYS)
         return screen
@@ -83,9 +84,9 @@ class HandMovingKeyboard:
         y, x , c = screen.shape
         x = int(x - 10)
         y = 10
-        screen = cv2.rectangle(screen, (x, y), (x - 78, y + 25), (0, 0, 0), 3)
-        screen = cv2.rectangle(screen, (x, y), (x - 78, y + 25), (192,192,192), -1)
-        cv2.putText(screen, "Back", (x-78, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
+        screen = cv2.rectangle(screen, (x, y), (x - 75, y + 23), (0, 0, 0), 3)
+        screen = cv2.rectangle(screen, (x, y), (x - 75, y + 23), (192,192,192), -1)
+        cv2.putText(screen, "Back", (x-75, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
         return screen, x, y
 
     def drawResult(self, screen, x, y):

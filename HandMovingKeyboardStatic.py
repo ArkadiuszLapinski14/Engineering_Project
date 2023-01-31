@@ -40,6 +40,9 @@ class HandMovingKeyboardStatic:
             print("Hand Moving Keyboard algorith doesnt work/lms out of range")
         return screen 
     
+    def get_result(self):
+        return self.res
+
     def calibrate(self, screen):
         '''Checks if finger is inside the calibration box'''
         x, y, w, h = self.centerCoo(screen, 100, 100)

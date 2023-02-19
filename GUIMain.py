@@ -1,3 +1,4 @@
+
 import csv
 import cv2
 import mediapipe as mp
@@ -63,6 +64,8 @@ class Menu():
         self.whichKeyboard = 'hand'
         self.isGenerated = False    #zmienna mowiaca czy generowac text
         self.resultsTableEP = []
+        self.text_written = ' '
+        self.text_to_write = ' '
 
         #label - text question
         self.text_question = pq.QLabel("Do you want a generated text or your own?")
@@ -259,7 +262,7 @@ class Menu():
                         text = "Forward"
 
                 
-                    cv2.putText(img, text, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
+                    #cv2.putText(img, text, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
 
                     angles2 = [x, y]
 
@@ -276,8 +279,8 @@ class Menu():
 
               
 
-                    cv2.putText(img, str(headMovingKeyboard.angles[0]), (600, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
-                    cv2.putText(img, str(headMovingKeyboard.angles[1]), (600, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
+                    #cv2.putText(img, str(headMovingKeyboard.angles[0]), (600, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
+                    #cv2.putText(img, str(headMovingKeyboard.angles[1]), (600, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
 
                     img = classic_keyboard.draw_update(img, 10, 100, 30, 30)
 
@@ -442,7 +445,7 @@ class Menu():
             cv2.waitKey(1)
             #########
     
-    def launchEP(self,methode = False,text='dom'):
+    def launchEP(self,methode = True,text='dom'):
         
         # SETTING BASE PARAMETERS 
         

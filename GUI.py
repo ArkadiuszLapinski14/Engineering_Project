@@ -36,12 +36,12 @@ class Menu():
         self.layout = pq.QVBoxLayout()
         self.grid = pq.QGridLayout()
         self.point = 8
-        self.textToInsert = ''
-        self.whichKeyboard = 'hand'
+        # self.textToInsert = ''
+        # self.whichKeyboard = 'hand'
         # self.isGenerated = False    #zmienna mowiaca czy generowac text
-        self.resultsTableEP = []
-        self.text_written = ' '
-        self.text_to_write = ' '
+        # self.resultsTableEP = []
+        # self.text_written = ' '
+        # self.text_to_write = ' '
 
         #label - text question
         # self.text_question = pq.QLabel("Do you want a generated text or your own?")
@@ -67,21 +67,21 @@ class Menu():
         #text line
         self.point_text = pq.QLineEdit()
         self.grid.addWidget(self.point_text, 2, 0,1,1)
-        print(self.point_text.text())
+        # print(self.point_text.text())
         self.point_text.setMaximumWidth(200)
 
 
-         #label
-        self.ownTextLabel= pq.QLabel("Type your own text.")
-        self.grid.addWidget(self.ownTextLabel, 5, 0,1,1)
-        self.ownTextLabel.setMaximumHeight(20)
+        #  #label
+        # self.ownTextLabel= pq.QLabel("Type your own text.")
+        # self.grid.addWidget(self.ownTextLabel, 5, 0,1,1)
+        # self.ownTextLabel.setMaximumHeight(20)
 
        
-         #text line
-        self.ownText = pq.QLineEdit()
-        self.grid.addWidget(self.ownText, 6, 0,1,1)
-        print(self.ownText.text())
-        self.ownText.setMaximumWidth(200)
+        # #text line
+        # self.ownText = pq.QLineEdit()
+        # self.grid.addWidget(self.ownText, 6, 0,1,1)
+        # print(self.ownText.text())
+        # self.ownText.setMaximumWidth(200)
         
         self.keyboardLabel= pq.QLabel("Choose your keyboard")
         self.grid.addWidget(self.keyboardLabel, 8, 0,1,1)
@@ -96,14 +96,14 @@ class Menu():
 
         #Widgety podczas detekcji--------------------
 
-        self.insertTextLabel= pq.QLabel("Text to insert: "+ self.textToInsert)
-        self.grid.addWidget(self.insertTextLabel, 3, 2,1,1)
-        self.insertTextLabel.setMaximumHeight(20)
-        self.insertTextLabel.hide()
+        # self.insertTextLabel= pq.QLabel("Text to insert: "+ self.textToInsert)
+        # self.grid.addWidget(self.insertTextLabel, 3, 2,1,1)
+        # self.insertTextLabel.setMaximumHeight(20)
+        # self.insertTextLabel.hide()
 
-        self.insertedEPLabel= pq.QLabel("Text inserted in 8Pen: "+ str(self.resultsTableEP))
-        self.grid.addWidget(self.insertedEPLabel, 4, 2,1,1)
-        self.insertedEPLabel.setMaximumHeight(20)
+        # self.insertedEPLabel= pq.QLabel("Text inserted in 8Pen: "+ str(self.resultsTableEP))
+        # self.grid.addWidget(self.insertedEPLabel, 4, 2,1,1)
+        # self.insertedEPLabel.setMaximumHeight(20)
 
 
         self.buttonStopDetection = pq.QPushButton("Stop detection")
@@ -158,10 +158,19 @@ class Menu():
     def hide_components(self):
         # self.text_question.hide()
         # self.buttonGenereted.hide()
-        self.ownText.hide()
+        # self.ownText.hide()
         self.point_text.hide()
-        self.ownTextLabel.hide()
+        # self.ownTextLabel.hide()
         self.labelPoint.hide()
+
+    def isHandNumber(point):
+        try:
+            if (int(point)<=20 and int(point)>=0):
+                return int(point)
+            else:
+                return 8 
+        except ValueError:
+            return 8
         
     
     def launch(self, keyboard ,text = ""):
@@ -172,12 +181,12 @@ class Menu():
         
         self.hide_components()
        
-        self.textToInsert = text
-        self.insertTextLabel.setText("Text to insert: "+str(text))
+        # self.textToInsert = text
+        # self.insertTextLabel.setText("Text to insert: "+str(text))
 
         self.insertTextLabel.show()
        
-        #Getting the point of hand
+        # #Getting the point of hand
         if (self.point_text.text() != ''):
             self.point = isHandNumber(self.point_text.text())   # tu jest punkt do lms
             
@@ -193,7 +202,7 @@ class Menu():
         
             
 
-        print("PUNKT: " + str(self.point))
+        # print("PUNKT: " + str(self.point))
 
         self.text_written = str(text)
 
@@ -252,7 +261,15 @@ class Menu():
 
 def main():
 
-    M = Menu()
+    try :
+            M = Menu()
+    
+    except Exception as e:
+        print(e)
+        print("Error in main")
+        return
+    
+    
     
     # F = Feedback(M.text_to_write, M.text_written)
 

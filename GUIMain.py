@@ -1,4 +1,3 @@
-
 import csv
 import cv2
 import mediapipe as mp
@@ -8,15 +7,18 @@ import HandTrackingModule as htm
 from Keyboard import Keyboard
 from HandMovingKeyboard import HandMovingKeyboard
 import HandMovingKeyboardStatic as static
-import PyQt5.QtWidgets as pq
-from PyQt5 import QtGui as qtgui
-from PyQt5.QtGui import QPixmap, QColor
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 import EightPen as ep
 import FaceMeshModuleEP as mtmep
-
+from screeninfo import get_monitors
 from Feedback import Feedback
-
 from HeadMovingKeyboard import HeadMovingKeyboard 
+import sys
+
+SCREEN_WIDTH = get_monitors()[0].width
+SCREEN_HEIGHT = get_monitors()[0].height
 
 def isHandNumber(point):
     try:
@@ -43,22 +45,19 @@ def generateText(file_name = 'textGenerated.csv'):
     print(chosen_row[1])
     return chosen_row
 
-class Menu():
+class Menu(QWidget):
 
-    def __init__(self):
-        
-        self.app = pq.QApplication([])
-        self.detectionFlag = True
-        
-        self.window = pq.QWidget()
-        self.window.setWindowTitle("Hand Tracking Program Menu")
-        
-        self.windowWidth = 1600
-        self.windowHeight = 1000
+    def __init__(self, parent = None):
+        ###WINDOW INIT###
+        super(Menu, self).__init__(parent)        
+        self.setWindowTitle("Hand Tracking Program Menu")
+        self.width = int(SCREEN_WIDTH - (SCREEN_WIDTH * 0.4))
+        self.height = int(SCREEN_HEIGHT - (SCREEN_HEIGHT * 0.4))
+        self.setGeometry((SCREEN_WIDTH - self.width) / 2, ((SCREEN_HEIGHT - self.height) / 2), self.width, self.height)
+        self.showMaximized()
+        ##################
 
-        self.window.setFixedSize(self.windowWidth, self.windowHeight)
-        self.layout = pq.QVBoxLayout()
-        self.grid = pq.QGridLayout()
+        ###PARAMS###
         self.point = 8
         self.textToInsert = ''
         self.whichKeyboard = 'hand'
@@ -66,109 +65,99 @@ class Menu():
         self.resultsTableEP = []
         self.text_written = ' '
         self.text_to_write = ' '
+        self.detectionFlag = True
+        #############
+
+        ###UI INIT###
+        self.UIComponents()
+        #############
+
+    def UIComponents(self):
+        layout = QGridLayout()
+        self.setLayout(layout)
 
         #label - text question
-        self.text_question = pq.QLabel("Do you want a generated text or your own?")
-        self.grid.addWidget(self.text_question, 3, 0,1,1 )
+        self.text_question = QLabel("Do you want a generated text or your own?")
         self.text_question.setMaximumHeight(20)
+        layout.addWidget(self.text_question, 3, 0, 1, 1)
 
 
-         #button activating the launch function
-        self.buttonGenereted = pq.QPushButton("I want genereted text")
-        self.grid.addWidget(self.buttonGenereted, 4, 0,1,1)
+        #button activating the launch function
+        self.buttonGenereted = QPushButton("I want genereted text")
         self.buttonGenereted.clicked.connect( self.generatedTextOnClick) #metoda generujaca text 
-
-                #Setting new width
         self.buttonGenereted.setMaximumWidth(200)
+        layout.addWidget(self.buttonGenereted, 4, 0,1,1)
        
-
 
         #label (text)
-        self.labelPoint=pq.QLabel("Enter the main point of hand to detect:")
-        self.grid.addWidget(self.labelPoint, 1, 0,1,1)
+        self.labelPoint=QLabel("Enter the main point of hand to detect:")
         self.labelPoint.setMaximumHeight(20)
+        layout.addWidget(self.labelPoint, 1, 0,1,1)
         
         #text line
-        self.point_text = pq.QLineEdit()
-        self.grid.addWidget(self.point_text, 2, 0,1,1)
-        print(self.point_text.text())
+        self.point_text = QLineEdit()
         self.point_text.setMaximumWidth(200)
+        layout.addWidget(self.point_text, 2, 0,1,1)
 
 
-         #label
-        self.ownTextLabel= pq.QLabel("Type your own text.")
-        self.grid.addWidget(self.ownTextLabel, 5, 0,1,1)
+        #label
+        self.ownTextLabel= QLabel("Type your own text.")
         self.ownTextLabel.setMaximumHeight(20)
+        layout.addWidget(self.ownTextLabel, 5, 0,1,1)
 
        
-         #text line
-        self.ownText = pq.QLineEdit()
-        self.grid.addWidget(self.ownText, 6, 0,1,1)
-        print(self.ownText.text())
+        #text line
+        self.ownText = QLineEdit()
         self.ownText.setMaximumWidth(200)
+        layout.addWidget(self.ownText, 6, 0,1,1)
         
-        self.keyboardLabel= pq.QLabel("Choose your keyboard")
-        self.grid.addWidget(self.keyboardLabel, 8, 0,1,1)
+        self.keyboardLabel= QLabel("Choose your keyboard")
         self.keyboardLabel.setMaximumHeight(20)
+        layout.addWidget(self.keyboardLabel, 8, 0,1,1)
 
         #camera widget
-        self.cameraWidget = pq.QLabel()
-        self.cameraWidget.setMaximumWidth(1080)
-        self.cameraWidget.setMaximumHeight(768)
-        self.grid.addWidget( self.cameraWidget, 0, 0,2,2)
+        self.cameraWidget = QLabel()
+        layout.addWidget(self.cameraWidget, 0, 0,2,2)
 
 
         #Widgety podczas detekcji--------------------
 
-        self.insertTextLabel= pq.QLabel("Text to insert: "+ self.textToInsert)
-        self.grid.addWidget(self.insertTextLabel, 3, 2,1,1)
+        self.insertTextLabel= QLabel("Text to insert: "+ self.textToInsert)
         self.insertTextLabel.setMaximumHeight(20)
         self.insertTextLabel.hide()
+        layout.addWidget(self.insertTextLabel, 3, 2,1,1)
 
-        self.insertedEPLabel= pq.QLabel("Text inserted in 8Pen: "+ str(self.resultsTableEP))
-        self.grid.addWidget(self.insertedEPLabel, 4, 2,1,1)
+        self.insertedEPLabel= QLabel("Text inserted in 8Pen: "+ str(self.resultsTableEP))
         self.insertedEPLabel.setMaximumHeight(20)
+        layout.addWidget(self.insertedEPLabel, 4, 2,1,1)
 
-
-        self.buttonStopDetection = pq.QPushButton("Stop detection")
-        self.grid.addWidget(self.buttonStopDetection, 5, 2,1,1)
+        self.buttonStopDetection = QPushButton("Stop detection")
         self.buttonStopDetection.clicked.connect( self.stop_detection)
         self.buttonStopDetection.setMaximumWidth(200)
+        layout.addWidget(self.buttonStopDetection, 5, 2,1,1)
 
-        self.buttonHandKeyboardStatic = pq.QPushButton("HAND STATIC triple keyboard ")
-        self.grid.addWidget(self.buttonHandKeyboardStatic, 9, 0,1,1)
+        self.buttonHandKeyboardStatic = QPushButton("HAND STATIC triple keyboard ")
         self.buttonHandKeyboardStatic.clicked.connect( self.isGeneratedHandStatic)
+        layout.addWidget(self.buttonHandKeyboardStatic, 9, 0,1,1)
 
-        self.buttonHandKeyboard = pq.QPushButton("HAND triple keyboard")
-        self.grid.addWidget(self.buttonHandKeyboard, 10, 0,1,1)
+        self.buttonHandKeyboard = QPushButton("HAND triple keyboard")
         self.buttonHandKeyboard.clicked.connect( self.isGeneratedHand)
+        layout.addWidget(self.buttonHandKeyboard, 10, 0,1,1)
 
-        self.buttonHeadKeyboard = pq.QPushButton("HEAD triple keyboard")
-        self.grid.addWidget(self.buttonHeadKeyboard, 11, 0,1,1)
+        self.buttonHeadKeyboard = QPushButton("HEAD triple keyboard")
         self.buttonHeadKeyboard.clicked.connect( self.isGeneratedHead)
+        layout.addWidget(self.buttonHeadKeyboard, 11, 0,1,1)
         
-        self.button8penKeyboard = pq.QPushButton("HEAD 8PEN keyboard")
-        self.grid.addWidget(self.button8penKeyboard, 12, 0,1,1)
+        self.button8penKeyboard = QPushButton("HEAD 8PEN keyboard")
         self.button8penKeyboard.clicked.connect( self.isGeneratedEP)
-        
+        layout.addWidget(self.button8penKeyboard, 12, 0,1,1)
         #-------------------------------------
 
-        #Setting the layout
-        self.window.setLayout(self.grid)
-
-        #Showing and executing the main window
-        self.window.show()
-        self.app.exec_()
 
 
     def generatedTextOnClick(self): #metoda do genrowania textu
         self.isGenerated = True
-
-    def closeEvent(self, *args, **kwargs):
-        super(pq.QMainWindow, self).closeEvent(*args, **kwargs)
-        return 12
         
-
     def head_keyboard(self,text='k'):
 
         self.text_to_write = []
@@ -195,7 +184,7 @@ class Menu():
         while (self.detectionFlag == True):
             success, img = cap.read()
             img = cv2.flip(img, 1)
-            img = cv2.resize(img, (1080,768 ))  
+            img = cv2.resize(img, (1024,768 ))  
             results = face_mesh.process(img)
           #  img = detector.findHands(img)
            # lmList = detector.findPosition(img)
@@ -306,7 +295,7 @@ class Menu():
         self.detectionFlag = False
         self.insertedEPLabel.setText("Text inserted in 8Pen: "+str(self.resultsTableEP))
 
-        self.app.quit()
+        self.close()
         ############
 
     def ownTextMethodHand(self):
@@ -338,7 +327,7 @@ class Menu():
         else:
             self.launchEP()
 
-        #-------------------------------------NOWE---------------------------------
+    #-------------------------------------NOWE---------------------------------
     def isGeneratedHand(self):
         if(self.isGenerated == False):
             self.ownTextMethodHand()
@@ -375,7 +364,7 @@ class Menu():
         else:
             random_text = generateText()
             self.launchEP(text = random_text[0])
-        #--------------------------------------nowe----------------------------------
+    #--------------------------------------nowe----------------------------------
 
 
     def launch(self,text = "k", isStatic = False):
@@ -413,7 +402,7 @@ class Menu():
         while (self.detectionFlag == True):
             success, img = cap.read()
             img = cv2.flip(img, 1)
-            img = cv2.resize(img, (1080,768 ))  
+            img = cv2.resize(img, (1024,768 ))  
             img = detector.findHands(img)
             lmList = detector.findPosition(img)
 
@@ -477,7 +466,7 @@ class Menu():
         while (self.detectionFlag == True):
             success, img = cap.read()
             img = cv2.flip(img, 1)
-            img = cv2.resize(img, (1080,768 ))  
+            img = cv2.resize(img, (1024,768 ))  
             #CHECK DETECTION METHODE
             if methode==False: # PICK FACEMESH AS MARKER
                 img, faces = detector.findFaceMesh(img,False)
@@ -558,7 +547,6 @@ class Menu():
             cv2.waitKey(1)
             
     def hide_components(self):
-        
         self.text_question.hide()
         self.buttonGenereted.hide()
         self.ownText.hide()
@@ -567,25 +555,24 @@ class Menu():
         self.labelPoint.hide()
        
 
-    def convert_cv_qt(self, cv_img):
+    def ConvertCvToQt(self, img):
         """Convert from an opencv image to QPixmap"""
-        rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
-        h, w, ch = rgb_image.shape
+        h, w, ch = img.shape
         bytes_per_line = ch * w
-        convert_to_Qt_format = qtgui.QImage(rgb_image.data, w, h, bytes_per_line, qtgui.QImage.Format_RGB888)
-        p = convert_to_Qt_format.scaled(1080, 768)
-        return QPixmap.fromImage(p)
+        converted_img = QImage(img.data, w, h, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
+        return QPixmap(converted_img)
 
-    def update_image(self, cv_img):
+    ###TO NIE PRZEJDZIE IMO
+    def update_image(self, img):
         """Updates the image_label with a new opencv image"""
-        qt_img = self.convert_cv_qt(cv_img)
-        self.cameraWidget.setPixmap(qt_img)
+        img = self.ConvertCvToQt(img)
+        self.cameraWidget.setPixmap(img)
 
 def main():
-
-    M = Menu()
-    
-    F = Feedback(M.text_to_write, M.text_written)
+    app = QApplication(sys.argv)
+    menu = Menu()
+    menu.show()
+    sys.exit(app.exec())
 
     
 

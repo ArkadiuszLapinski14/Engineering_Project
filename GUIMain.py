@@ -17,6 +17,8 @@ from Feedback import Feedback
 from HeadMovingKeyboard import HeadMovingKeyboard 
 import sys
 
+from dashboard.Dashboard import Dashboard
+
 SCREEN_WIDTH = get_monitors()[0].width
 SCREEN_HEIGHT = get_monitors()[0].height
 
@@ -45,39 +47,6 @@ def generateText(file_name = 'textGenerated.csv'):
     print(chosen_row[1])
     return chosen_row
 
-class Title(QWidget):
-    def __init__(self):
-        super(Title, self).__init__()
-        self.pixImgWidth = int(self.frameGeometry().width() * 0.10)
-        self.pixImgHeight = int(self.frameGeometry().height() * 0.13)
-        self.UIComponents()
-
-    def UIComponents(self):
-        self.setStyleSheet("background-color: #e0e0e0;")
-
-        gridLayout = QGridLayout()
-        gridLayout.setSpacing(0)
-
-        labelTitle = QLabel("Contactless Keyboards")
-        labelTitle.setStyleSheet("font-size: 17pt;"
-                                 "font-weight: bold;"
-                                 "font-family: Arial, Helvetica, sans-serif;"
-                                 "border-top-right-radius: 20px;"
-                                 "border-bottom-right-radius: 20px;"
-                                 "padding: 7px;"
-                                 )
-        
-        pixImg = QPixmap("./assets/keyboard.png").scaled(self.pixImgWidth, self.pixImgHeight, transformMode=Qt.SmoothTransformation)
-        img = QLabel()
-        img.setPixmap(pixImg)
-        img.setStyleSheet("border-top-left-radius: 20px;"
-                          "border-bottom-left-radius: 20px;"
-                          "padding: 7px;")
-
-        gridLayout.addWidget(img, 0, 0, 1, 1)
-        gridLayout.addWidget(labelTitle, 0, 1, 1, 1)
-        self.setLayout(gridLayout)
-
 class Menu(QMainWindow):
     def __init__(self):
         ###WINDOW INIT###
@@ -93,34 +62,8 @@ class Menu(QMainWindow):
         #################
 
     def UIComponents(self):
-        gridHomePageLayout = QGridLayout()
-
-        titleWidget = Title()
-
-        dashboardSectionButton = QPushButton("Dashboard")
-        keyboardSectionButton = QPushButton("Keyboards")
-        feedbackSectionButton = QPushButton("Feedback")
-        settingsSectionButton = QPushButton("Settings")
-        statisticsSectionButton = QPushButton("Statistics")
-        tutorialSectionButton = QPushButton("Tutorials")
-        label = QLabel("")
-        label1 = QLabel("")
-        
-        gridHomePageLayout.addWidget(titleWidget, 0, 0, 1, 1)
-        gridHomePageLayout.addWidget(label1, 1, 0, 3, 1)
-        gridHomePageLayout.addWidget(dashboardSectionButton, 4, 0, 1, 1)
-        gridHomePageLayout.addWidget(keyboardSectionButton, 5, 0, 1, 1) #1arg - widget, 2arg - row, 3arg - column, 4arg - rowSpan, 5arg - columnSpan
-        gridHomePageLayout.addWidget(tutorialSectionButton, 6, 0, 1, 1)
-        gridHomePageLayout.addWidget(feedbackSectionButton, 7, 0, 1, 1)
-        gridHomePageLayout.addWidget(statisticsSectionButton, 8, 0, 1, 1)
-        gridHomePageLayout.addWidget(settingsSectionButton, 9, 0, 1, 1)
-        gridHomePageLayout.addWidget(label, 0, 1, 3, 3)
-        
-        ##Zrobic w osobnej klasie jako widoki##
-        homePage = QWidget()
-        homePage.setLayout(gridHomePageLayout)
-
-        self.setCentralWidget(homePage)
+        dashboard = Dashboard()
+        self.setCentralWidget(dashboard)
 
 class Menu1(QWidget):
 

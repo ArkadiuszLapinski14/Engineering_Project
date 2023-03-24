@@ -45,15 +45,90 @@ def generateText(file_name = 'textGenerated.csv'):
     print(chosen_row[1])
     return chosen_row
 
-class Menu(QWidget):
+class Title(QWidget):
+    def __init__(self):
+        super(Title, self).__init__()
+        self.pixImgWidth = int(self.frameGeometry().width() * 0.10)
+        self.pixImgHeight = int(self.frameGeometry().height() * 0.13)
+        self.UIComponents()
 
-    def __init__(self, parent = None):
+    def UIComponents(self):
+        self.setStyleSheet("background-color: #e0e0e0;")
+
+        gridLayout = QGridLayout()
+        gridLayout.setSpacing(0)
+
+        labelTitle = QLabel("Contactless Keyboards")
+        labelTitle.setStyleSheet("font-size: 17pt;"
+                                 "font-weight: bold;"
+                                 "font-family: Arial, Helvetica, sans-serif;"
+                                 "border-top-right-radius: 20px;"
+                                 "border-bottom-right-radius: 20px;"
+                                 "padding: 7px;"
+                                 )
+        
+        pixImg = QPixmap("./assets/keyboard.png").scaled(self.pixImgWidth, self.pixImgHeight, transformMode=Qt.SmoothTransformation)
+        img = QLabel()
+        img.setPixmap(pixImg)
+        img.setStyleSheet("border-top-left-radius: 20px;"
+                          "border-bottom-left-radius: 20px;"
+                          "padding: 7px;")
+
+        gridLayout.addWidget(img, 0, 0, 1, 1)
+        gridLayout.addWidget(labelTitle, 0, 1, 1, 1)
+        self.setLayout(gridLayout)
+
+class Menu(QMainWindow):
+    def __init__(self):
         ###WINDOW INIT###
-        super(Menu, self).__init__(parent)        
+        super(Menu, self).__init__()
         self.setWindowTitle("Hand Tracking Program Menu")
         self.width = int(SCREEN_WIDTH - (SCREEN_WIDTH * 0.4))
         self.height = int(SCREEN_HEIGHT - (SCREEN_HEIGHT * 0.4))
-        self.setGeometry((SCREEN_WIDTH - self.width) / 2, ((SCREEN_HEIGHT - self.height) / 2), self.width, self.height)
+        self.setGeometry(int((SCREEN_WIDTH - self.width) / 2), (int((SCREEN_HEIGHT - self.height) / 2)), self.width, self.height)
+        #################
+
+        ####UI INIT######
+        self.UIComponents()
+        #################
+
+    def UIComponents(self):
+        gridHomePageLayout = QGridLayout()
+
+        titleWidget = Title()
+
+        keyboardSectionButton = QPushButton("Keyboards")
+        feedbackSectionButton = QPushButton("Feedback")
+        settingsSectionButton = QPushButton("Settings")
+        statisticsSectionButton = QPushButton("Statistics")
+        tutorialSectionButton = QPushButton("Tutorials")
+        label = QLabel("")
+        label1 = QLabel("")
+        
+        gridHomePageLayout.addWidget(titleWidget, 0, 0, 1, 1)
+        gridHomePageLayout.addWidget(label1, 1, 0, 3, 1)
+        gridHomePageLayout.addWidget(keyboardSectionButton, 4, 0, 1, 1) #1arg - widget, 2arg - row, 3arg - column, 4arg - rowSpan, 5arg - columnSpan
+        gridHomePageLayout.addWidget(tutorialSectionButton, 5, 0, 1, 1)
+        gridHomePageLayout.addWidget(feedbackSectionButton, 6, 0, 1, 1)
+        gridHomePageLayout.addWidget(statisticsSectionButton, 7, 0, 1, 1)
+        gridHomePageLayout.addWidget(settingsSectionButton, 8, 0, 1, 1)
+        gridHomePageLayout.addWidget(label, 0, 1, 3, 3)
+        
+        ##Zrobic w osobnej klasie jako widoki##
+        homePage = QWidget()
+        homePage.setLayout(gridHomePageLayout)
+
+        self.setCentralWidget(homePage)
+
+class Menu1(QWidget):
+
+    def __init__(self, parent = None):
+        ###WINDOW INIT###
+        super(Menu1, self).__init__(parent)        
+        self.setWindowTitle("Hand Tracking Program Menu")
+        self.width = int(SCREEN_WIDTH - (SCREEN_WIDTH * 0.4))
+        self.height = int(SCREEN_HEIGHT - (SCREEN_HEIGHT * 0.4))
+        self.setGeometry(int((SCREEN_WIDTH - self.width) / 2), (int((SCREEN_HEIGHT - self.height) / 2)), self.width, self.height)
         self.showMaximized()
         ##################
 

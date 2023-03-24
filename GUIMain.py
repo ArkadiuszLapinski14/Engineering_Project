@@ -97,6 +97,7 @@ class Menu(QMainWindow):
 
         titleWidget = Title()
 
+        dashboardSectionButton = QPushButton("Dashboard")
         keyboardSectionButton = QPushButton("Keyboards")
         feedbackSectionButton = QPushButton("Feedback")
         settingsSectionButton = QPushButton("Settings")
@@ -107,11 +108,12 @@ class Menu(QMainWindow):
         
         gridHomePageLayout.addWidget(titleWidget, 0, 0, 1, 1)
         gridHomePageLayout.addWidget(label1, 1, 0, 3, 1)
-        gridHomePageLayout.addWidget(keyboardSectionButton, 4, 0, 1, 1) #1arg - widget, 2arg - row, 3arg - column, 4arg - rowSpan, 5arg - columnSpan
-        gridHomePageLayout.addWidget(tutorialSectionButton, 5, 0, 1, 1)
-        gridHomePageLayout.addWidget(feedbackSectionButton, 6, 0, 1, 1)
-        gridHomePageLayout.addWidget(statisticsSectionButton, 7, 0, 1, 1)
-        gridHomePageLayout.addWidget(settingsSectionButton, 8, 0, 1, 1)
+        gridHomePageLayout.addWidget(dashboardSectionButton, 4, 0, 1, 1)
+        gridHomePageLayout.addWidget(keyboardSectionButton, 5, 0, 1, 1) #1arg - widget, 2arg - row, 3arg - column, 4arg - rowSpan, 5arg - columnSpan
+        gridHomePageLayout.addWidget(tutorialSectionButton, 6, 0, 1, 1)
+        gridHomePageLayout.addWidget(feedbackSectionButton, 7, 0, 1, 1)
+        gridHomePageLayout.addWidget(statisticsSectionButton, 8, 0, 1, 1)
+        gridHomePageLayout.addWidget(settingsSectionButton, 9, 0, 1, 1)
         gridHomePageLayout.addWidget(label, 0, 1, 3, 3)
         
         ##Zrobic w osobnej klasie jako widoki##

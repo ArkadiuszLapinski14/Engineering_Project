@@ -10,15 +10,16 @@ class Navbar(QWidget):
     
     def UIComponents(self):
         gridLayout = QGridLayout()
+        gridLayout.setSpacing(0)
 
         titleWidget = Title()
 
-        dashboardSectionButton = QPushButton("Dashboard")
-        keyboardSectionButton = QPushButton("Keyboards")
-        feedbackSectionButton = QPushButton("Feedback")
-        settingsSectionButton = QPushButton("Settings")
-        statisticsSectionButton = QPushButton("Statistics")
-        tutorialSectionButton = QPushButton("Tutorials")
+        dashboardSectionButton = QPushButton("Dashboard", objectName="DashboardBtn")
+        keyboardSectionButton = QPushButton("Keyboards", objectName="KeyboardsBtn")
+        feedbackSectionButton = QPushButton("Feedback", objectName="FeedbackBtn")
+        settingsSectionButton = QPushButton("Settings", objectName="SettingsBtn")
+        statisticsSectionButton = QPushButton("Statistics", objectName="StatisticsBtn")
+        tutorialSectionButton = QPushButton("Tutorials", objectName="TutorialsBtn")
         label = QLabel("")
         label1 = QLabel("")
         

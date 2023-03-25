@@ -15,21 +15,11 @@ class Title(QWidget):
         gridLayout = QGridLayout()
         gridLayout.setSpacing(0)
 
-        labelTitle = QLabel("Contactless Keyboards")
-        labelTitle.setStyleSheet("font-size: 17pt;"
-                                 "font-weight: bold;"
-                                 "font-family: Arial, Helvetica, sans-serif;"
-                                 "border-top-right-radius: 20px;"
-                                 "border-bottom-right-radius: 20px;"
-                                 "padding: 7px;"
-                                 )
-        
+        labelTitle = QLabel("Contactless Keyboards", objectName="LabelTitle")
+
         pixImg = QPixmap("./assets/keyboard.png").scaled(self.pixImgWidth, self.pixImgHeight, transformMode=Qt.SmoothTransformation)
-        img = QLabel()
+        img = QLabel(objectName="Logo")
         img.setPixmap(pixImg)
-        img.setStyleSheet("border-top-left-radius: 20px;"
-                          "border-bottom-left-radius: 20px;"
-                          "padding: 7px;")
 
         gridLayout.addWidget(img, 0, 0, 1, 1)
         gridLayout.addWidget(labelTitle, 0, 1, 1, 1)

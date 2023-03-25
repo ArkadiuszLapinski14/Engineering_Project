@@ -17,6 +17,7 @@ from Feedback import Feedback
 from HeadMovingKeyboard import HeadMovingKeyboard 
 import sys
 
+from components.Stylesheet import StyleSheet
 from dashboard.Dashboard import Dashboard
 
 SCREEN_WIDTH = get_monitors()[0].width
@@ -590,6 +591,8 @@ class Menu1(QWidget):
 
 def main():
     app = QApplication(sys.argv)
+    app.setStyleSheet(StyleSheet)
+    
     menu = Menu()
     menu.show()
     sys.exit(app.exec())

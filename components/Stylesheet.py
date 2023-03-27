@@ -9,7 +9,12 @@ QPushButton#DashboardBtn {
 }
 
 QPushButton#DashboardBtn:hover{
-    background-color: #D3D3D3;
+    background-color: #F8F8F8;
+}
+
+QLabel#NavbarBackground{
+    background-color: #E0E0E0;
+    border-radius: 15px;
 }
 
 QPushButton#KeyboardsBtn{
@@ -21,7 +26,7 @@ QPushButton#KeyboardsBtn{
 }
 
 QPushButton#KeyboardsBtn:hover{
-    background-color: #D3D3D3;
+    background-color: #F8F8F8;
 }
 
 QPushButton#StatisticsBtn{
@@ -33,7 +38,7 @@ QPushButton#StatisticsBtn{
 }
 
 QPushButton#StatisticsBtn:hover{
-    background-color: #D3D3D3;
+    background-color: #F8F8F8;
 }
 
 QPushButton#FeedbackBtn{
@@ -45,7 +50,7 @@ QPushButton#FeedbackBtn{
 }
 
 QPushButton#FeedbackBtn:hover{
-    background-color: #D3D3D3;
+    background-color: #F8F8F8;
 }
 
 QPushButton#SettingsBtn{
@@ -57,7 +62,7 @@ QPushButton#SettingsBtn{
 }
 
 QPushButton#SettingsBtn:hover{
-    background-color: #D3D3D3;
+    background-color: #F8F8F8;
 }
 
 QPushButton#TutorialsBtn{
@@ -69,7 +74,7 @@ QPushButton#TutorialsBtn{
 }
 
 QPushButton#TutorialsBtn:hover{
-    background-color: #D3D3D3;
+    background-color: #F8F8F8;
 }
 
 QLabel#LabelTitle {

@@ -10,7 +10,7 @@ class Title(QWidget):
         self.UIComponents()
 
     def UIComponents(self):
-        self.setStyleSheet("background-color: #e0e0e0;")
+        self.setStyleSheet("background-color: #F8F8F8;")
 
         gridLayout = QGridLayout()
         gridLayout.setSpacing(0)

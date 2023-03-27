@@ -10,9 +10,5 @@ class Dashboard(QWidget):
 
     def UIComponents(self):
         gridLayout = QGridLayout()
-        
-        navbar = Navbar()
-        navbar.findChild(QPushButton, "DashboardBtn").setStyleSheet("color: #720e9e;" "font-weight: bold")
 
-        gridLayout.addWidget(navbar, 0, 0, 1, 1)
         self.setLayout(gridLayout)

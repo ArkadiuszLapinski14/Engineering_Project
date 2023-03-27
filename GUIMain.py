@@ -19,6 +19,7 @@ import sys
 
 from components.Stylesheet import StyleSheet
 from dashboard.Dashboard import Dashboard
+from components.Navbar import Navbar
 
 SCREEN_WIDTH = get_monitors()[0].width
 SCREEN_HEIGHT = get_monitors()[0].height
@@ -63,8 +64,19 @@ class Menu(QMainWindow):
         #################
 
     def UIComponents(self):
+        pageWidget = QWidget()
+        pageLayout = QGridLayout()
+
+        navbar = Navbar()
+        navbar.findChild(QPushButton, "DashboardBtn").setStyleSheet("color: #720e9e;" "font-weight: bold;")
+
         dashboard = Dashboard()
-        self.setCentralWidget(dashboard)
+        
+        pageLayout.addWidget(navbar, 0, 0, 1, 1)
+        pageLayout.addWidget(dashboard, 0, 1, 1, 1)
+        
+        pageWidget.setLayout(pageLayout)
+        self.setCentralWidget(pageWidget)
 
 class Menu1(QWidget):
 

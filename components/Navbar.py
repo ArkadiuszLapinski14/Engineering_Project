@@ -5,8 +5,9 @@ from components.Title import Title
 import numpy as np
 
 class Navbar(QWidget):
-    def __init__(self):
-        super(Navbar, self).__init__()
+    def __init__(self, parent = None):
+        super(Navbar, self).__init__(parent)
+        self.parent = parent
         self.page = "Dashboard"
         self.UIComponents()
     
@@ -32,7 +33,6 @@ class Navbar(QWidget):
         self.tutorialSectionButton.clicked.connect(self.TutorialSectionBtnOnClick)
 
         self.kBoards = [self.dashboardSectionButton, self.keyboardSectionButton, self.feedbackSectionButton, self.settingsSectionButton, self.statisticsSectionButton, self.tutorialSectionButton]
-        label = QLabel("")
         label1 = QLabel("")
         
         gridLayout.addWidget(background, 0, 0, 13, 1)
@@ -44,36 +44,29 @@ class Navbar(QWidget):
         gridLayout.addWidget(self.feedbackSectionButton, 7, 0, 1, 1)
         gridLayout.addWidget(self.statisticsSectionButton, 8, 0, 1, 1)
         gridLayout.addWidget(self.settingsSectionButton, 9, 0, 1, 1)
-        gridLayout.addWidget(label, 0, 1, 3, 3)
         self.setLayout(gridLayout)
 
     
     def KeyboardSectionBtnOnClick(self):
-        # [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
-        # self.keyboardSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
         self.page = "Keyboards"
+        self.parent.SetView(self, self.parent.views)
 
     def DashboardSectionBtnOnClick(self):
-        # [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
-        # self.dashboardSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
         self.page = "Dashboard"
+        self.parent.SetView(self, self.parent.views)
 
     def FeedbackSectionBtnOnClick(self):
-        [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
-        self.feedbackSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
         self.page = "Feedback"
+        self.parent.SetView(self, self.parent.views)
 
     def SettingsSectionBtnOnClick(self):
-        [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
-        self.settingsSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
         self.page = "Settings"
+        self.parent.SetView(self, self.parent.views)
 
     def StatisticsSectionBtnOnClick(self):
-        [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
-        self.statisticsSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
         self.page = "Statistics"
+        self.parent.SetView(self, self.parent.views)
 
     def TutorialSectionBtnOnClick(self):
-        [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
-        self.tutorialSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
         self.page = "Tutorial"
+        self.parent.SetView(self, self.parent.views)

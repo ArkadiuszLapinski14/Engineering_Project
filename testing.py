@@ -2,9 +2,9 @@ import cv2
 import mediapipe as mp
 import time
 import Modules.HandTrackingModule as htm
-from Keyboard import Keyboard
-from HandMovingKeyboard import HandMovingKeyboard
-from HandMovingKeyboardStatic import HandMovingKeyboardStatic
+from keyboards_back.Keyboard import Keyboard
+from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
+from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
 
 def main():
     pTime = 0

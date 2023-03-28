@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import mediapipe as mp
 import time
-from Keyboard import Keyboard
-from HeadMovingKeyboard import HeadMovingKeyboard
+from keyboards_back.Keyboard import Keyboard
+from keyboards_back.HeadMovingKeyboard import HeadMovingKeyboard
 
 def main():
     pTime = 0

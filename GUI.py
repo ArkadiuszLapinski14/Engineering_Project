@@ -4,20 +4,19 @@ import cv2
 import mediapipe as mp
 import time
 import numpy as np
-import HandTrackingModule as htm
-from Keyboard import Keyboard
-from HandMovingKeyboard import HandMovingKeyboard
-import HandMovingKeyboardStatic as static
+import Modules.HandTrackingModule as htm
+from keyboards_back.Keyboard import Keyboard
+from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
+import keyboards_back.HandMovingKeyboardStatic as static
 import PyQt5.QtWidgets as pq
 from PyQt5 import QtGui as qtgui
 from PyQt5.QtGui import QPixmap, QColor
-import EightPen as ep
-import FaceMeshModuleEP as mtmep
+import trash.EightPen as ep
 
 
-from Feedback import Feedback
+from trash.Feedback import Feedback
 
-from HeadMovingKeyboard import HeadMovingKeyboard 
+from keyboards_back.HeadMovingKeyboard import HeadMovingKeyboard 
 
 class Menu():
 
@@ -148,12 +147,12 @@ class Menu():
         self.app.quit()
         ############
 
-    def getKeyboard(self, keyboard, interface):
-        match keyboard:
-            case "HandMovingKeyboardStatic":
-                return static.HandMovingKeyboardStatic(interface,self.point)
-            case "classic_keyboard":
-                return HandMovingKeyboard(interface,self.point)
+    # def getKeyboard(self, keyboard, interface):                               ############ UŻYJ ELSEIFa NIE MA TEGO W PYTHONIE 3.10- 
+    #     match keyboard:
+    #         case "HandMovingKeyboardStatic":
+    #             return static.HandMovingKeyboardStatic(interface,self.point)
+    #         case "classic_keyboard":
+    #             return HandMovingKeyboard(interface,self.point)
 
     def hide_components(self):
         # self.text_question.hide()
@@ -188,7 +187,7 @@ class Menu():
        
         # #Getting the point of hand
         if (self.point_text.text() != ''):
-            self.point = isHandNumber(self.point_text.text())   # tu jest punkt do lms
+            self.point = isHandNumber(self.point_text.text())   # tu jest punkt do lms #############????
             
             
         pTime = 0

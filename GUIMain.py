@@ -17,9 +17,11 @@ from Feedback import Feedback
 from HeadMovingKeyboard import HeadMovingKeyboard 
 import sys
 
+from components.RegisterViews import Views
 from components.Stylesheet import StyleSheet
 from dashboard.Dashboard import Dashboard
 from components.Navbar import Navbar
+from keyboards.Keyboards import Keyboards
 
 SCREEN_WIDTH = get_monitors()[0].width
 SCREEN_HEIGHT = get_monitors()[0].height
@@ -68,15 +70,33 @@ class Menu(QMainWindow):
         pageLayout = QGridLayout()
 
         navbar = Navbar()
-        navbar.findChild(QPushButton, "DashboardBtn").setStyleSheet("color: #720e9e;" "font-weight: bold;")
-
-        dashboard = Dashboard()
+        views = Views()
+        views = self.ViewsRegister(views)
+        currentView = self.SetView(navbar, views)
         
         pageLayout.addWidget(navbar, 0, 0, 1, 1)
-        pageLayout.addWidget(dashboard, 0, 1, 1, 1)
+        pageLayout.addWidget(currentView, 0, 1, 1, 1)
         
         pageWidget.setLayout(pageLayout)
         self.setCentralWidget(pageWidget)
+
+    def ViewsRegister(self, view):
+        view.register("Dashboard", lambda:Dashboard())
+        view.register("Keyboards",lambda:Keyboards())
+
+        return view
+    
+    def SetView(self, navbar, view):
+        if navbar.page == "Dashboard":
+            currentView = view.getInstance("Dashboard")
+            [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in navbar.kBoards]
+            navbar.findChild(QPushButton, "DashboardBtn").setStyleSheet("color: #720e9e;" "font-weight: bold;")
+            
+        elif navbar.page == "Keyboards":
+            currentView = view.getInstance("Keyboards")
+            [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in navbar.kBoards]
+            navbar.findChild(QPushButton, "KeyboardsBtn").setStyleSheet("color: #720e9e;" "font-weight: bold;")
+        return currentView
 
 class Menu1(QWidget):
 

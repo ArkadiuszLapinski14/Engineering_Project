@@ -7,6 +7,7 @@ import numpy as np
 class Navbar(QWidget):
     def __init__(self):
         super(Navbar, self).__init__()
+        self.page = "Dashboard"
         self.UIComponents()
     
     def UIComponents(self):
@@ -48,25 +49,31 @@ class Navbar(QWidget):
 
     
     def KeyboardSectionBtnOnClick(self):
-        [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
-        self.keyboardSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
+        # [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
+        # self.keyboardSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
+        self.page = "Keyboards"
 
     def DashboardSectionBtnOnClick(self):
-        [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
-        self.dashboardSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
+        # [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
+        # self.dashboardSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
+        self.page = "Dashboard"
 
     def FeedbackSectionBtnOnClick(self):
         [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
         self.feedbackSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
+        self.page = "Feedback"
 
     def SettingsSectionBtnOnClick(self):
         [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
         self.settingsSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
+        self.page = "Settings"
 
     def StatisticsSectionBtnOnClick(self):
         [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
         self.statisticsSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
+        self.page = "Statistics"
 
     def TutorialSectionBtnOnClick(self):
         [kBoard.setStyleSheet("color: black;" "font-weight: normal") for kBoard in self.kBoards]
         self.tutorialSectionButton.setStyleSheet("color: #720e9e;" "font-weight: bold")
+        self.page = "Tutorial"

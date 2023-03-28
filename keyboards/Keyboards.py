@@ -3,10 +3,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from components.Navbar import Navbar
 
-class Dashboard(QWidget):
+class Keyboards(QWidget):
     def __init__(self):
-        super(Dashboard, self).__init__()
-        print("Dashboard")
+        super(Keyboards, self).__init__()
+        print("Kboards")
         self.UIComponents()
 
     def UIComponents(self):

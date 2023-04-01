@@ -20,16 +20,27 @@ class Navbar(QWidget):
         titleWidget = Title()
 
         self.dashboardSectionButton = QPushButton("Dashboard", objectName="DashboardBtn")
+        self.dashboardSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.dashboardSectionButton.clicked.connect(self.DashboardSectionBtnOnClick)
+
         self.keyboardSectionButton = QPushButton("Keyboards", objectName="KeyboardsBtn")
+        self.keyboardSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.keyboardSectionButton.clicked.connect(self.KeyboardSectionBtnOnClick)
+
         self.feedbackSectionButton = QPushButton("Feedback", objectName="FeedbackBtn")
+        self.feedbackSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.feedbackSectionButton.clicked.connect(self.FeedbackSectionBtnOnClick)
+
         self.settingsSectionButton = QPushButton("Settings", objectName="SettingsBtn")
+        self.settingsSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.settingsSectionButton.clicked.connect(self.SettingsSectionBtnOnClick)
+
         self.statisticsSectionButton = QPushButton("Statistics", objectName="StatisticsBtn")
+        self.statisticsSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.statisticsSectionButton.clicked.connect(self.StatisticsSectionBtnOnClick)
+
         self.tutorialSectionButton = QPushButton("Tutorials", objectName="TutorialsBtn")
+        self.tutorialSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.tutorialSectionButton.clicked.connect(self.TutorialSectionBtnOnClick)
 
         self.kBoards = [self.dashboardSectionButton, self.keyboardSectionButton, self.feedbackSectionButton, self.settingsSectionButton, self.statisticsSectionButton, self.tutorialSectionButton]

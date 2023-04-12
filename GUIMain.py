@@ -16,7 +16,7 @@ from trash.Feedback import Feedback
 from keyboards_back.HeadMovingKeyboard import HeadMovingKeyboard 
 import sys
 
-from components.RegisterViews import Views
+from components.RegisterPanel import RegisterPanel
 from components.Stylesheet import StyleSheet
 from dashboard.Dashboard import Dashboard
 from components.Navbar import Navbar
@@ -62,6 +62,7 @@ class Menu(QMainWindow):
         self.width = int(SCREEN_WIDTH - (SCREEN_WIDTH * 0.4))
         self.height = int(SCREEN_HEIGHT - (SCREEN_HEIGHT * 0.4))
         self.setGeometry(int((SCREEN_WIDTH - self.width) / 2), (int((SCREEN_HEIGHT - self.height) / 2)), self.width, self.height)
+        self.setFixedSize(self.width, self.height)
         #################
 
         ####UI INIT######
@@ -74,7 +75,7 @@ class Menu(QMainWindow):
 
         navbar = Navbar(self)
 
-        self.views = Views()
+        self.views = RegisterPanel()
         self.views = self.ViewsRegister(self.views)
         self.SetView(navbar, self.views)
 

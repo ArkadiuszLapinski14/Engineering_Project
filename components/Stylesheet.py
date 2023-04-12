@@ -104,6 +104,45 @@ QPushButton#HandBtn:hover{
     background-color: #E0E0E0;
 }
 
+QPushButton#HandMovingBtn{
+    color: black;
+    font-size: 12pt;
+    height: 40%;
+    background-color: white;
+    border: 1.5px solid black;
+    border-radius: 10px;
+}
+
+QPushButton#HandMovingBtn:hover{
+    background-color: #E0E0E0;
+}
+
+QPushButton#HandMovingStaticBtn{
+    color: black;
+    font-size: 12pt;
+    height: 40%;
+    background-color: white;
+    border: 1.5px solid black;
+    border-radius: 10px;
+}
+
+QPushButton#HandMovingStaticBtn:hover{
+    background-color: #E0E0E0;
+}
+
+QPushButton#EightPenHandBtn{
+    color: black;
+    font-size: 12pt;
+    height: 40%;
+    background-color: white;
+    border: 1.5px solid black;
+    border-radius: 10px;
+}
+
+QPushButton#EightPenHandBtn:hover{
+    background-color: #E0E0E0;
+}
+
 QLabel#HeadDescriptionTitle{
     font-size: 22px;
     font-weight: bold;

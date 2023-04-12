@@ -1,12 +1,15 @@
 ﻿import cv2
+import Modules.HandTrackingModule as htm
+from keyboards_back.Keyboard import Keyboard
 
 class HandMovingKeyboard:
-    def __init__(self, keyboard, point = 8):
+    def __init__(self, point = 8):
         self.Finger = None
         self.prevFinger = [] #zmiana na liste, aby sledzic ostanie x zmian polozenia palca w celu optymalizacji 
-        self.keyboard = keyboard
-        self.keys = keyboard.get_keys()
-        self.KEYS = keyboard.get_keys() #const idk jak zrobic w pythonie
+        self.detector = htm.handDetector(maxHands=1)
+        self.keyboard = Keyboard()
+        self.keys = self.keyboard.get_keys()
+        self.KEYS = self.keyboard.get_keys() #const idk jak zrobic w pythonie
         self.res = []
         self.is_calibrated = False
         self.calibration_delay = 0  #zmienna potrzebna do zatrzymania stanu kalibracji na kilka milisekund //optymalizacja
@@ -16,10 +19,13 @@ class HandMovingKeyboard:
     def get_result(self):
         return self.res
 		
-    def update(self, screen, lms, keyboard):
+    def update(self, screen):
         '''Updates a keyboard according to our algorithm when calibrated'''
+        screen = self.detector.findHands(screen, draw = False)
+        lms = self.detector.findPosition(screen)
+        
         try:
-            screen = keyboard.draw_update(screen, 10, 100, 30, 30)
+            screen = self.keyboard.draw_update(screen, 10, 100, 30, 30)
             self.FingerUpdate(lms)
             screen = self.backToDefault(screen)
             if self.is_calibrated == True:
@@ -28,13 +34,17 @@ class HandMovingKeyboard:
                     self.cutBy4()
                 elif len(self.keys) == 2:
                     self.cutBy2()
+                screen = self.drawResult(screen, 600, 600)
             else:
                 self.calibration_delay = 10 #długość delaya (10 najlepiej dziala)
                 screen = self.calibrate(screen)
-            return screen
+                screen = self.drawResult(screen, 600, 600)
+            return screen, self.res
         except:
             print("Hand Moving Keyboard algorith doesnt work/lms out of range")
-        return screen 
+
+        screen = self.drawResult(screen, 600, 600)
+        return screen, self.res
     
     def calibrate(self, screen):
         '''Checks if finger is inside the calibration box'''

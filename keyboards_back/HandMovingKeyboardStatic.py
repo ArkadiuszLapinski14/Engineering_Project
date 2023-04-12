@@ -1,14 +1,17 @@
 import cv2
 import numpy as np
 import collections
+import Modules.HandTrackingModule as htm
+from keyboards_back.Keyboard import Keyboard
 
 class HandMovingKeyboardStatic:
-    def __init__(self, keyboard, point = 8):
+    def __init__(self, point = 8):
         self.Finger = None
         self.prevFinger = [] #zmiana na liste, aby sledzic ostanie x zmian polozenia palca w celu optymalizacji 
-        self.keyboard = keyboard
-        self.keys = keyboard.get_keys()
-        self.KEYS = keyboard.get_keys() #const idk jak zrobic w pythonie
+        self.keyboard = Keyboard()
+        self.detector = htm.handDetector(maxHands=1)
+        self.keys = self.keyboard.get_keys()
+        self.KEYS = self.keyboard.get_keys() #const idk jak zrobic w pythonie
         self.res = []
         self.is_calibrated = False
         self.calibration_delay = 0  #zmienna potrzebna do zatrzymania stanu kalibracji na kilka milisekund //optymalizacja
@@ -17,11 +20,13 @@ class HandMovingKeyboardStatic:
         self.keyboard_bin_tab = np.ones(32)
         self.mask = np.ones(32)
 
-    def update(self, screen, lms, keyboard):
+    def update(self, screen):
         '''Updates a keyboard according to our algorithm when calibrated'''
+        screen = self.detector.findHands(screen, draw = False)
+        lms = self.detector.findPosition(screen)
         try:
-            screen = keyboard.draw_update(screen, 10, 100, 30, 30)
-            screen = keyboard.highlight(screen, self.keyboard_bin_tab, 10, 100, 30, 30)
+            screen = self.keyboard.draw_update(screen, 10, 100, 30, 30)
+            screen = self.keyboard.highlight(screen, self.keyboard_bin_tab, 10, 100, 30, 30)
             self.FingerUpdate(lms)
             screen = self.backToDefault(screen)
             if self.is_calibrated == True:
@@ -32,12 +37,16 @@ class HandMovingKeyboardStatic:
                     self.cutBy2()
                 elif collections.Counter(self.keyboard_bin_tab)[1] == 2:
                     self.cutBy1()
+                screen = self.drawResult(screen, 600, 600)
             else:
                 self.calibration_delay = 10 #długość delaya (10 najlepiej dziala)
                 screen = self.calibrate(screen)
+                screen = self.drawResult(screen, 600, 600)
             return screen
         except:
             print("Hand Moving Keyboard algorith doesnt work/lms out of range")
+
+        screen = self.drawResult(screen, 600, 600)
         return screen 
     
     def get_result(self):
@@ -165,7 +174,6 @@ class HandMovingKeyboardStatic:
         '''Highlight part of keyboard'''
         try:
             tab_len = len(self.keyboard_bin_tab)
-            print(tab_len)
             if (self.Finger and self.prevFinger):
                 if self.Finger[1] < self.prevFinger[0][1] - 300: #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
                     self.mask = np.concatenate((np.ones(int(tab_len / 4)), np.zeros(int((tab_len / 4)*3))), axis=None)
@@ -190,7 +198,6 @@ class HandMovingKeyboardStatic:
         '''Highlight part of keyboard'''
         try:
             tab_len = len(self.keyboard_bin_tab)
-            print(tab_len)
             if (self.Finger and self.prevFinger):
                 if self.Finger[1] < self.prevFinger[0][1] - 300: #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
                     idxs = np.where(self.keyboard_bin_tab == 1)

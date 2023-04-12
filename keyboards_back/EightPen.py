@@ -31,14 +31,11 @@ class EightPen:
         for x in range(0, np.size(self.marker_pos)):
             print(self.marker_pos[x], "Size: ", np.size(self.marker_pos), " Test: ",self.marker_pos[np.size(self.marker_pos)-1])
     
-    def printSentance(self):        # PRINT OUT SENTANCE
+    def printSentance(self):        # PRINT OUT SENTANCE # DEBUG METHODE
         self.out=""
         for i in range(0,np.size(self.sentance)):
             self.out+=self.sentance[i]
         print(self.out)
-
-    def getText(self):
-        return self.sentance
 
     def generateKeyboard(self):
         h,w,c=self.img.shape
@@ -168,10 +165,10 @@ class EightPen:
                         self.start=False
                     elif self.newPosition is not self.marker_pos[np.size(self.marker_pos)-1]:
                         self.marker_pos.append(self.newPosition)
-                        self.printHolder()
+                        # self.printHolder()
         
         self.generateKeyboard()
         self.img = cv2.addWeighted(self.overlay, self.alpha, self.img, 1 - self.alpha, 0)
         cv2.circle(self.img, (self.X, self.Y), 7, (255, 0, 0), cv2.FILLED)
 
-        return self.img
+        return self.img, self.sentance

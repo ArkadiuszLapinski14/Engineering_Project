@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-import Keyboard
+from keyboards_back.Keyboard import Keyboard
 
 class HeadMovingKeyboard:
     def __init__(self, keyboard=Keyboard()):
@@ -72,7 +72,7 @@ class HeadMovingKeyboard:
 
                 angles2 = [x, y]
 
-                return(self.update2(img, angles2))
+        return(self.update2(img, angles2))
        
         
     def update2(self, screen, angles):

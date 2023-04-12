@@ -3,12 +3,12 @@ import mediapipe as mp
 import time
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
-
+from keyboards_back.HeadMovingKeyboardUpdated import HeadMovingKeyboard
 def main():
     pTime = 0
 
     cap = cv2.VideoCapture(0)
-    handMovingKeyboard = HandMovingKeyboard()
+    handMovingKeyboard = HeadMovingKeyboard()
 
     while True:
         success, img = cap.read()

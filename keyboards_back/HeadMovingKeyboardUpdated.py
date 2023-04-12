@@ -23,6 +23,7 @@ class HeadMovingKeyboard:
         face_3d = []
         face_2d = []
         results = self.face_mesh.process(img)
+        angles2 = np.zeros(2)
 
         if results.multi_face_landmarks:
             for face_landmarks in results.multi_face_landmarks:
@@ -72,23 +73,32 @@ class HeadMovingKeyboard:
 
                 angles2 = [x, y]
 
-        return(self.update2(img, angles2))
+                self.angles=angles2
+        #cv2.putText(img, str(angles2[0]), (600, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
+        #cv2.putText(img, str(angles2[1]), (600, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
+        return(self.update2(img))
        
         
-    def update2(self, screen, angles):
-        try:
-            self.headUpdate(angles)
+    def update2(self, screen):
+        #try:
+            screen = self.keyboard.draw_update(screen, 10, 100, 30, 30)
+            self.headUpdate()
+           # screen = self.backToDefault(screen)
             if self.is_calibrated == True:
                 if len(self.keys) != 2:
                         self.cutBy4()
                 elif len(self.keys) == 2:
                         self.cutBy2()
-                return screen
+                screen = self.drawResult(screen, 600, 600)
+                #return screen
             else:
                 screen = self.calibrate(screen)
-        except:
-            print("Hand Moving Keyboard algorith doesnt work/lms out of range")
-        return screen 
+                screen = self.drawResult(screen, 600, 600)
+            return screen 
+        #except:
+            #print("Head Moving Keyboard algorith doesnt work/lms out of range")
+            return screen
+       
 
     def calibrate(self, screen):
         try:
@@ -141,35 +151,33 @@ class HeadMovingKeyboard:
         y, x = int((y-h)/2), int((x-w)/2)
         return x, y, w, h
 
-    def headUpdate(self, angles):
-        if (angles):
-            self.angles = angles
-            for ang in self.angles:
-                self.angles = self.angles*360
+    def headUpdate(self):
             if len(self.keys) == 1:
                 self.setResult(self.keys[0])
+
+
 
 
     def cutBy4(self):
         '''Cut unecessary part of keyboard when len(keayboard) > 2'''
         try:
             if (self.angles and self.is_calibrated==True):
-                if self.angles[0] <  -8 and self.angles[1]<8 and self.angles>-8: 
+                if self.angles[1] <  -5 and self.angles[0]<8 and self.angles[0]>-8: 
                     self.keys = self.keys[0:int(len(self.keys)/4)]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
                   
-                elif self.angles[1] > 8 and self.angles[0]<8 and self.angles[0]>-8:
+                elif self.angles[1] > 5 and self.angles[0]<8 and self.angles[0]>-8:
                     self.keys = self.keys[int(len(self.keys)*(3/4)):len(self.keys)]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
                    
-                elif self.angles[1] < -8 and self.angles[0]<8 and self.angles[0]>-8:
+                elif self.angles[0] < -5 and self.angles[1]<8 and self.angles[1]>-8:
                     self.keys = self.keys[int(len(self.keys)*(1/4)):int(len(self.keys)*(2/4))]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
                     
-                elif self.angles[0] > 8 and self.angles[1]<8 and self.angles[1]>-8:
+                elif self.angles[0] > 5 and self.angles[1]<8 and self.angles[1]>-8:
                     self.keys = self.keys[int(len(self.keys)*(2/4)):int(len(self.keys)*(3/4))]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
@@ -181,12 +189,12 @@ class HeadMovingKeyboard:
         '''Cut unecessary part of keyboard when len(keayboard) == 2'''
         try:
             if (self.angles and self.is_calibrated==True):
-                if self.angles[1] < - 10:
+                if self.angles[1] < - 6:
                     self.keys = self.keys[0:1]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
                   
-                elif self.angles[1] >  10:
+                elif self.angles[1] >  6:
                     self.keys = self.keys[1:2]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False

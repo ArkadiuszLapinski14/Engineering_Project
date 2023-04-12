@@ -6,6 +6,7 @@ from components.RegisterPanel import RegisterPanel
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
 from keyboards_back.EightPen import EightPen
+from keyboards.KeyboardsText import KeyboardsText
 from components.Launcher import Launcher
 from components.LaunchingObject import LaunchingObject
 import threading
@@ -15,6 +16,7 @@ class Hand(QWidget):
     def __init__(self, parent = None):
         super(Hand, self).__init__(parent)
         self.parent = parent
+        self.result = ""
         print("Hand")
         self.UIComponents()
 
@@ -22,7 +24,8 @@ class Hand(QWidget):
         gridLayout = QGridLayout()
         self.keyboards = RegisterPanel()
         self.RegisterKeyboards()
-        
+
+        self.resultLabel = QLineEdit(self.result)
         self.HandMovingKeyboardSectionBtn = QPushButton("Hand Moving Keyboard", objectName="HandMovingBtn")
         self.HandMovingKeyboardSectionBtn.clicked.connect(self.HandMovingKeyboardSectionBtnOnClick)
         self.HandMovingKeyboardSectionBtn.setCursor(QCursor(Qt.PointingHandCursor))
@@ -51,23 +54,23 @@ class Hand(QWidget):
         self.Launcher.finished.connect(self.onEnd)
         self.Launcher.data_ready.connect(self.HandleData)
 
-    def HandleData(self,data):
-        self.result = "".join(data)
-    
-    def onEnd(self):
-        print("essa")
-        self.parent.SetView(self.parent.views, "KeyboardsText")
-
-
     def HandMovingStaticKeyboardSectionBtnOnClick(self):
-        Launcher(self.keyboards.getInstance("HandMovingStatic"))
+        self.Launcher = Launcher(HandMovingKeyboardStatic())
+        self.Launcher.start()
+        self.Launcher.started.connect(self.onEnd)
+        self.Launcher.finished.connect(self.onEnd)
+        self.Launcher.data_ready.connect(self.HandleData)
 
     def EightPenSectionBtnOnClick(self):
-        Launcher(self.keyboards.getInstance("EightPen"))
+        self.Launcher = Launcher(EightPen())
+        self.Launcher.start()
+        self.Launcher.started.connect(self.onEnd)
+        self.Launcher.finished.connect(self.onEnd)
+        self.Launcher.data_ready.connect(self.HandleData)
 
-    def ConvertCvToQt(self, img):
-        """Convert from an opencv image to QPixmap"""
-        h, w, ch = img.shape
-        bytes_per_line = ch * w
-        converted_img = QImage(img.data, w, h, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
-        return QPixmap(converted_img)
+    def HandleData(self,data):
+        self.result = "".join(data)
+        self.resultLabel.setText(self.result)
+
+    def onEnd(self):
+        self.parent.SetView(KeyboardsText(self))

@@ -42,12 +42,12 @@ class HandMovingKeyboardStatic:
                 self.calibration_delay = 10 #długość delaya (10 najlepiej dziala)
                 screen = self.calibrate(screen)
                 screen = self.drawResult(screen, 600, 600)
-            return screen
+            return screen, self.res
         except:
             print("Hand Moving Keyboard algorith doesnt work/lms out of range")
 
         screen = self.drawResult(screen, 600, 600)
-        return screen 
+        return screen, self.res
     
     def get_result(self):
         return self.res

@@ -143,6 +143,10 @@ QPushButton#EightPenHandBtn:hover{
     background-color: #E0E0E0;
 }
 
+QLabel#MyText{
+    font-size: 15pt;
+    font-weight: bold;
+}
 QLabel#HeadDescriptionTitle{
     font-size: 22px;
     font-weight: bold;

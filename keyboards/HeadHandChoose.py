@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from components.Navbar import Navbar
+from keyboards.Head import Head
+from keyboards.Hand import Hand
 
 class HeadHandChoose(QWidget):
     def __init__(self, parent = None):
@@ -56,7 +58,7 @@ class HeadHandChoose(QWidget):
         self.setLayout(gridLayout)
 
     def HeadSectionBtnOnClick(self):
-        self.parent.SetView(self.parent.views, "Head")
+        self.parent.SetView(Head(self.parent))
 
     def HandSectionBtnOnClick(self):
-        self.parent.SetView(self.parent.views, "Hand")
+        self.parent.SetView(Hand(self.parent))

@@ -1,12 +1,13 @@
 import cv2
 import mediapipe as mp
 import time
+import numpy as np
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
 from PyQt5.QtCore import *
 
 class Launcher(QThread):
-    data_ready = pyqtSignal(list)
+    data_ready = pyqtSignal(list, np.ndarray)
 
     def __init__(self, keyboardType):
         super().__init__()
@@ -31,9 +32,9 @@ class Launcher(QThread):
             pTime = cTime
             
             cv2.putText(img, str(int(fps)),(0,15), cv2.FONT_HERSHEY_PLAIN, 1 ,(255,0,255), 2)
-            cv2.imshow("Image", img)
+            # cv2.imshow("Image", img)
             cv2.waitKey(1)
-            self.data_ready.emit(res)
+            self.data_ready.emit(res, img)
             #########
 
 

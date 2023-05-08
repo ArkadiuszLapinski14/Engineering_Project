@@ -204,4 +204,12 @@ QLabel#Logo {
     padding: 7px;
 }
 
+QLabel#MyCamera{
+    border: 1.5px solid black;
+}
+
+QLabel#MyText{
+    border: 1.5px solid black;
+}
+
 '''

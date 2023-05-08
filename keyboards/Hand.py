@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+import numpy as np
 from components.Navbar import Navbar
 from components.RegisterPanel import RegisterPanel
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
@@ -12,11 +13,24 @@ from components.LaunchingObject import LaunchingObject
 import threading
 import queue
 
+class PixmapLabel(QLabel):
+    pixmapChanged = pyqtSignal()
+
+    def setPixmap(self, pixmap):
+        super().setPixmap(pixmap)
+        self.pixmapChanged.emit()
+
 class Hand(QWidget):
     def __init__(self, parent = None):
         super(Hand, self).__init__(parent)
         self.parent = parent
         self.result = ""
+        self.imgData = np.array([])
+        self.img = QPixmap()
+        self.pixImgWidth = int(self.frameGeometry().width() * 7)
+        self.pixImgHeight = int(self.frameGeometry().height() * 15.8
+                                )
+        print(self.pixImgWidth, self.pixImgHeight)
         print("Hand")
         self.UIComponents()
 
@@ -26,6 +40,8 @@ class Hand(QWidget):
         self.RegisterKeyboards()
 
         self.resultLabel = QLineEdit(self.result)
+        self.cameraWidget = PixmapLabel(self)
+
         self.HandMovingKeyboardSectionBtn = QPushButton("Hand Moving Keyboard", objectName="HandMovingBtn")
         self.HandMovingKeyboardSectionBtn.clicked.connect(self.HandMovingKeyboardSectionBtnOnClick)
         self.HandMovingKeyboardSectionBtn.setCursor(QCursor(Qt.PointingHandCursor))
@@ -68,9 +84,19 @@ class Hand(QWidget):
         self.Launcher.finished.connect(self.onEnd)
         self.Launcher.data_ready.connect(self.HandleData)
 
-    def HandleData(self,data):
-        self.result = "".join(data)
+    def HandleData(self, res, img):
+        self.result = "".join(res)
+        self.img = self.ConvertCvToQt(img)
+        self.cameraWidget.setPixmap(self.img)
         self.resultLabel.setText(self.result)
-
+    
+    
+    def ConvertCvToQt(self, img):
+        """Convert from an opencv image to QPixmap"""
+        h, w, ch = img.shape
+        bytes_per_line = ch * w
+        converted_img = QImage(img.data, w, h, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
+        return QPixmap(converted_img).scaled(self.pixImgWidth, self.pixImgHeight, transformMode=Qt.SmoothTransformation)
+    
     def onEnd(self):
         self.parent.SetView(KeyboardsText(self))

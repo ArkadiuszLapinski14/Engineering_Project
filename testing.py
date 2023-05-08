@@ -8,7 +8,7 @@ def main():
     pTime = 0
 
     cap = cv2.VideoCapture(0)
-    handMovingKeyboard = HeadMovingKeyboard()
+    handMovingKeyboard = HandMovingKeyboard()
 
     while True:
         success, img = cap.read()

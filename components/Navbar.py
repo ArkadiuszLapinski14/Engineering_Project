@@ -19,31 +19,31 @@ class Navbar(QWidget):
         
         titleWidget = Title()
 
-        self.dashboardSectionButton = QPushButton("Dashboard", objectName="DashboardBtn")
+        self.dashboardSectionButton = QPushButton("Kamera", objectName="DashboardBtn")
         self.dashboardSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.dashboardSectionButton.clicked.connect(self.DashboardSectionBtnOnClick)
 
-        self.keyboardSectionButton = QPushButton("Keyboards", objectName="KeyboardsBtn")
+        self.keyboardSectionButton = QPushButton("Klawiatury", objectName="KeyboardsBtn")
         self.keyboardSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.keyboardSectionButton.clicked.connect(self.KeyboardSectionBtnOnClick)
 
-        self.feedbackSectionButton = QPushButton("Feedback", objectName="FeedbackBtn")
-        self.feedbackSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.feedbackSectionButton.clicked.connect(self.FeedbackSectionBtnOnClick)
+        # self.feedbackSectionButton = QPushButton("Feedback", objectName="FeedbackBtn")
+        # self.feedbackSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
+        # self.feedbackSectionButton.clicked.connect(self.FeedbackSectionBtnOnClick)
 
-        self.settingsSectionButton = QPushButton("Settings", objectName="SettingsBtn")
-        self.settingsSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.settingsSectionButton.clicked.connect(self.SettingsSectionBtnOnClick)
+        # self.settingsSectionButton = QPushButton("Settings", objectName="SettingsBtn")
+        # self.settingsSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
+        # self.settingsSectionButton.clicked.connect(self.SettingsSectionBtnOnClick)
 
-        self.statisticsSectionButton = QPushButton("Statistics", objectName="StatisticsBtn")
+        self.statisticsSectionButton = QPushButton("Statystyki", objectName="StatisticsBtn")
         self.statisticsSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.statisticsSectionButton.clicked.connect(self.StatisticsSectionBtnOnClick)
 
-        self.tutorialSectionButton = QPushButton("Tutorials", objectName="TutorialsBtn")
-        self.tutorialSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.tutorialSectionButton.clicked.connect(self.TutorialSectionBtnOnClick)
+        # self.tutorialSectionButton = QPushButton("Tutorials", objectName="TutorialsBtn")
+        # self.tutorialSectionButton.setCursor(QCursor(Qt.PointingHandCursor))
+        # self.tutorialSectionButton.clicked.connect(self.TutorialSectionBtnOnClick)
 
-        self.kBoards = [self.dashboardSectionButton, self.keyboardSectionButton, self.feedbackSectionButton, self.settingsSectionButton, self.statisticsSectionButton, self.tutorialSectionButton]
+        self.kBoards = [self.dashboardSectionButton, self.keyboardSectionButton, self.statisticsSectionButton]
         label1 = QLabel("")
         
         gridLayout.addWidget(background, 0, 0, 13, 1)
@@ -51,10 +51,10 @@ class Navbar(QWidget):
         gridLayout.addWidget(label1, 1, 0, 3, 1)
         gridLayout.addWidget(self.dashboardSectionButton, 4, 0, 1, 1)
         gridLayout.addWidget(self.keyboardSectionButton, 5, 0, 1, 1) 
-        gridLayout.addWidget(self.tutorialSectionButton, 6, 0, 1, 1)
-        gridLayout.addWidget(self.feedbackSectionButton, 7, 0, 1, 1)
-        gridLayout.addWidget(self.statisticsSectionButton, 8, 0, 1, 1)
-        gridLayout.addWidget(self.settingsSectionButton, 9, 0, 1, 1)
+        # gridLayout.addWidget(self.tutorialSectionButton, 6, 0, 1, 1)
+        # gridLayout.addWidget(self.feedbackSectionButton, 7, 0, 1, 1)
+        gridLayout.addWidget(self.statisticsSectionButton, 6, 0, 1, 1)
+        # gridLayout.addWidget(self.settingsSectionButton, 9, 0, 1, 1)
         self.setLayout(gridLayout)
 
     

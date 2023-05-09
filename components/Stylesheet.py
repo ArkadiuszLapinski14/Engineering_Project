@@ -146,6 +146,7 @@ QPushButton#EightPenHandBtn:hover{
 QLabel#MyText{
     font-size: 15pt;
     font-weight: bold;
+    border: 1.5px solid black;
 }
 QLabel#HeadDescriptionTitle{
     font-size: 22px;
@@ -208,8 +209,22 @@ QLabel#MyCamera{
     border: 1.5px solid black;
 }
 
-QLabel#MyText{
+QLineEdit#TextToWrite{
     border: 1.5px solid black;
+    font-size: 15pt;
+    font-weight: bold;
 }
 
+QToolButton#ConfirmResetTextBtn{
+    border: 1.5px solid black;
+    height: 29px;
+    width: 28px;
+}
+QToolButton#ConfirmResetTextBtn:hover{
+    background-color: #E0E0E0;
+}
+QIcon#Icon{
+    height: 29px;
+    width: 28px;
+}
 '''

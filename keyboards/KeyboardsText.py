@@ -10,6 +10,8 @@ class KeyboardsText(QWidget):
         self.parent = parent
         self.text = ""
         self.textToCheck = ""
+        self.pixImgWidth = int(self.frameGeometry().width() * 0.4)
+        self.pixImgHeight = int(self.frameGeometry().height() * 0.4)
         self.UIComponents()
         self.parent.resultLabel.textChanged.connect(self.updateLabel)
         self.parent.cameraWidget.pixmapChanged.connect(self.updateCamera)
@@ -33,6 +35,11 @@ class KeyboardsText(QWidget):
 
         self.myText = QLabel(self.parent.resultLabel, objectName="MyText")
         self.myCamera = QLabel(self, objectName="MyCamera")
+        self.myCamera.setAlignment(Qt.AlignCenter)
+        movie = QMovie("./assets/loadingXD.gif")
+        movie.setScaledSize(QSize(self.pixImgWidth, self.pixImgHeight))
+        self.myCamera.setMovie(movie)
+        movie.start()
 
         gridLayout.addWidget(self.myCamera, 0, 0, 5, 5)
         gridLayout.addWidget(self.textToWrite, 6, 0, 1 , 3)

@@ -26,10 +26,9 @@ class Hand(QWidget):
         self.parent = parent
         self.result = ""
         self.imgData = np.array([])
+        self.pixImgWidth = int(self.frameGeometry().width() * 7.2)
+        self.pixImgHeight = int(self.frameGeometry().height() * 15.8 )
         self.img = QPixmap()
-        self.pixImgWidth = int(self.frameGeometry().width() * 7)
-        self.pixImgHeight = int(self.frameGeometry().height() * 15.8
-                                )
         print(self.pixImgWidth, self.pixImgHeight)
         print("Hand")
         self.UIComponents()

@@ -15,7 +15,7 @@ class Title(QWidget):
         gridLayout = QGridLayout()
         gridLayout.setSpacing(0)
 
-        labelTitle = QLabel("CLess KBoards", objectName="LabelTitle")
+        labelTitle = QLabel("Contactless Keyboards", objectName="LabelTitle")
 
         pixImg = QPixmap("./assets/keyboard.png").scaled(self.pixImgWidth, self.pixImgHeight, transformMode=Qt.SmoothTransformation)
         img = QLabel(objectName="Logo")

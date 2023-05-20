@@ -26,6 +26,10 @@ class Navbar(QWidget):
         self.HeadHandButtonInit("Head")
         self.KeyboardDisplayButtonInit("Circle Keyboard")
         self.KeyboardTypeButtonInit("Swipe Keyboard")
+
+        self.statisticsButton = QPushButton("Statistics", objectName="StatisticsBtn")
+        self.statisticsButton.setCursor(QCursor(Qt.PointingHandCursor))
+        self.statisticsButton.clicked.connect(self.StatisticsBtnOnClick)
         label1 = QLabel("")
         
         self.gridLayout.addWidget(background, 0, 0, 13, 2)
@@ -35,11 +39,16 @@ class Navbar(QWidget):
         self.gridLayout.addWidget(self.headHandButton, 5, 0, 1, 2)
         self.gridLayout.addWidget(self.keyboardDisplayButton, 6, 0, 1, 2)
         self.gridLayout.addWidget(self.keyboardTypeButton, 7, 0, 1, 2)
+        self.gridLayout.addWidget(self.statisticsButton, 8, 0, 1, 2)
+        
         self.setLayout(self.gridLayout)
 
     def CameraBtnOnClick(self):
         print("Camera Choose")
 
+    def StatisticsBtnOnClick(self):
+        print("Statistics")
+        
     def HeadHandBtnOnClick(self):
         self.headButton = QPushButton("Head", objectName="HeadHandBtn")
         self.headButton.setCursor(QCursor(Qt.PointingHandCursor))

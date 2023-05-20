@@ -56,7 +56,7 @@ class CameraView(QWidget):
         self.myCamera = QLabel(self, objectName="MyCamera")
         self.myCamera.setAlignment(Qt.AlignCenter)
         movie = QMovie("./assets/loadingXD.gif")
-        movie.setScaledSize(QSize(self.pixImgWidth * 0.4, self.pixImgHeight * 0.4))
+        movie.setScaledSize(QSize(self.pixImgWidth * 0.3, self.pixImgHeight * 0.35))
         self.myCamera.setMovie(movie)
         movie.start()
 

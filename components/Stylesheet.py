@@ -39,6 +39,8 @@ QPushButton#StatisticsBtn{
     height: 40%;
     border-color: none;
     border-radius: 10px;
+    background-color: "silver";
+    margin: 10px;
 }
 
 QPushButton#StatisticsBtn:hover{

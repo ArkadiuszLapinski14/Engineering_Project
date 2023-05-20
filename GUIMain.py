@@ -35,8 +35,8 @@ class Menu(QMainWindow):
         navbar = Navbar(self)
         cameraView = CameraView(self)
 
-        self.pageLayout.addWidget(navbar, 0, 0, 1, 5)
-        self.pageLayout.addWidget(cameraView, 0, 5, 1, 7)
+        self.pageLayout.addWidget(navbar, 0, 0, 1, 6)
+        self.pageLayout.addWidget(cameraView, 0, 6, 1, 12)
 
         self.page.setLayout(self.pageLayout)
         self.setCentralWidget(self.page)

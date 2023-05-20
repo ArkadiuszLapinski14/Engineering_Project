@@ -20,8 +20,8 @@ class CameraView(QWidget):
         self.parent = parent
         self.text = ""
         self.textToCheck = ""
-        self.pixImgWidth = int(self.frameGeometry().width() * 1)
-        self.pixImgHeight = int(self.frameGeometry().height() * 1)
+        self.pixImgWidth = int(self.frameGeometry().width() * 1.13)
+        self.pixImgHeight = int(self.frameGeometry().height() * 1.08)
         self.result = ""
         self.imgData = np.array([])
         self.img = QPixmap()
@@ -60,11 +60,11 @@ class CameraView(QWidget):
         self.myCamera.setMovie(movie)
         movie.start()
 
-        gridLayout.addWidget(self.myCamera, 0, 0, 5, 5)
-        gridLayout.addWidget(self.textToWrite, 6, 0, 1, 3)
-        gridLayout.addWidget(self.confirmResetTextBtn, 6, 3, 1, 1)
-        gridLayout.addWidget(self.generateTextBtn, 6, 4, 1, 1)
-        gridLayout.addWidget(self.myText, 7, 0 , 1, 5)
+        gridLayout.addWidget(self.myCamera, 0, 0, 14, 5)
+        gridLayout.addWidget(self.textToWrite, 15, 0, 1, 3)
+        gridLayout.addWidget(self.confirmResetTextBtn, 15, 3, 1, 1)
+        gridLayout.addWidget(self.generateTextBtn, 15, 4, 1, 1)
+        gridLayout.addWidget(self.myText, 16, 0 , 1, 5)
         self.setLayout(gridLayout)
 
     def cameraInit(self):

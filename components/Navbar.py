@@ -3,6 +3,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from components.Title import Title
 import numpy as np
+from keyboards_back.EightPen import EightPen
+from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 
 class Navbar(QWidget):
     def __init__(self, parent = None):
@@ -52,8 +54,7 @@ class Navbar(QWidget):
     def HeadHandBtnOnClick(self):
         self.headButton = QPushButton("Head", objectName="HeadHandBtn")
         self.headButton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.headButton.clicked.connect(self.HeadOnClick)
-
+        self.headButton.clicked.connect(self.HeadOnClick) #######TO WAZNE
         self.handButton = QPushButton("Hand", objectName="HeadHandBtn")
         self.handButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.handButton.clicked.connect(self.HandOnClick)
@@ -144,10 +145,12 @@ class Navbar(QWidget):
 
     def SwipeKboardOnClick(self):
         self.KeyboardTypeButtonInit("Swipe Keyboard")
+        self.parent.cameraView.Launcher.keyboardType.emit(HandMovingKeyboard())
         self.KeyboardTypeReplace()
 
     def EightPenKboardOnClick(self):
         self.KeyboardTypeButtonInit("EightPen Keyboard")
+        self.parent.cameraView.Launcher.keyboardType.emit(EightPen())
         self.KeyboardTypeReplace()
         
     def KeyboardTypeReplace(self):

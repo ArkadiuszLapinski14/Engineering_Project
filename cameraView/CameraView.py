@@ -68,12 +68,12 @@ class CameraView(QWidget):
         self.setLayout(gridLayout)
 
     def cameraInit(self):
-        self.Launcher = Launcher(HandMovingKeyboard())
+        self.Launcher = Launcher()
         self.Launcher.start()
         self.Launcher.started.connect(self.onStart)
         self.Launcher.finished.connect(self.onEnd)
         self.Launcher.data_ready.connect(self.HandleData)
-
+        
     def onStart(self):
         print("Started")
 

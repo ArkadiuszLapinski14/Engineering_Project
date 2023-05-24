@@ -202,20 +202,49 @@ class HeadMovingKeyboard:
         except:
             print("Cut by 3/4 doesnt work/Fingers lists out of range")  
 
-    def cutBy2(self):
-        '''Cut unecessary part of keyboard when len(keayboard) == 2'''
+
+    def cutBy2(self): ###ZNALEZC INDEKSY 1 i ZROBIC MASKA * TE INDEKSY
+        '''Highlight part of keyboard'''
         try:
-            tab_len = len(self.keyboard_bin_tab)
+            tab_len = len(self.keyboard_bin_tab) 
             if (self.angles and self.is_calibrated==True):
-                if self.angles[1] < - 6:
-                    self.keys = self.keys[0:1]
-                    self.keyboard.set_keys(self.keys)
+                if self.angles[1] <  -5 and self.angles[0]<8 and self.angles[0]>-8:  #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
+                    idxs = np.where(self.keyboard_bin_tab == 1)
+                    self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
+                    self.mask = np.array([1,1,0,0,0,0,0,0])
+                    self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
                     self.is_calibrated = False
-                  
-                elif self.angles[1] >  6:
-                    self.keys = self.keys[1:2]
-                    self.keyboard.set_keys(self.keys)
+                elif self.angles[0] < -5 and self.angles[1]<8 and self.angles[1]>-8:
+                    idxs = np.where(self.keyboard_bin_tab == 1)
+                    self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
+                    self.mask = np.array([0,0,0,0,0,0,1,1])
+                    self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
                     self.is_calibrated = False
-                  
+                elif self.angles[1] > 5 and self.angles[0]<8 and self.angles[0]>-8:
+                    idxs = np.where(self.keyboard_bin_tab == 1)
+                    self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
+                    self.mask = np.array([0,0,1,1,0,0,0,0])
+                    self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
+                    self.is_calibrated = False 
+                elif self.angles[0] > 5 and self.angles[1]<8 and self.angles[1]>-8:
+                    idxs = np.where(self.keyboard_bin_tab == 1)
+                    self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
+                    self.mask = np.array([0,0,0,0,1,1,0,0])
+                    self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
+                    self.is_calibrated = False
         except:
-            print("Final cut by 1/2 doesnt work/Fingers lists out of range")
+            print("Cut by 1/8 doesnt work/Fingers lists out of range")  
+            
+    def cutBy1(self):
+        '''Higlight part of a keyboard and append result list of given value'''
+        try:
+            if self.Finger[1] < self.prevFinger[0][1] - 300: #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
+                idxs = np.where(self.keyboard_bin_tab == 1)
+                self.setResult(self.keys[idxs[0][0]])
+                self.prevFingerListReset() 
+            elif self.Finger[1] > self.prevFinger[0][1] + 300:
+                idxs = np.where(self.keyboard_bin_tab == 1)
+                self.setResult(self.keys[idxs[0][1]])
+                self.prevFingerListReset() 
+        except:
+            print("Cut by 1/16 doesnt work/Fingers lists out of range")

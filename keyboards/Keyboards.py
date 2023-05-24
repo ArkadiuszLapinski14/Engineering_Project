@@ -6,7 +6,7 @@ from components.RegisterPanel import RegisterPanel
 from keyboards.HeadHandChoose import HeadHandChoose
 from keyboards.Head import Head
 from keyboards.Hand import Hand
-from keyboards.KeyboardsText import KeyboardsText
+from CameraView.CameraView import KeyboardsText
 
 class Keyboards(QWidget):
     def __init__(self):

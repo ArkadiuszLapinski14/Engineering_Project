@@ -7,7 +7,7 @@ from components.RegisterPanel import RegisterPanel
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
 from keyboards_back.EightPen import EightPen
-from keyboards.KeyboardsText import KeyboardsText
+from CameraView.CameraView import KeyboardsText
 from components.Launcher import Launcher
 from components.LaunchingObject import LaunchingObject
 import threading

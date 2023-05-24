@@ -15,12 +15,12 @@ class Title(QWidget):
         gridLayout = QGridLayout()
         gridLayout.setSpacing(0)
 
-        labelTitle = QLabel("CLess KBoards", objectName="LabelTitle")
+        labelTitle = QLabel("Keyboards", objectName="LabelTitle")
 
         pixImg = QPixmap("./assets/keyboard.png").scaled(self.pixImgWidth, self.pixImgHeight, transformMode=Qt.SmoothTransformation)
         img = QLabel(objectName="Logo")
         img.setPixmap(pixImg)
 
         gridLayout.addWidget(img, 0, 0, 1, 1)
-        gridLayout.addWidget(labelTitle, 0, 1, 1, 1)
+        gridLayout.addWidget(labelTitle, 0, 1, 1, 2)
         self.setLayout(gridLayout)

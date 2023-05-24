@@ -8,23 +8,25 @@ from PyQt5.QtCore import *
 
 class Launcher(QThread):
     data_ready = pyqtSignal(list, np.ndarray)
-
-    def __init__(self, keyboardType):
+    keyboardType = pyqtSignal(object)
+    
+    def __init__(self):
         super().__init__()
-        self.keyboardType = keyboardType
+        self.type = HandMovingKeyboardStatic()
+        self.keyboardType.connect(self.ChangeKeyboardType)
 
     def run(self):
         pTime = 0
         cap = cv2.VideoCapture(0)
         print("Chodze")
-        handMovingKeyboard = self.keyboardType
+        # handMovingKeyboard = self.keyboardType
 
         while True:
             success, img = cap.read()
             img = cv2.flip(img, 1)
             img = cv2.resize(img, (1080, 768))
 
-            img, res = handMovingKeyboard.update(img)
+            img, res = self.type.update(img)
 
             ###FPS###
             cTime = time.time()
@@ -37,4 +39,6 @@ class Launcher(QThread):
             self.data_ready.emit(res, img)
             #########
 
-
+    def ChangeKeyboardType(self, type):
+        self.type = type
+        print(self.type)

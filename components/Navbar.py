@@ -5,6 +5,8 @@ from components.Title import Title
 import numpy as np
 from keyboards_back.EightPen import EightPen
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
+from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
+from keyboards_back.Keyboard import Keyboard
 
 class Navbar(QWidget):
     def __init__(self, parent = None):
@@ -40,8 +42,8 @@ class Navbar(QWidget):
         self.gridLayout.addWidget(self.cameraButton, 4, 0, 1, 2)
         self.gridLayout.addWidget(self.headHandButton, 5, 0, 1, 2)
         self.gridLayout.addWidget(self.keyboardDisplayButton, 6, 0, 1, 2)
-        self.gridLayout.addWidget(self.keyboardTypeButton, 7, 0, 1, 2)
-        self.gridLayout.addWidget(self.statisticsButton, 8, 0, 1, 2)
+        self.gridLayout.addWidget(self.keyboardTypeButton, 7, 0, 2, 2)
+        self.gridLayout.addWidget(self.statisticsButton, 9, 0, 1, 2)
         
         self.setLayout(self.gridLayout)
 
@@ -108,6 +110,7 @@ class Navbar(QWidget):
 
     def LineKboardOnClick(self):
         self.KeyboardDisplayButtonInit("Line Keyboard")
+        self.parent.cameraView.Launcher.keyboard.emit(Keyboard())
         self.KeyboardReplace()
 
     def KeyboardDisplayButtonInit(self, title):
@@ -129,11 +132,15 @@ class Navbar(QWidget):
         self.keyboardTypeButton.clicked.connect(self.KeyboardTypeBtnOnClick)
 
     def KeyboardTypeBtnOnClick(self):
-        self.swipeKboardButton = QPushButton("Swipe Keyboard", objectName="HeadHandBtn")
+        self.swipeKboardButton = QPushButton("Swipe Dynamic", objectName="HeadHandBtn")
         self.swipeKboardButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.swipeKboardButton.clicked.connect(self.SwipeKboardOnClick)
 
-        self.eightpenKboardButton = QPushButton("Eight Keyboard", objectName="HeadHandBtn")
+        self.swipeKboardStaticButton = QPushButton("Swipe Static", objectName="HeadHandBtn")
+        self.swipeKboardStaticButton.setCursor(QCursor(Qt.PointingHandCursor))
+        self.swipeKboardStaticButton.clicked.connect(self.SwipeKboardStaticOnClick)
+
+        self.eightpenKboardButton = QPushButton("EightPen", objectName="HeadHandBtn")
         self.eightpenKboardButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.eightpenKboardButton.clicked.connect(self.EightPenKboardOnClick)
 
@@ -141,22 +148,30 @@ class Navbar(QWidget):
         self.keyboardTypeButton.deleteLater()
 
         self.gridLayout.addWidget(self.swipeKboardButton, 7, 0, 1, 1)
+        self.gridLayout.addWidget(self.swipeKboardStaticButton, 8, 0, 1, 1)
         self.gridLayout.addWidget(self.eightpenKboardButton, 7, 1, 1, 1)
 
     def SwipeKboardOnClick(self):
-        self.KeyboardTypeButtonInit("Swipe Keyboard")
+        self.KeyboardTypeButtonInit("Swipe Dynamic")
         self.parent.cameraView.Launcher.keyboardType.emit(HandMovingKeyboard())
         self.KeyboardTypeReplace()
 
+    def SwipeKboardStaticOnClick(self):
+        self.KeyboardTypeButtonInit("Swipe Static")
+        self.parent.cameraView.Launcher.keyboardType.emit(HandMovingKeyboardStatic())
+        self.KeyboardTypeReplace()
+
     def EightPenKboardOnClick(self):
-        self.KeyboardTypeButtonInit("EightPen Keyboard")
+        self.KeyboardTypeButtonInit("EightPen")
         self.parent.cameraView.Launcher.keyboardType.emit(EightPen())
         self.KeyboardTypeReplace()
         
     def KeyboardTypeReplace(self):
         self.gridLayout.removeWidget(self.swipeKboardButton)
+        self.gridLayout.removeWidget(self.swipeKboardStaticButton)
         self.gridLayout.removeWidget(self.eightpenKboardButton)
         self.swipeKboardButton.deleteLater()
+        self.swipeKboardStaticButton.deleteLater()
         self.eightpenKboardButton.deleteLater()
 
-        self.gridLayout.addWidget(self.keyboardTypeButton, 7, 0, 1, 2)
+        self.gridLayout.addWidget(self.keyboardTypeButton, 7, 0, 2, 2)

@@ -1,9 +1,10 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import collections
 from keyboards_back.Keyboard import Keyboard
 
-class HeadMovingKeyboard:
+class HeadMovingKeyboardStatic:
     def __init__(self, keyboard=Keyboard()):
         self.angles = []
         self.keyboard = keyboard
@@ -75,31 +76,32 @@ class HeadMovingKeyboard:
 
                 angles2 = [x, y]
 
-                self.angles=angles2
+                #self.angles=angles2
         #cv2.putText(img, str(angles2[0]), (600, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
         #cv2.putText(img, str(angles2[1]), (600, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
-        return(self.update2(img))
+        return(self.update2(img,angles2))
        
         
-    def update2(self, screen):
-        #try:
+    def update2(self, screen,angles):
+        try:
             screen = self.keyboard.draw_update(screen, 10, 100, 30, 30)
-            self.headUpdate()
-           # screen = self.backToDefault(screen)
+            screen = self.keyboard.highlight(screen, self.keyboard_bin_tab, 10, 100, 30, 30)
+            self.headUpdate(angles)
             if self.is_calibrated == True:
-                if len(self.keys) != 2:
-                        self.cutBy4()
-                elif len(self.keys) == 2:
-                        self.cutBy2()
+                if collections.Counter(self.keyboard_bin_tab)[1] == 32:
+                    self.cutBy4()
+                elif collections.Counter(self.keyboard_bin_tab)[1] == 8: 
+                    self.cutBy2()
+                elif collections.Counter(self.keyboard_bin_tab)[1] == 2:
+                    self.cutBy1()
                 screen = self.drawResult(screen, 600, 600)
-                #return screen
+                return screen
             else:
                 screen = self.calibrate(screen)
                 screen = self.drawResult(screen, 600, 600)
-            return screen 
-        #except:
-            #print("Head Moving Keyboard algorith doesnt work/lms out of range")
-            return screen
+        except:
+            print("Angles do not work")
+        return screen 
        
 
     def calibrate(self, screen):
@@ -108,9 +110,6 @@ class HeadMovingKeyboard:
                 if ((self.angles[1] > -5 and self.angles[1] < 5) and (self.angles[0] > -5 and self.angles[0] <5)):
                     #screen = self.CalibrationLoading(screen, x, y, w, h)
                     self.is_calibrated = True
-               
-   
-
         except:
             print("Calibration doesnt work")
         return screen
@@ -167,7 +166,10 @@ class HeadMovingKeyboard:
         y, x = int((y-h)/2), int((x-w)/2)
         return x, y, w, h
 
-    def headUpdate(self):
+    def headUpdate(self, angles):
+        if (angles):
+            self.angles = angles
+            # self.angles = self.angles*360
             if len(self.keys) == 1:
                 self.setResult(self.keys[0])
 
@@ -220,13 +222,13 @@ class HeadMovingKeyboard:
                     self.mask = np.array([0,0,0,0,0,0,1,1])
                     self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
                     self.is_calibrated = False
-                elif self.angles[1] > 5 and self.angles[0]<8 and self.angles[0]>-8:
+                elif self.angles[0] > 5 and self.angles[1]<8 and self.angles[1]>-8:
                     idxs = np.where(self.keyboard_bin_tab == 1)
                     self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
                     self.mask = np.array([0,0,1,1,0,0,0,0])
                     self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
                     self.is_calibrated = False 
-                elif self.angles[0] > 5 and self.angles[1]<8 and self.angles[1]>-8:
+                elif self.angles[1] > 5 and self.angles[0]<8 and self.angles[0]>-8:
                     idxs = np.where(self.keyboard_bin_tab == 1)
                     self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
                     self.mask = np.array([0,0,0,0,1,1,0,0])
@@ -238,13 +240,13 @@ class HeadMovingKeyboard:
     def cutBy1(self):
         '''Higlight part of a keyboard and append result list of given value'''
         try:
-            if self.Finger[1] < self.prevFinger[0][1] - 300: #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
+            if self.angles[1] <  -5 and self.angles[0]<8 and self.angles[0]>-8: #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
                 idxs = np.where(self.keyboard_bin_tab == 1)
                 self.setResult(self.keys[idxs[0][0]])
-                self.prevFingerListReset() 
-            elif self.Finger[1] > self.prevFinger[0][1] + 300:
+                self.is_calibrated = False
+            elif self.angles[0] < -5 and self.angles[1]<8 and self.angles[1]>-8:
                 idxs = np.where(self.keyboard_bin_tab == 1)
                 self.setResult(self.keys[idxs[0][1]])
-                self.prevFingerListReset() 
+                self.is_calibrated = False
         except:
             print("Cut by 1/16 doesnt work/Fingers lists out of range")

@@ -3,18 +3,30 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 import requests
+import numpy as np
+from components.Launcher import Launcher
+from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 
-class KeyboardsText(QWidget):
+class PixmapLabel(QLabel):
+    pixmapChanged = pyqtSignal()
+
+    def setPixmap(self, pixmap):
+        super().setPixmap(pixmap)
+        self.pixmapChanged.emit()
+
+class CameraView(QWidget):
     def __init__(self, parent = None):
         super(QWidget, self).__init__()
         self.parent = parent
         self.text = ""
         self.textToCheck = ""
-        self.pixImgWidth = int(self.frameGeometry().width() * 0.4)
-        self.pixImgHeight = int(self.frameGeometry().height() * 0.4)
+        self.pixImgWidth = int(self.frameGeometry().width() * 1.13)
+        self.pixImgHeight = int(self.frameGeometry().height() * 1.08)
+        self.result = ""
+        self.imgData = np.array([])
+        self.img = QPixmap()
+        self.cameraInit()
         self.UIComponents()
-        self.parent.resultLabel.textChanged.connect(self.updateLabel)
-        self.parent.cameraWidget.pixmapChanged.connect(self.updateCamera)
 
     def UIComponents(self):
         gridLayout = QGridLayout()
@@ -32,21 +44,54 @@ class KeyboardsText(QWidget):
         self.generateTextBtn.setIcon(QIcon('./assets/generateIC.png'))
         self.generateTextBtn.setCursor(QCursor(Qt.PointingHandCursor))  
         self.generateTextBtn.clicked.connect(self.handleGenerateClick)
+        
+        self.cameraWidget = PixmapLabel(self)
+        self.cameraWidget.pixmapChanged.connect(self.updateCamera)
+        self.cameraWidget.hide()
+        
+        self.resultLabel = QLineEdit(self.result)
+        self.resultLabel.textChanged.connect(self.updateLabel)
 
-        self.myText = QLabel(self.parent.resultLabel, objectName="MyText")
+        self.myText = QLabel(self.resultLabel, objectName="MyText")
         self.myCamera = QLabel(self, objectName="MyCamera")
         self.myCamera.setAlignment(Qt.AlignCenter)
         movie = QMovie("./assets/loadingXD.gif")
-        movie.setScaledSize(QSize(self.pixImgWidth, self.pixImgHeight))
+        movie.setScaledSize(QSize(self.pixImgWidth * 0.3, self.pixImgHeight * 0.35))
         self.myCamera.setMovie(movie)
         movie.start()
 
-        gridLayout.addWidget(self.myCamera, 0, 0, 5, 5)
-        gridLayout.addWidget(self.textToWrite, 6, 0, 1 , 3)
-        gridLayout.addWidget(self.confirmResetTextBtn, 6, 3, 1, 1)
-        gridLayout.addWidget(self.generateTextBtn, 6, 4, 1, 1)
-        gridLayout.addWidget(self.myText, 7, 0 , 1, 5)
+        gridLayout.addWidget(self.myCamera, 0, 0, 14, 5)
+        gridLayout.addWidget(self.textToWrite, 15, 0, 1, 3)
+        gridLayout.addWidget(self.confirmResetTextBtn, 15, 3, 1, 1)
+        gridLayout.addWidget(self.generateTextBtn, 15, 4, 1, 1)
+        gridLayout.addWidget(self.myText, 16, 0 , 1, 5)
         self.setLayout(gridLayout)
+
+    def cameraInit(self):
+        self.Launcher = Launcher()
+        self.Launcher.start()
+        self.Launcher.started.connect(self.onStart)
+        self.Launcher.finished.connect(self.onEnd)
+        self.Launcher.data_ready.connect(self.HandleData)
+        
+    def onStart(self):
+        print("Started")
+
+    def onEnd(self):
+        print("Finished")
+
+    def HandleData(self, res, img):
+        self.result = "".join(res)
+        self.img = self.ConvertCvToQt(img)
+        self.cameraWidget.setPixmap(self.img)
+        self.resultLabel.setText(self.result)
+
+    def ConvertCvToQt(self, img):
+        """Convert from an opencv image to QPixmap"""
+        h, w, ch = img.shape
+        bytes_per_line = ch * w
+        converted_img = QImage(img.data, w, h, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
+        return QPixmap(converted_img).scaled(self.pixImgWidth, self.pixImgHeight, transformMode=Qt.SmoothTransformation)
 
     def updateLabel(self, text):
         if self.textToCheck.startswith(text):
@@ -59,7 +104,7 @@ class KeyboardsText(QWidget):
             self.myText.setStyleSheet("QLabel { border: 1.5px solid red; }")
 
     def updateCamera(self):
-        self.myCamera.setPixmap(self.parent.img)
+        self.myCamera.setPixmap(self.img)
 
     def handleTextChange(self, text):   
         self.text = text.upper()

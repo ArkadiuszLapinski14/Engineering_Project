@@ -5,26 +5,32 @@ import numpy as np
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
 from PyQt5.QtCore import *
+from keyboards_back.Keyboard import Keyboard
 
 class Launcher(QThread):
     data_ready = pyqtSignal(list, np.ndarray)
-
-    def __init__(self, keyboardType):
+    keyboardType = pyqtSignal(object)
+    keyboard = pyqtSignal(object)
+    
+    def __init__(self):
         super().__init__()
-        self.keyboardType = keyboardType
+        self.type = HandMovingKeyboardStatic()
+        self.kboard = Keyboard()
+        self.keyboardType.connect(self.ChangeKeyboardType)
+        self.keyboard.connect(self.ChangeKeyboard)
 
     def run(self):
         pTime = 0
         cap = cv2.VideoCapture(0)
         print("Chodze")
-        handMovingKeyboard = self.keyboardType
+        # handMovingKeyboard = self.keyboardType
 
         while True:
             success, img = cap.read()
             img = cv2.flip(img, 1)
             img = cv2.resize(img, (1080, 768))
 
-            img, res = handMovingKeyboard.update(img)
+            img, res = self.type.update(img, self.kboard)
 
             ###FPS###
             cTime = time.time()
@@ -37,4 +43,10 @@ class Launcher(QThread):
             self.data_ready.emit(res, img)
             #########
 
+    def ChangeKeyboardType(self, type):
+        self.type = type
+        print(self.type)
 
+    def ChangeKeyboard(self, kboard):
+        self.kboard = kboard
+        print(self.kboard)

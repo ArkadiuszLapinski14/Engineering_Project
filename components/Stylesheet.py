@@ -1,14 +1,16 @@
 StyleSheet = '''
 
-QPushButton#DashboardBtn {
+QPushButton#CameraBtn {
     color: black;
     font-size: 12pt;
     height: 40%;
     border-color: none;
     border-radius: 10px;
+    background-color: "silver";
+    margin:10px;
 }
 
-QPushButton#DashboardBtn:hover{
+QPushButton#CameraBtn:hover{
     background-color: #F8F8F8;
 }
 
@@ -17,15 +19,17 @@ QLabel#NavbarBackground{
     border-radius: 15px;
 }
 
-QPushButton#KeyboardsBtn{
+QPushButton#HeadHandBtn{
     color: black;
     font-size: 12pt;
     height: 40%;
     border-color: none;
     border-radius: 10px;
+    background-color: "silver";
+    margin: 10px;
 }
 
-QPushButton#KeyboardsBtn:hover{
+QPushButton#HeadHandBtn:hover{
     background-color: #F8F8F8;
 }
 
@@ -35,6 +39,8 @@ QPushButton#StatisticsBtn{
     height: 40%;
     border-color: none;
     border-radius: 10px;
+    background-color: "silver";
+    margin: 10px;
 }
 
 QPushButton#StatisticsBtn:hover{
@@ -53,15 +59,17 @@ QPushButton#FeedbackBtn:hover{
     background-color: #F8F8F8;
 }
 
-QPushButton#SettingsBtn{
+QPushButton#KboardDisplayBtn{
     color: black;
     font-size: 12pt;
     height: 40%;
     border-color: none;
     border-radius: 10px;
+    background-color: "silver";
+    margin: 10px;
 }
 
-QPushButton#SettingsBtn:hover{
+QPushButton#KboardDisplayBtn:hover{
     background-color: #F8F8F8;
 }
 

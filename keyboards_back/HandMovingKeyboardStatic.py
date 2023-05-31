@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import collections
+import string
 import Modules.HandTrackingModule as htm
 from keyboards_back.Keyboard import Keyboard
 
@@ -8,10 +9,8 @@ class HandMovingKeyboardStatic:
     def __init__(self, point = 8):
         self.Finger = None
         self.prevFinger = [] #zmiana na liste, aby sledzic ostanie x zmian polozenia palca w celu optymalizacji 
-        self.keyboard = Keyboard()
         self.detector = htm.handDetector(maxHands=1)
-        self.keys = self.keyboard.get_keys()
-        self.KEYS = self.keyboard.get_keys() #const idk jak zrobic w pythonie
+        self.KEYS = list(string.ascii_uppercase + "!" + '?'+','+'.'+'<'+"_") #const idk jak zrobic w pythonie
         self.res = []
         self.is_calibrated = False
         self.calibration_delay = 0  #zmienna potrzebna do zatrzymania stanu kalibracji na kilka milisekund //optymalizacja
@@ -20,8 +19,10 @@ class HandMovingKeyboardStatic:
         self.keyboard_bin_tab = np.ones(32)
         self.mask = np.ones(32)
 
-    def update(self, screen):
+    def update(self, screen, keyboard):
         '''Updates a keyboard according to our algorithm when calibrated'''
+        self.keyboard = keyboard
+        self.keys = self.keyboard.get_keys()
         screen = self.detector.findHands(screen, draw = False)
         lms = self.detector.findPosition(screen)
         try:

@@ -1,5 +1,6 @@
 ﻿import cv2
 import Modules.HandTrackingModule as htm
+import string
 from keyboards_back.Keyboard import Keyboard
 
 class HandMovingKeyboard:
@@ -7,9 +8,7 @@ class HandMovingKeyboard:
         self.Finger = None
         self.prevFinger = [] #zmiana na liste, aby sledzic ostanie x zmian polozenia palca w celu optymalizacji 
         self.detector = htm.handDetector(maxHands=1)
-        self.keyboard = Keyboard()
-        self.keys = self.keyboard.get_keys()
-        self.KEYS = self.keyboard.get_keys() #const idk jak zrobic w pythonie
+        self.KEYS = list(string.ascii_uppercase + "!" + '?'+','+'.'+'<'+"_") #tutaj jak ktoś chce użyć swoich znaków (nie zhardcodowanych) najlepiej będzie ustawiać je w konstruktorze i tak samo w klasach wyświetlających klawiwature, teraz mi sie nie chce tego zmieniac bo useless funkcjonalnosc na ten moment
         self.res = []
         self.is_calibrated = False
         self.calibration_delay = 0  #zmienna potrzebna do zatrzymania stanu kalibracji na kilka milisekund //optymalizacja
@@ -19,8 +18,10 @@ class HandMovingKeyboard:
     def get_result(self):
         return self.res
 		
-    def update(self, screen):
+    def update(self, screen, keyboard):
         '''Updates a keyboard according to our algorithm when calibrated'''
+        self.keyboard = keyboard
+        self.keys = self.keyboard.get_keys()
         screen = self.detector.findHands(screen, draw = False)
         lms = self.detector.findPosition(screen)
         

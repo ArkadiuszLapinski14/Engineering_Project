@@ -43,7 +43,7 @@ class QWERTY:
         self.methode = methode
         self.old_w=0
         self.typable = True
-        self.margin=margin
+        self.margin=None
 
         if methode == "palec":
             self.detector = htm.handDetector()
@@ -53,6 +53,7 @@ class QWERTY:
             self.lm_index = 2
 
     def updateSizes(self,w):
+        self.margin=int(w/100)
         self.tileSize = int(w / (len(self.alphabet[0])) - self.margin * 4)
         self.fontScale = int(self.tileSize / 20)
         self.innerMargin = int(self.tileSize / 20 - self.margin / 5)

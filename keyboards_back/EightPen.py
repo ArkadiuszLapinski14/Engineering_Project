@@ -36,12 +36,6 @@ class EightPen:
         for i in range(0,np.size(self.sentance)):
             out+=self.sentance[i]
         print(out)
-    
-    def getSentance(self):        # PRINT OUT SENTANCE
-        out=""
-        for i in range(0,np.size(self.sentance)):
-            out+=self.sentance[i]
-        return out
 
     def getText(self):
         return self.sentance
@@ -144,4 +138,4 @@ class EightPen:
         self.img = cv2.addWeighted(self.overlay, self.alpha, self.img, 1 - self.alpha, 0)
         cv2.circle(self.img, (self.X, self.Y), 7, (255, 0, 0), cv2.FILLED)
 
-        return self.img, self.getSentance()
+        return self.img, self.sentance

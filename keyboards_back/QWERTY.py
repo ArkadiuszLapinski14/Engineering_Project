@@ -24,6 +24,7 @@ class tilesData:
 
 class QWERTY:
     def __init__(self, methode="palec",margin=20):
+        self.deadZone = None
         self.spacebar_y = None
         self.spacebar_x = None
         self.x1 = None
@@ -58,6 +59,7 @@ class QWERTY:
         self.x1 = self.margin * len(self.alphabet[0]) + self.tileSize * len(self.alphabet[0])
         self.spacebar_x = self.margin * (len(self.alphabet[0]) - 2) + self.tileSize * (len(self.alphabet[0]) - 3)
         self.spacebar_y = self.margin * (len(self.alphabet) + 1) + self.tileSize * len(self.alphabet)
+        self.deadZone=int(self.tileSize/2)
 
     def fillTiles(self,w,h):
         SP_x = w / 2 - 5 * self.tileSize - (len(self.alphabet[0]) + 0.5) * self.margin

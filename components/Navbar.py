@@ -9,14 +9,14 @@ from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
 from keyboards_back.Keyboard import Keyboard
 from keyboards_back.EPKeyboard import EPKeyboard
 from keyboards_back.Hover import Hover
+from keyboards_back.QWERTY import QWERTY
+from keyboards_back.QwertyKeyboard import QwertyKeyboard
 
 class Navbar(QWidget):
     def __init__(self, parent = None):
         super(Navbar, self).__init__(parent)
         self.parent = parent
         self.page = "Dashboard"
-        self.circleKboardIsPossible = True
-        self.lineKboardIsPossible = True
         self.UIComponents()
     
     def UIComponents(self):
@@ -46,8 +46,8 @@ class Navbar(QWidget):
         self.gridLayout.addWidget(self.cameraButton, 4, 0, 1, 2)
         self.gridLayout.addWidget(self.headHandButton, 5, 0, 1, 2)
         self.gridLayout.addWidget(self.keyboardDisplayButton, 6, 0, 1, 2)
-        self.gridLayout.addWidget(self.keyboardTypeButton, 7, 0, 2, 2)
-        self.gridLayout.addWidget(self.statisticsButton, 9, 0, 1, 2)
+        self.gridLayout.addWidget(self.keyboardTypeButton, 7, 0, 3, 2)
+        self.gridLayout.addWidget(self.statisticsButton, 10, 0, 1, 2)
         
         self.setLayout(self.gridLayout)
 
@@ -96,12 +96,12 @@ class Navbar(QWidget):
         self.circleKboardButton = QPushButton("Circle Keyboard", objectName="HeadHandBtn")
         self.circleKboardButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.circleKboardButton.clicked.connect(self.CircleKboardOnClick)
-        self.circleKboardButton.setEnabled(self.circleKboardIsPossible)
+        self.circleKboardButton.setEnabled(False)
 
         self.lineKboardButton = QPushButton("Line Keyboard", objectName="HeadHandBtn")
         self.lineKboardButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.lineKboardButton.clicked.connect(self.LineKboardOnClick)
-        self.lineKboardButton.setEnabled(self.lineKboardIsPossible)
+        self.lineKboardButton.setEnabled(False)
 
         self.gridLayout.removeWidget(self.keyboardDisplayButton)
         self.keyboardDisplayButton.deleteLater()
@@ -124,6 +124,7 @@ class Navbar(QWidget):
         self.keyboardDisplayButton = QPushButton(title, objectName="KboardDisplayBtn")
         self.keyboardDisplayButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.keyboardDisplayButton.clicked.connect(self.KeyboardDisplayBtnOnClick)
+        self.keyboardDisplayButton.setEnabled(False)
 
     def KeyboardReplace(self):
         self.gridLayout.removeWidget(self.circleKboardButton)
@@ -155,6 +156,10 @@ class Navbar(QWidget):
         self.QWERTYHoverKboardButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.QWERTYHoverKboardButton.clicked.connect(self.QWERTYHoverKboardOnClick)
 
+        self.QWERTYKboardButton = QPushButton("QWERTY", objectName="HeadHandBtn")
+        self.QWERTYKboardButton.setCursor(QCursor(Qt.PointingHandCursor))
+        self.QWERTYKboardButton.clicked.connect(self.QWERTYKboardOnClick)
+
         self.gridLayout.removeWidget(self.keyboardTypeButton)
         self.keyboardTypeButton.deleteLater()
 
@@ -162,29 +167,37 @@ class Navbar(QWidget):
         self.gridLayout.addWidget(self.swipeKboardStaticButton, 8, 0, 1, 1)
         self.gridLayout.addWidget(self.eightpenKboardButton, 7, 1, 1, 1)
         self.gridLayout.addWidget(self.QWERTYHoverKboardButton, 8, 1, 1, 1)
+        self.gridLayout.addWidget(self.QWERTYKboardButton, 9, 0, 1, 1)
+        
 
     def SwipeKboardOnClick(self):
         self.KeyboardTypeButtonInit("Swipe Dynamic")
-        self.circleKboardIsPossible = False
         self.parent.cameraView.Launcher.keyboardType.emit(HandMovingKeyboard())
+        self.parent.cameraView.Launcher.keyboard.emit(Keyboard())
         self.KeyboardTypeReplace()
 
     def SwipeKboardStaticOnClick(self):
         self.KeyboardTypeButtonInit("Swipe Static")
-        self.circleKboardIsPossible = False
         self.parent.cameraView.Launcher.keyboardType.emit(HandMovingKeyboardStatic())
+        self.parent.cameraView.Launcher.keyboard.emit(Keyboard())
         self.KeyboardTypeReplace()
 
     def EightPenKboardOnClick(self):
         self.KeyboardTypeButtonInit("EightPen")
-        self.lineKboardIsPossible = False
         self.parent.cameraView.Launcher.keyboardType.emit(EightPen())
+        self.parent.cameraView.Launcher.keyboard.emit(EPKeyboard())
         self.KeyboardTypeReplace()
 
     def QWERTYHoverKboardOnClick(self):
         self.KeyboardTypeButtonInit("QWERTY Hover")
-        self.circleKboardIsPossible = False
         self.parent.cameraView.Launcher.keyboardType.emit(Hover())
+        self.parent.cameraView.Launcher.keyboard.emit(Keyboard())
+        self.KeyboardTypeReplace()
+
+    def QWERTYKboardOnClick(self):
+        self.KeyboardTypeButtonInit("QWERTY")
+        self.parent.cameraView.Launcher.keyboardType.emit(QWERTY())
+        self.parent.cameraView.Launcher.keyboard.emit(QwertyKeyboard())
         self.KeyboardTypeReplace()
         
     def KeyboardTypeReplace(self):
@@ -192,9 +205,11 @@ class Navbar(QWidget):
         self.gridLayout.removeWidget(self.swipeKboardStaticButton)
         self.gridLayout.removeWidget(self.eightpenKboardButton)
         self.gridLayout.removeWidget(self.QWERTYHoverKboardButton)
+        self.gridLayout.removeWidget(self.QWERTYKboardButton)
         self.swipeKboardButton.deleteLater()
         self.swipeKboardStaticButton.deleteLater()
         self.eightpenKboardButton.deleteLater()
         self.QWERTYHoverKboardButton.deleteLater()
+        self.QWERTYKboardButton.deleteLater()
 
-        self.gridLayout.addWidget(self.keyboardTypeButton, 7, 0, 2, 2)
+        self.gridLayout.addWidget(self.keyboardTypeButton, 7, 0, 3, 2)

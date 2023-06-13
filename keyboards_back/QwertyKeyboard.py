@@ -7,7 +7,7 @@ class QwertyKeyboard:
         self.alphabet = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
                          ["A", "S", "D", "F", "G", "H", "J", "K", "L", "!"],
                          ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]]
-        self.margin = margin
+        self.margin = None
         self.alpha = 0.5
         self.overlay = None
         self.img = None
@@ -21,6 +21,7 @@ class QwertyKeyboard:
         self.old_w = None
 
     def updateSizes(self, w):
+        self.margin=int(w/100)
         self.tileSize = int(w / (len(self.alphabet[0])) - self.margin * 4)
         self.fontScale = int(self.tileSize / 20)
         self.innerMargin = int(self.tileSize / 20 - self.margin / 5)

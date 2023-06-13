@@ -104,4 +104,4 @@ class QWERTY:
             cv2.circle(self.img, (self.lmList[4][1], self.lmList[4][2]), 7, (0, 255, 0), cv2.FILLED)
             
         self.img=keyboard.generateKeyboard(img)
-        return self.img, self.sentance
+        return self.img, list(self.sentance)

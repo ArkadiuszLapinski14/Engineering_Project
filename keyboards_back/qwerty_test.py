@@ -1,5 +1,5 @@
 import cv2
-from QWERTY import QWERTY
+from qwerty_class import QWERTY
 from qwerty_keyboard import QwertyKeyboard
 
 def main():
@@ -10,13 +10,13 @@ def main():
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, img_size[0])
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, img_size[1])
 
-    ep=QWERTY(methode,img_size,margin)
+    ep=QWERTY(margin=margin)
 
     while True:
         success, img = cap.read()
         img = cv2.flip(img, 1)
-        img, sentance = ep.update(img,keyboard=QwertyKeyboard(img_size,margin))
-        print("Sentance: " + sentance)
+        img, sentance = ep.update(img,keyboard=QwertyKeyboard())
+        print(sentance)
         cv2.imshow("Image", img)
         cv2.waitKey(1) #DO UZGODNIENIA
 

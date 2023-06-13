@@ -3,28 +3,39 @@ import numpy as np
 
 
 class QwertyKeyboard:
-    def __init__(self,img_size,margin=20):
-        self.alpha = 0.5
-        self.overlay = None
-        self.img = None
-        self.overlay = None
-        self.img_size=img_size
+    def __init__(self, margin=20):
         self.alphabet = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
                          ["A", "S", "D", "F", "G", "H", "J", "K", "L", "!"],
                          ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]]
         self.margin = margin
-        self.tileSize = int(self.img_size[0]/(len(self.alphabet[0]))-self.margin*4)
-        self.fontScale = int(self.tileSize/20)
-        self.innerMargin=int(self.tileSize/20-self.margin/5)
-        self.x1=self.margin * len(self.alphabet[0]) + self.tileSize * len(self.alphabet[0])
-        self.spacebar_x= self.margin * (len(self.alphabet[0])-2) + self.tileSize * (len(self.alphabet[0])-3)
-        self.spacebar_y=self.margin * (len(self.alphabet)+1) + self.tileSize * len(self.alphabet)
+        self.alpha = 0.5
+        self.overlay = None
+        self.img = None
+        self.overlay = None
+        self.spacebar_y = None
+        self.spacebar_x = None
+        self.x1 = None
+        self.tileSize = None
+        self.fontScale = None
+        self.innerMargin = None
+        self.old_w=0
+
+    def updateSizes(self,w):
+        self.tileSize = int(w / (len(self.alphabet[0])) - self.margin * 4)
+        self.fontScale = int(self.tileSize / 20)
+        self.innerMargin = int(self.tileSize / 20 - self.margin / 5)
+        self.x1 = self.margin * len(self.alphabet[0]) + self.tileSize * len(self.alphabet[0])
+        self.spacebar_x = self.margin * (len(self.alphabet[0]) - 2) + self.tileSize * (len(self.alphabet[0]) - 3)
+        self.spacebar_y = self.margin * (len(self.alphabet) + 1) + self.tileSize * len(self.alphabet)
 
     def generateKeyboard(self,img):
         self.img=img
+        h,w,d=img.shape
+        if self.old_w!=w:
+            self.updateSizes(w)
         self.overlay = self.img.copy()
-        SP_x = self.img_size[0] / 2 - 5 * self.tileSize - (len(self.alphabet[0])+0.5) * self.margin
-        SP_y = self.img_size[1] / 2 - 2 * self.tileSize - (len(self.alphabet)+1) * self.margin
+        SP_x = w / 2 - 5 * self.tileSize - (len(self.alphabet[0])+0.5) * self.margin
+        SP_y = h / 2 - 2 * self.tileSize - (len(self.alphabet)+1) * self.margin
         for i in range(0, len(self.alphabet)):
             for j in range(0, len(self.alphabet[0])):
                 x = int(self.margin * (j + 1) + self.tileSize * j+SP_x)
@@ -45,4 +56,5 @@ class QwertyKeyboard:
 
         self.img = cv2.addWeighted(self.overlay, self.alpha, self.img, 1 - self.alpha, 0)
 
+        self.old_w=w
         return self.img

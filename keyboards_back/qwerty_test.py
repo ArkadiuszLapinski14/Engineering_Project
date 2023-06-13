@@ -11,11 +11,12 @@ def main():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, img_size[1])
 
     ep=QWERTY(margin=margin)
+    kboard=QwertyKeyboard()
 
     while True:
         success, img = cap.read()
         img = cv2.flip(img, 1)
-        img, sentance = ep.update(img,keyboard=QwertyKeyboard())
+        img, sentance = ep.update(img,keyboard=kboard)
         print(sentance)
         cv2.imshow("Image", img)
         cv2.waitKey(1) #DO UZGODNIENIA

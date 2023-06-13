@@ -87,6 +87,7 @@ class QWERTY:
         self.img = img
         h,w, d = img.shape
         if self.old_w != w:
+            self.old_w = w
             self.tiles=[]
             self.updateSizes(w)
             self.fillTiles(w,h)

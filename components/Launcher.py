@@ -4,6 +4,8 @@ import time
 import numpy as np
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
+from keyboards_back.EightPen import EightPen
+from keyboards_back.EPKeyboard import EPKeyboard
 from PyQt5.QtCore import *
 from keyboards_back.Keyboard import Keyboard
 
@@ -14,8 +16,8 @@ class Launcher(QThread):
     
     def __init__(self):
         super().__init__()
-        self.type = HandMovingKeyboardStatic()
-        self.kboard = Keyboard()
+        self.type = None
+        self.kboard = None
         self.keyboardType.connect(self.ChangeKeyboardType)
         self.keyboard.connect(self.ChangeKeyboard)
 
@@ -30,8 +32,12 @@ class Launcher(QThread):
             img = cv2.flip(img, 1)
             img = cv2.resize(img, (1080, 768))
 
-            img, res = self.type.update(img, self.kboard)
-
+            if self.type:
+                img, res = self.type.update(img, self.kboard)
+                self.data_ready.emit(res, img)
+            else:
+                self.data_ready.emit([], img)
+                
             ###FPS###
             cTime = time.time()
             fps = 1/(cTime - pTime)
@@ -40,7 +46,6 @@ class Launcher(QThread):
             cv2.putText(img, str(int(fps)),(0,15), cv2.FONT_HERSHEY_PLAIN, 1 ,(255,0,255), 2)
             # cv2.imshow("Image", img)
             cv2.waitKey(1)
-            self.data_ready.emit(res, img)
             #########
 
     def ChangeKeyboardType(self, type):

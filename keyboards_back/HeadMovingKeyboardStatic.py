@@ -79,7 +79,7 @@ class HeadMovingKeyboardStatic:
                 #self.angles=angles2
         #cv2.putText(img, str(angles2[0]), (600, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
         #cv2.putText(img, str(angles2[1]), (600, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
-        return(self.update2(img,angles2))
+        return(self.update2(img,angles2),self.res)
        
         
     def update2(self, screen,angles):

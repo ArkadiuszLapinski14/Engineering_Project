@@ -3,7 +3,13 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 import requests
+import os
 import numpy as np
+import pandas as pd
+import time
+import Levenshtein
+from scipy.spatial import distance
+import textdistance
 from components.Launcher import Launcher
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 
@@ -18,8 +24,9 @@ class CameraView(QWidget):
     def __init__(self, parent = None):
         super(QWidget, self).__init__()
         self.parent = parent
-        self.text = ""
+        self.textToWrite = ""
         self.textToCheck = ""
+        self.reset = False
         self.pixImgWidth = int(self.frameGeometry().width() * 1.13)
         self.pixImgHeight = int(self.frameGeometry().height() * 1.08)
         self.result = ""
@@ -31,19 +38,26 @@ class CameraView(QWidget):
     def UIComponents(self):
         gridLayout = QGridLayout()
 
-        self.textToWrite = QLineEdit(self.textToCheck, objectName="TextToWrite")
-        self.textToWrite.textChanged.connect(self.handleTextChange)
-        self.textToWrite.returnPressed.connect(self.handleReturn)
+        self.testText = QLineEdit(self.textToCheck, objectName="TextToWrite")
+        self.testText.textChanged.connect(self.handleTextChange)
+        self.testText.returnPressed.connect(self.handleReturn)
 
         self.confirmResetTextBtn = QToolButton(objectName="ConfirmResetTextBtn")
         self.confirmResetTextBtn.setIcon(QIcon('./assets/acceptIC.png'))
         self.confirmResetTextBtn.setCursor(QCursor(Qt.PointingHandCursor))
+        self.confirmResetTextBtn.setEnabled(False)
         self.confirmResetTextBtn.clicked.connect(self.handleConfirmClick)
 
         self.generateTextBtn = QToolButton(objectName="ConfirmResetTextBtn")        
         self.generateTextBtn.setIcon(QIcon('./assets/generateIC.png'))
         self.generateTextBtn.setCursor(QCursor(Qt.PointingHandCursor))  
         self.generateTextBtn.clicked.connect(self.handleGenerateClick)
+
+        self.confirmBtn = QToolButton(objectName="ConfirmResetTextBtn")
+        self.confirmBtn.setIcon(QIcon('./assets/acceptIC.png'))
+        self.confirmBtn.setCursor(QCursor(Qt.PointingHandCursor))
+        self.confirmBtn.setEnabled(False)
+        self.confirmBtn.clicked.connect(self.handleConfirmAllClick)
         
         self.cameraWidget = PixmapLabel(self)
         self.cameraWidget.pixmapChanged.connect(self.updateCamera)
@@ -61,10 +75,11 @@ class CameraView(QWidget):
         movie.start()
 
         gridLayout.addWidget(self.myCamera, 0, 0, 14, 5)
-        gridLayout.addWidget(self.textToWrite, 15, 0, 1, 3)
+        gridLayout.addWidget(self.testText, 15, 0, 1, 3)
         gridLayout.addWidget(self.confirmResetTextBtn, 15, 3, 1, 1)
         gridLayout.addWidget(self.generateTextBtn, 15, 4, 1, 1)
-        gridLayout.addWidget(self.myText, 16, 0 , 1, 5)
+        gridLayout.addWidget(self.myText, 16, 0 , 1, 4)
+        gridLayout.addWidget(self.confirmBtn, 16, 4, 1, 1)
         self.setLayout(gridLayout)
 
     def cameraInit(self):
@@ -73,6 +88,7 @@ class CameraView(QWidget):
         self.Launcher.started.connect(self.onStart)
         self.Launcher.finished.connect(self.onEnd)
         self.Launcher.data_ready.connect(self.HandleData)
+        self.Launcher.keyboardType.connect(self.HandleKeyboardType)
         
     def onStart(self):
         print("Started")
@@ -82,6 +98,7 @@ class CameraView(QWidget):
 
     def HandleData(self, res, img):
         self.result = "".join(res)
+        self.textToCheck = "".join(res)
         self.img = self.ConvertCvToQt(img)
         self.cameraWidget.setPixmap(self.img)
         self.resultLabel.setText(self.result)
@@ -94,35 +111,52 @@ class CameraView(QWidget):
         return QPixmap(converted_img).scaled(self.pixImgWidth, self.pixImgHeight, transformMode=Qt.SmoothTransformation)
 
     def updateLabel(self, text):
-        if self.textToCheck.startswith(text):
-            self.textToCheck = text
+        if len(self.textToWrite) < len(self.textToCheck):
+            self.myText.setText(text)
+            self.myText.setStyleSheet("QLabel { border: 1.5px solid red; }")
+        elif self.textToWrite.startswith(self.textToCheck):
             self.myText.setText(text)
             self.myText.setStyleSheet("QLabel { border: 1.5px solid black; }")
         else:
-            self.textToCheck = text
             self.myText.setText(text)
             self.myText.setStyleSheet("QLabel { border: 1.5px solid red; }")
 
     def updateCamera(self):
         self.myCamera.setPixmap(self.img)
 
-    def handleTextChange(self, text):   
-        self.text = text.upper()
-        self.textToWrite.setText(text.upper())
+    def handleTextChange(self, text):
+        self.textToWrite = text.upper()
+        if len(text) > 0:
+            self.confirmResetTextBtn.setEnabled(True)
+        else:
+            self.confirmResetTextBtn.setEnabled(False)   
+        self.testText.setText(text.upper())
 
     def handleReturn(self):
-        self.textToWrite.setEnabled(False)
+        self.testText.setEnabled(False)
         self.confirmResetTextBtn.setIcon(QIcon('./assets/changeIC.png'))
-        self.check(self.text)
+        self.check(self.textToWrite)
 
     def handleConfirmClick(self):
-        if self.textToWrite.isEnabled() == True:
+        if self.testText.isEnabled() == True:
+            self.startTime = time.time()
+            self.confirmBtn.setEnabled(True)
+            self.reset = True
             self.confirmResetTextBtn.setIcon(QIcon('./assets/changeIC.png'))
-        elif self.textToWrite.isEnabled() == False:
+        elif self.testText.isEnabled() == False:
+            self.confirmBtn.setEnabled(False)
             self.confirmResetTextBtn.setIcon(QIcon('./assets/acceptIC.png'))
-        self.textToWrite.setEnabled(not self.textToWrite.isEnabled())
-        self.check(self.text)
+        self.testText.setEnabled(not self.testText.isEnabled())
+        self.check(self.textToWrite)
 
+    def HandleKeyboardType(self, type):
+        if type != None:
+            self.type = type
+            if self.reset == True:
+                self.type.res = []
+                self.reset = False
+
+        
     def handleGenerateClick(self):
         paragraphs = '1'
         max_length = '20'
@@ -134,7 +168,7 @@ class CameraView(QWidget):
             data = response.json()
             text = data.get('text')
             if text:
-                self.textToWrite.setText(text.upper())
+                self.testText.setText(text.upper())
             else:
                 print("No 'text' found in the response.")
         else:
@@ -145,3 +179,35 @@ class CameraView(QWidget):
             self.myText.setStyleSheet("QLabel { border: 1.5px solid black; }")
         else:
             self.myText.setStyleSheet("QLabel { border: 1.5px solid red; }")
+
+    def handleConfirmAllClick(self):
+        self.endTime = time.time()
+        self.elapsedTime = np.round(self.endTime - self.startTime)
+        
+        err, rat_ob, jaro_wr = self.getSimilarity(self.textToCheck, self.textToWrite)
+
+        data = {
+            "Text": [self.textToWrite], 
+            "User Text": [self.textToCheck], 
+            "Elapsed Time (seconds)": [self.elapsedTime],
+            "Mistakes": [err], 
+            "Ratcliff": [rat_ob], 
+            "Jaro Winkler": [jaro_wr]
+        }
+
+        df = pd.DataFrame(data)
+
+        if os.path.exists("stats.csv"):
+            df.to_csv("stats.csv", mode='a', index=False, header=False )
+        else:
+            df.to_csv("stats.csv", index=False)
+
+        self.reset = True
+
+    def getSimilarity(self, str1, str2):
+        leven = Levenshtein.distance(str1, str2)  #ile transformacji , -
+        rat_ob = textdistance.ratcliff_obershelp(str1, str2) #Ratcliff-Obershelp similarity - sekwencja, +
+        jaro_wr = textdistance.jaro_winkler(str1, str2)   #jaro winkler - kolejnosc+te same, +
+        return leven, rat_ob, jaro_wr
+
+

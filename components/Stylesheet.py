@@ -10,6 +10,22 @@ QPushButton#CameraBtn {
     margin:10px;
 }
 
+QPushButton#MultiBtn {
+    color: black;
+    font-size: 12pt;
+    height: 40%;
+    border-color: none;
+    border-radius: 10px;
+    background-color: "white";
+    margin:10px;
+}
+
+QPushButton#MultiBtn:hover{
+    background-color: #F5F5F5;
+    font-size: 12pt;
+    font-weight: 600;
+}
+
 QPushButton#CameraBtn:hover{
     background-color: #F8F8F8;
 }

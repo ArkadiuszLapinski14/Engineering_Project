@@ -13,7 +13,7 @@ class Launcher(QThread):
     data_ready = pyqtSignal(list, np.ndarray)
     keyboardType = pyqtSignal(object)
     keyboard = pyqtSignal(object)
-    
+
     def __init__(self):
         super().__init__()
         self.type = None
@@ -24,8 +24,6 @@ class Launcher(QThread):
     def run(self):
         pTime = 0
         cap = cv2.VideoCapture(0)
-        print("Chodze")
-        # handMovingKeyboard = self.keyboardType
 
         while True:
             success, img = cap.read()
@@ -34,6 +32,7 @@ class Launcher(QThread):
 
             if self.type:
                 img, res = self.type.update(img, self.kboard)
+                self.keyboardType.emit(self.type)
                 self.data_ready.emit(res, img)
             else:
                 self.data_ready.emit([], img)
@@ -50,8 +49,6 @@ class Launcher(QThread):
 
     def ChangeKeyboardType(self, type):
         self.type = type
-        print(self.type)
 
     def ChangeKeyboard(self, kboard):
         self.kboard = kboard
-        print(self.kboard)

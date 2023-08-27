@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import numpy as np
-from components.Navbar import Navbar
+from navbar.Navbar import Navbar
 from components.RegisterPanel import RegisterPanel
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic

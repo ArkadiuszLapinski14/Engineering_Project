@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from components.Navbar import Navbar
+from navbar.Navbar import Navbar
 from keyboards.Head import Head
 from keyboards.Hand import Hand
 

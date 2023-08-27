@@ -1,13 +1,11 @@
-from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from screeninfo import get_monitors
-from keyboards_back.HeadMovingKeyboard import HeadMovingKeyboard 
 import sys
 
 from components.Stylesheet import StyleSheet
-from components.Navbar import Navbar
+from navbar.Navbar import Navbar
 from cameraView.CameraView import CameraView
 
 SCREEN_WIDTH = get_monitors()[0].width
@@ -46,6 +44,7 @@ class Menu(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     app.setStyleSheet(StyleSheet)
+    app.setWindowIcon(QIcon("./assets/keyboard.png"))
     
     menu = Menu()
     menu.show()

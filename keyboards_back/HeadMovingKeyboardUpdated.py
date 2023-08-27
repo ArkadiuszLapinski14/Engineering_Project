@@ -17,7 +17,7 @@ class HeadMovingKeyboard:
         self.drawing_spec = self.mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
         self.classic_keyboard = Keyboard()
 
-    def update(self, img):
+    def update(self, img, keyboard = Keyboard()):
 
         img_h, img_w, img_c = img.shape
         face_3d = []

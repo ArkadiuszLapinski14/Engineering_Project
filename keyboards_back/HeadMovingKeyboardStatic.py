@@ -20,7 +20,7 @@ class HeadMovingKeyboardStatic:
         self.keyboard_bin_tab = np.ones(32)
         self.mask = np.ones(32)
 
-    def update(self, img):
+    def update(self, img, keyboard = Keyboard()):
 
         img_h, img_w, img_c = img.shape
         face_3d = []

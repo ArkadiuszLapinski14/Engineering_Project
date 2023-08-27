@@ -5,18 +5,19 @@ from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
 from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
 from keyboards_back.HeadMovingKeyboardUpdated import HeadMovingKeyboard
 from keyboards_back.Hover import Hover
+
 def main():
     pTime = 0
 
     cap = cv2.VideoCapture(0)
-    handMovingKeyboard = HandMovingKeyboard()
+    handMovingKeyboard = HeadMovingKeyboard()
     hover = Hover()
     while True:
         success, img = cap.read()
         img = cv2.flip(img, 1)
         img = cv2.resize(img, (1080, 768))
 
-        img = hover.update(img)
+        img = handMovingKeyboard.update(img)
 
         ###FPS###
         cTime = time.time()

@@ -24,7 +24,7 @@ class HandMovingKeyboardStatic:
         self.keyboard = keyboard
         self.keys = self.keyboard.get_keys()
         screen = self.detector.findHands(screen, draw = False)
-        lms = self.detector.findPosition(screen)
+        lms = self.detector.findPosition(screen, draw = False)
         try:
             screen = self.keyboard.draw_update(screen, 10, 100, 30, 30)
             screen = self.keyboard.highlight(screen, self.keyboard_bin_tab, 10, 100, 30, 30)

@@ -12,6 +12,8 @@ from scipy.spatial import distance
 import textdistance
 from components.Launcher import Launcher
 from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
+from screeninfo import get_monitors
+
 
 class PixmapLabel(QLabel):
     pixmapChanged = pyqtSignal()
@@ -27,8 +29,8 @@ class CameraView(QWidget):
         self.textToWrite = ""
         self.textToCheck = ""
         self.reset = False
-        self.pixImgWidth = int(self.frameGeometry().width() * 1.13)
-        self.pixImgHeight = int(self.frameGeometry().height() * 1.08)
+        self.pixImgWidth = int(self.frameGeometry().width() * 1.1)
+        self.pixImgHeight = int(self.frameGeometry().height() * 1.1)
         self.result = ""
         self.imgData = np.array([])
         self.img = QPixmap()
@@ -69,6 +71,7 @@ class CameraView(QWidget):
         self.myText = QLabel(self.resultLabel, objectName="MyText")
         self.myCamera = QLabel(self, objectName="MyCamera")
         self.myCamera.setAlignment(Qt.AlignCenter)
+        print(self.myCamera.width())
         movie = QMovie("./assets/loadingXD.gif")
         movie.setScaledSize(QSize(self.pixImgWidth * 0.3, self.pixImgHeight * 0.35))
         self.myCamera.setMovie(movie)
@@ -108,7 +111,7 @@ class CameraView(QWidget):
         h, w, ch = img.shape
         bytes_per_line = ch * w
         converted_img = QImage(img.data, w, h, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
-        return QPixmap(converted_img).scaled(self.pixImgWidth, self.pixImgHeight, transformMode=Qt.SmoothTransformation)
+        return QPixmap(converted_img).scaled(self.myCamera.width(), self.myCamera.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
     def updateLabel(self, text):
         if len(self.textToWrite) < len(self.textToCheck):

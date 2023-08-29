@@ -16,8 +16,8 @@ class Menu(QMainWindow):
         ###WINDOW INIT###
         super(Menu, self).__init__()
         self.setWindowTitle("Hand Tracking Program Menu")
-        self.width = int(SCREEN_WIDTH - (SCREEN_WIDTH * 0.4))
-        self.height = int(SCREEN_HEIGHT - (SCREEN_HEIGHT * 0.4))
+        self.width = int(SCREEN_WIDTH - (SCREEN_WIDTH * 0.2))
+        self.height = int(SCREEN_HEIGHT - (SCREEN_HEIGHT * 0.2))
         self.setGeometry(int((SCREEN_WIDTH - self.width) / 2), (int((SCREEN_HEIGHT - self.height) / 2)), self.width, self.height)
         self.setFixedSize(self.width, self.height)
         #################

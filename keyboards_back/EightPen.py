@@ -87,25 +87,19 @@ class EightPen:
                 #########################
                 #ZMIENIC W RAZIE POTRZEB#
                 #########################
-                if np.size(self.marker_pos)==4: 
-                    if self.marker_pos[1]==4 and self.marker_pos[3]==4: # PRINT SENTANCE
-                        print("sentance:")
-                        self.printSentance()
-                        self.sentance=[]
-                        self.marker_pos=[]
-                        self.start=False
-                    elif self.marker_pos[1]==2 and self.marker_pos[3]==2: # INSERT SPACE
+                 if np.size(self.marker_pos)==4:
+                    if self.marker_pos[1]==4 and self.marker_pos[3]==4: # INSERT SPACE
                         print("space")
                         self.sentance.append(" ")
                         self.marker_pos=[]
                         self.start=False
-                    elif self.marker_pos[1]==1 and self.marker_pos[3]==1: # BACKSPACE
+                    elif self.marker_pos[1]==2 and self.marker_pos[3]==2: # BACKSPACE
                         print("backspace")
                         if np.size(self.sentance)>0:
                             self.sentance.pop()
                         self.marker_pos=[]
                         self.start=False
-                    elif self.marker_pos[1]==3 and self.marker_pos[3]==3: # DELETE SENTANCE
+                    elif self.marker_pos[1]==1 and self.marker_pos[3]==1: # DELETE SENTANCE
                         print("sentance deleted")
                         self.sentance=[]
                         self.marker_pos=[]

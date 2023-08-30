@@ -13,7 +13,7 @@ class EightPen:
         self.rad=30
         self.X=None
         self.Y=None
-        self.alpha = 0.7
+        self.alpha = 0.3
         self.start=False
         self.lmList=[]
         self.newPosition=None

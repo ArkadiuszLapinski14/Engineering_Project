@@ -43,8 +43,8 @@ class EPKeyboard:
                 x_2 = c_w - int(m/10) * (int(i / 4)+1)
                 y_2 = c_h + int(m/10) * (int(i / 4))
 
-            cv2.putText(img, self.alphabet[i-1], (x_1, y_1), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 3)
-            cv2.putText(img, self.alphabet[i+int(np.size(self.alphabet)/2)-1], (x_2, y_2), cv2.FONT_HERSHEY_PLAIN, 2, (255, 0, 0), 3)
+            cv2.putText(img, self.alphabet[i-1], (x_1, y_1), cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 3)
+            cv2.putText(img, self.alphabet[i+int(np.size(self.alphabet)/2)-1], (x_2, y_2), cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), 3)
         
         # img = cv2.addWeighted(self.overlay, self.alpha, img, 1 - self.alpha, 0)
         return img

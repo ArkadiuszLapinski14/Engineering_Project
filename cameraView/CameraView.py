@@ -193,7 +193,7 @@ class CameraView(QWidget):
             "Text": [self.textToWrite], 
             "User Text": [self.textToCheck], 
             "Elapsed Time (seconds)": [self.elapsedTime],
-            "Mistakes": [err], 
+            "Levenstein Transformations": [err], 
             "Ratcliff": [rat_ob], 
             "Jaro Winkler": [jaro_wr]
         }

@@ -206,6 +206,9 @@ class CameraView(QWidget):
             df.to_csv("stats.csv", index=False)
 
         self.reset = True
+        self.confirmResetTextBtn.setEnabled(True)
+        self.testText.setEnabled(True)
+        self.confirmResetTextBtn.setIcon(QIcon('./assets/acceptIC.png'))
 
     def getSimilarity(self, str1, str2):
         leven = Levenshtein.distance(str1, str2)  #ile transformacji , -

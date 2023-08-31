@@ -180,25 +180,25 @@ class HeadMovingKeyboard:
                     self.keys = self.keys[0:int(len(self.keys)/4)]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
-                    self.timer.start()
+                    self.startTimer()
                   
                 elif self.angles[1] > 5 and self.angles[0]<8 and self.angles[0]>-8:
                     self.keys = self.keys[int(len(self.keys)*(3/4)):len(self.keys)]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
-                    self.timer.start()
+                    self.startTimer()
                    
                 elif self.angles[0] < -5 and self.angles[1]<8 and self.angles[1]>-8:
                     self.keys = self.keys[int(len(self.keys)*(1/4)):int(len(self.keys)*(2/4))]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
-                    self.timer.start()
+                    self.startTimer()
                     
                 elif self.angles[0] > 5 and self.angles[1]<8 and self.angles[1]>-8:
                     self.keys = self.keys[int(len(self.keys)*(2/4)):int(len(self.keys)*(3/4))]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
-                    self.timer.start()
+                    self.startTimer()
                     
         except:
             print("Cut by 3/4 doesnt work/Fingers lists out of range")  
@@ -211,13 +211,13 @@ class HeadMovingKeyboard:
                     self.keys = self.keys[0:1]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
-                    self.timer.start()
+                    self.startTimer()
                   
                 elif self.angles[1] >  6:
                     self.keys = self.keys[1:2]
                     self.keyboard.set_keys(self.keys)
                     self.is_calibrated = False
-                    self.timer.start()
+                    self.startTimer()
                   
         except:
             print("Final cut by 1/2 doesnt work/Fingers lists out of range")

@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import collections
+import threading
 from keyboards_back.Keyboard import Keyboard
 
 class HeadMovingKeyboardStatic:

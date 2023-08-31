@@ -19,6 +19,8 @@ class HeadMovingKeyboardStatic:
         self.classic_keyboard = Keyboard()
         self.keyboard_bin_tab = np.ones(32)
         self.mask = np.ones(32)
+        self.interval = 5  # Określony czas (w sekundach)
+        self.timer = None
 
     def update(self, img, keyboard = Keyboard()):
 
@@ -114,6 +116,18 @@ class HeadMovingKeyboardStatic:
             print("Calibration doesnt work")
         return screen
 
+    def startTimer(self):
+        self.timer = threading.Timer(self.interval, self._execute)
+        self.timer.start()
+
+    def _execute(self):
+        self.keys = self.KEYS
+        self.keyboard.set_keys(self.KEYS)
+        self.keyboard_bin_tab = np.ones(32)
+        self.mask = np.ones(32)
+        
+        # Uruchom ponownie timer, aby funkcja wywołała się ponownie po kolejnym interwale
+        self.start()
 
     def setResult(self, res):
         '''Append the result by the letter we picked or delete last of them, then set a keyboard to default values'''
@@ -193,21 +207,25 @@ class HeadMovingKeyboardStatic:
                     self.mask = np.concatenate((np.ones(int(tab_len / 4)), np.zeros(int((tab_len / 4)*3))), axis=None)
                     self.keyboard_bin_tab *= np.array(self.mask)
                     self.is_calibrated = False
+                    self.startTimer()
                 #right  
                 elif self.angles[1] > 8 and self.angles[0]<8 and self.angles[0]>-8:
                     self.mask = np.concatenate((np.zeros(int((tab_len / 4) * 3)), np.ones(int(tab_len/4))), axis = None)
                     self.keyboard_bin_tab *= np.array(self.mask)
                     self.is_calibrated = False
+                    self.startTimer()
                 #left   
                 elif self.angles[0] < -8 and self.angles[1]<8 and self.angles[1]>-8:
                     self.mask = np.concatenate((np.zeros(int(tab_len/4)), np.ones(int(tab_len/4)), np.zeros(int((tab_len/4) *2))), axis = None)
                     self.keyboard_bin_tab *= np.array(self.mask)
                     self.is_calibrated = False
+                    self.startTimer()
                 #up    
                 elif self.angles[0] > 8 and self.angles[1]<8 and self.angles[1]>-8:
                     self.mask = np.concatenate((np.zeros(int((tab_len/4)*2)), np.ones(int(tab_len/4)), np.zeros(int(tab_len/4))), axis=None)
                     self.keyboard_bin_tab *= np.array(self.mask)
                     self.is_calibrated = False
+                    self.startTimer()
                     
         except:
             print("Cut by 3/4 doesnt Work/angles lists out of range")  
@@ -225,6 +243,7 @@ class HeadMovingKeyboardStatic:
                     self.mask = np.array([1,1,0,0,0,0,0,0])
                     self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
                     self.is_calibrated = False
+                    self.startTimer()
                     #down
                 elif self.angles[0] < -8 and self.angles[1]<8 and self.angles[1]>-8:
                     idxs = np.where(self.keyboard_bin_tab == 1)
@@ -232,6 +251,7 @@ class HeadMovingKeyboardStatic:
                     self.mask = np.array([0,0,1,1,0,0,0,0])
                     self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
                     self.is_calibrated = False
+                    self.startTimer()
                     #up
                 elif self.angles[0] > 8 and self.angles[1]<8 and self.angles[1]>-8:
                     idxs = np.where(self.keyboard_bin_tab == 1)
@@ -239,6 +259,7 @@ class HeadMovingKeyboardStatic:
                     self.mask = np.array([0,0,0,0,1,1,0,0])
                     self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
                     self.is_calibrated = False 
+                    self.startTimer()
                     #right
                 elif self.angles[1] > 8 and self.angles[0]<8 and self.angles[0]>-8:
                     idxs = np.where(self.keyboard_bin_tab == 1)
@@ -246,6 +267,7 @@ class HeadMovingKeyboardStatic:
                     self.mask = np.array([0,0,0,0,0,0,1,1])
                     self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
                     self.is_calibrated = False
+                    self.startTimer()
         except:
             print("Cut by 1/8 doesnt work/angles out of range")  
             
@@ -256,9 +278,11 @@ class HeadMovingKeyboardStatic:
                 idxs = np.where(self.keyboard_bin_tab == 1)
                 self.setResult(self.keys[idxs[0][0]])
                 self.is_calibrated = False
+                self.startTimer()
             elif self.angles[1] > 8 and self.angles[0]<8 and self.angles[0]>-8:
                 idxs = np.where(self.keyboard_bin_tab == 1)
                 self.setResult(self.keys[idxs[0][1]])
                 self.is_calibrated = False
+                self.startTimer()
         except:
             print("Cut by 1/16 doesnt work/angles out of range")

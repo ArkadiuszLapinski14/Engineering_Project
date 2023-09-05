@@ -128,7 +128,7 @@ class HeadMovingKeyboardStatic:
         self.mask = np.ones(32)
         
         # Uruchom ponownie timer, aby funkcja wywołała się ponownie po kolejnym interwale
-        self.start()
+        self.startTimer()
 
     def setResult(self, res):
         '''Append the result by the letter we picked or delete last of them, then set a keyboard to default values'''

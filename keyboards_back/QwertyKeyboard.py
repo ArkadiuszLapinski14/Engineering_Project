@@ -29,7 +29,7 @@ class QwertyKeyboard:
         self.spacebar_x = self.margin * (len(self.alphabet[0]) - 2) + self.tileSize * (len(self.alphabet[0]) - 3)
         self.spacebar_y = self.margin * (len(self.alphabet) + 1) + self.tileSize * len(self.alphabet)
 
-        def generateKeyboard(self, img):
+    def generateKeyboard(self, img):
         self.img = img
         h, w, d = img.shape
         if self.old_w != w:

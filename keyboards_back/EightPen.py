@@ -108,25 +108,25 @@ class EightPen:
                 #ZMIENIC W RAZIE POTRZEB#
                 #########################
                 
-                # if self.start==True:
-                #     if self.newPosition==0 and np.size(self.marker_pos)>3:
-                #         self.index=self.marker_pos[1]
-                #         self.turns=np.count_nonzero(self.marker_pos)-2
-                #         if ((self.marker_pos[1]<self.marker_pos[2]) and (self.marker_pos[1]!=1 or self.marker_pos[2]!=4)) or (self.marker_pos[1]==4 and self.marker_pos[2]==1): #RIGHT TURNS
-                #             self.index+=int(self.turns*4)
-                #         elif self.marker_pos[1]>self.marker_pos[2] or (self.marker_pos[1]==1 and self.marker_pos[2]==4): #LEFT TURNS
-                #             self.index+= int(self.turns * 4 + np.size(self.alphabet) / 2)
-                #         if self.index>32 or self.index<=0 or np.size(self.marker_pos)>6:
-                #             print("Incorrect input")
-                #         else:
-                #             self.sentance.append(self.alphabet[self.index-1])
-                #             print(self.alphabet[self.index-1], " turns: ", self.turns)
-                #             print("End of type")
-                #         self.marker_pos=[]
-                #         self.start=False
-                #     elif self.newPosition is not self.marker_pos[np.size(self.marker_pos)-1]:
-                #         self.marker_pos.append(self.newPosition)
-                #         self.printHolder()
+            if self.start==True:
+                if self.newPosition==0 and np.size(self.marker_pos)>3:
+                    self.index=self.marker_pos[1]
+                    self.turns=np.count_nonzero(self.marker_pos)-2
+                    if ((self.marker_pos[1]<self.marker_pos[2]) and (self.marker_pos[1]!=1 or self.marker_pos[2]!=4)) or (self.marker_pos[1]==4 and self.marker_pos[2]==1): #RIGHT TURNS
+                        self.index+=int(self.turns*4)
+                    elif self.marker_pos[1]>self.marker_pos[2] or (self.marker_pos[1]==1 and self.marker_pos[2]==4): #LEFT TURNS
+                        self.index+= int(self.turns * 4 + np.size(self.alphabet) / 2)
+                    if self.index>32 or self.index<=0 or np.size(self.marker_pos)>6:
+                        print("Incorrect input")
+                    else:
+                        self.sentance.append(self.alphabet[self.index-1])
+                        print(self.alphabet[self.index-1], " turns: ", self.turns)
+                        print("End of type")
+                    self.marker_pos=[]
+                    self.start=False
+                elif self.newPosition is not self.marker_pos[np.size(self.marker_pos)-1]:
+                    self.marker_pos.append(self.newPosition)
+                    self.printHolder()
         
         self.img=keyboard.generateKeyboard(img)
         self.img = cv2.addWeighted(self.overlay, self.alpha, self.img, 1 - self.alpha, 0)

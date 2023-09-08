@@ -118,6 +118,9 @@ class HeadMovingKeyboard:
 
 
     def startTimer(self):
+        if self.timer and self.timer.is_alive():
+            self.timer.cancel()
+            
         self.timer = threading.Timer(self.interval, self._execute)
         self.timer.start()
 

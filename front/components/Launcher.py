@@ -2,12 +2,7 @@ import cv2
 import mediapipe as mp
 import time
 import numpy as np
-from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
-from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
-from keyboards_back.EightPen import EightPen
-from keyboards_back.EPKeyboard import EPKeyboard
 from PyQt5.QtCore import *
-from keyboards_back.Keyboard import Keyboard
 
 class Launcher(QThread):
     data_ready = pyqtSignal(list, np.ndarray)

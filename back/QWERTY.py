@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-import Modules.FaceMeshModule as mtm
-import Modules.HandTrackingModule as htm
+import back.modules.FaceMeshModule as mtm
+import back.modules.HandTrackingModule as htm
 
 
 class tilesData:

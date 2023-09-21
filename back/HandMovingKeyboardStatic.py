@@ -1,40 +1,42 @@
-﻿import cv2
-import Modules.HandTrackingModule as htm
+import cv2
+import numpy as np
+import collections
 import string
-from keyboards_back.Keyboard import Keyboard
+import back.modules.HandTrackingModule as htm
 
-class HandMovingKeyboard:
+class HandMovingKeyboardStatic:
     def __init__(self, point = 8):
         self.Finger = None
         self.prevFinger = [] #zmiana na liste, aby sledzic ostanie x zmian polozenia palca w celu optymalizacji 
         self.detector = htm.handDetector(maxHands=1)
-        self.KEYS = list(string.ascii_uppercase + "!" + '?'+','+'.'+'<'+"_") #tutaj jak ktoś chce użyć swoich znaków (nie zhardcodowanych) najlepiej będzie ustawiać je w konstruktorze i tak samo w klasach wyświetlających klawiwature, teraz mi sie nie chce tego zmieniac bo useless funkcjonalnosc na ten moment
+        self.KEYS = list(string.ascii_uppercase + "!" + '?'+','+'.'+'<'+"_") #const idk jak zrobic w pythonie
         self.res = []
         self.is_calibrated = False
         self.calibration_delay = 0  #zmienna potrzebna do zatrzymania stanu kalibracji na kilka milisekund //optymalizacja
         self.calibration_loading = 0 #zmienna potrzebna do zaladowania kalibracji (podobnie ma to zajmowac kilka milisekund) //optymalizacja
         self.point = point
+        self.keyboard_bin_tab = np.ones(32)
+        self.mask = np.ones(32)
 
-    def get_result(self):
-        return self.res
-		
     def update(self, screen, keyboard):
         '''Updates a keyboard according to our algorithm when calibrated'''
         self.keyboard = keyboard
         self.keys = self.keyboard.get_keys()
         screen = self.detector.findHands(screen, draw = False)
         lms = self.detector.findPosition(screen, draw = False)
-        
         try:
             screen = self.keyboard.draw_update(screen, 10, 100, 30, 30)
+            screen = self.keyboard.highlight(screen, self.keyboard_bin_tab, 10, 100, 30, 30)
             self.FingerUpdate(lms)
             screen = self.backToDefault(screen)
             if self.is_calibrated == True:
                 screen = self.afterCalibrationDelay(screen, 100, 100)
-                if len(self.keys) != 2:
+                if collections.Counter(self.keyboard_bin_tab)[1] == 32:
                     self.cutBy4()
-                elif len(self.keys) == 2:
+                elif collections.Counter(self.keyboard_bin_tab)[1] == 8: 
                     self.cutBy2()
+                elif collections.Counter(self.keyboard_bin_tab)[1] == 2:
+                    self.cutBy1()
                 screen = self.drawResult(screen, 600, 600)
             else:
                 self.calibration_delay = 10 #długość delaya (10 najlepiej dziala)
@@ -47,6 +49,9 @@ class HandMovingKeyboard:
         screen = self.drawResult(screen, 600, 600)
         return screen, self.res
     
+    def get_result(self):
+        return self.res
+
     def calibrate(self, screen):
         '''Checks if finger is inside the calibration box'''
         x, y, w, h = self.centerCoo(screen, 100, 100)
@@ -78,16 +83,18 @@ class HandMovingKeyboard:
         ###Dodawanie
         else:
             self.res.append(res)
-        self.keys = self.KEYS
-        self.keyboard.set_keys(self.KEYS)
+        self.keyboard_bin_tab = np.ones(32)
+        self.mask = np.ones(32)
 
     def backToDefault(self, screen):
         '''Back to the startin settings of keyboard after clicking button "Back"'''
         screen, x, y = self.drawBackButton(screen)
         if (self.Finger):
-            if (self.Finger[1] < x and self.Finger[1] > (x - 75)) and (self.Finger[2] > y and self.Finger[2] < (y + 23)):
-                self.keys = self.KEYS
-                self.keyboard.set_keys(self.KEYS)
+            if (self.Finger[1] < x and self.Finger[1] > (x - 78)) and (self.Finger[2] > y and self.Finger[2] < (y + 25)):        
+                screen = cv2.rectangle(screen, (x, y), (x - 78, y + 25), (0,252,124), -1)
+                cv2.putText(screen, "Back", (x-78, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
+                self.keyboard_bin_tab = np.ones(32)
+                self.mask = np.ones(32)
         return screen
 
     def drawBackButton(self, screen):
@@ -95,9 +102,9 @@ class HandMovingKeyboard:
         y, x , c = screen.shape
         x = int(x - 10)
         y = 10
-        screen = cv2.rectangle(screen, (x, y), (x - 75, y + 23), (0, 0, 0), 3)
-        screen = cv2.rectangle(screen, (x, y), (x - 75, y + 23), (192,192,192), -1)
-        cv2.putText(screen, "Back", (x-75, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
+        screen = cv2.rectangle(screen, (x, y), (x - 78, y + 25), (0, 0, 0), 3)
+        screen = cv2.rectangle(screen, (x, y), (x - 78, y + 25), (192,192,192), -1)
+        cv2.putText(screen, "Back", (x-78, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
         return screen, x, y
 
     def drawResult(self, screen, x, y):
@@ -128,8 +135,6 @@ class HandMovingKeyboard:
         if (lms):
             self.Finger = lms[self.point]
             self.updatePrevFingerList()
-            if len(self.keys) == 1:
-                self.setResult(self.keys[0])
 
     def updatePrevFingerList(self, capacity = 20):
         '''Updates prevFinger[], capacity - length of list'''
@@ -166,43 +171,75 @@ class HandMovingKeyboard:
         return screen
 
     def cutBy4(self):
-        '''Cut unecessary part of keyboard when len(keayboard) > 2'''
+        '''Highlight part of keyboard'''
         try:
+            tab_len = len(self.keyboard_bin_tab)
             if (self.Finger and self.prevFinger):
                 if self.Finger[1] < self.prevFinger[0][1] - 300: #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
-                    self.keys = self.keys[0:int(len(self.keys)/4)]
-                    self.keyboard.set_keys(self.keys)
+                    self.mask = np.concatenate((np.ones(int(tab_len / 4)), np.zeros(int((tab_len / 4)*3))), axis=None)
+                    self.keyboard_bin_tab *= np.array(self.mask)
                     self.prevFingerListReset() 
                 elif self.Finger[1] > self.prevFinger[0][1] + 300:
-                    self.keys = self.keys[int(len(self.keys)*(3/4)):len(self.keys)]
-                    self.keyboard.set_keys(self.keys)
+                    self.mask = np.concatenate((np.zeros(int((tab_len / 4) * 3)), np.ones(int(tab_len/4))), axis = None)
+                    self.keyboard_bin_tab *= np.array(self.mask)
                     self.prevFingerListReset()
                 elif self.Finger[2] > self.prevFinger[0][2] + 200:
-                    self.keys = self.keys[int(len(self.keys)*(1/4)):int(len(self.keys)*(2/4))]
-                    self.keyboard.set_keys(self.keys)
+                    self.mask = np.concatenate((np.zeros(int(tab_len/4)), np.ones(int(tab_len/4)), np.zeros(int((tab_len/4) *2))), axis = None)
+                    self.keyboard_bin_tab *= np.array(self.mask)
                     self.prevFingerListReset()
                 elif self.Finger[2] < self.prevFinger[0][2] - 180:
-                    self.keys = self.keys[int(len(self.keys)*(2/4)):int(len(self.keys)*(3/4))]
-                    self.keyboard.set_keys(self.keys)
+                    self.mask = np.concatenate((np.zeros(int((tab_len/4)*2)), np.ones(int(tab_len/4)), np.zeros(int(tab_len/4))), axis=None)
+                    self.keyboard_bin_tab *= np.array(self.mask)
                     self.prevFingerListReset()
         except:
             print("Cut by 3/4 doesnt work/Fingers lists out of range")  
 
-    def cutBy2(self):
-        '''Cut unecessary part of keyboard when len(keayboard) == 2'''
+    def cutBy2(self): ###ZNALEZC INDEKSY 1 i ZROBIC MASKA * TE INDEKSY
+        '''Highlight part of keyboard'''
         try:
+            tab_len = len(self.keyboard_bin_tab)
             if (self.Finger and self.prevFinger):
-                if self.Finger[1] < self.prevFinger[0][1] - 300:
-                    self.keys = self.keys[0:1]
-                    self.keyboard.set_keys(self.keys)
-                    self.prevFingerListReset()
+                if self.Finger[1] < self.prevFinger[0][1] - 300: #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
+                    idxs = np.where(self.keyboard_bin_tab == 1)
+                    self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
+                    self.mask = np.array([1,1,0,0,0,0,0,0])
+                    self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
+                    self.prevFingerListReset() 
                 elif self.Finger[1] > self.prevFinger[0][1] + 300:
-                    self.keys = self.keys[1:2]
-                    self.keyboard.set_keys(self.keys)
-                    self.prevFingerListReset()
+                    idxs = np.where(self.keyboard_bin_tab == 1)
+                    self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
+                    self.mask = np.array([0,0,0,0,0,0,1,1])
+                    self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
+                    self.prevFingerListReset() 
+                elif self.Finger[2] > self.prevFinger[0][2] + 200:
+                    idxs = np.where(self.keyboard_bin_tab == 1)
+                    self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
+                    self.mask = np.array([0,0,1,1,0,0,0,0])
+                    self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
+                    self.prevFingerListReset() 
+                elif self.Finger[2] < self.prevFinger[0][2] - 180:
+                    idxs = np.where(self.keyboard_bin_tab == 1)
+                    self.keyboard_bin_tab = np.delete(self.keyboard_bin_tab, idxs, None)
+                    self.mask = np.array([0,0,0,0,1,1,0,0])
+                    self.keyboard_bin_tab = np.insert(self.keyboard_bin_tab, [idxs[0][0] for i in range(len(idxs))], self.mask)
+                    self.prevFingerListReset() 
         except:
-            print("Final cut by 1/2 doesnt work/Fingers lists out of range")
+            print("Cut by 1/8 doesnt work/Fingers lists out of range")  
             
+    def cutBy1(self):
+        '''Higlight part of a keyboard and append result list of given value'''
+        try:
+            if self.Finger[1] < self.prevFinger[0][1] - 300: #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
+                idxs = np.where(self.keyboard_bin_tab == 1)
+                self.setResult(self.keys[idxs[0][0]])
+                self.prevFingerListReset() 
+            elif self.Finger[1] > self.prevFinger[0][1] + 300:
+                idxs = np.where(self.keyboard_bin_tab == 1)
+                self.setResult(self.keys[idxs[0][1]])
+                self.prevFingerListReset() 
+        except:
+            print("Cut by 1/16 doesnt work/Fingers lists out of range")
+    
     def drawRec(self, screen, color, x, y, w, h):
         '''Draw calibration box''' #moze sie przydac pozniej
         cv2.rectangle(screen, (x, y), (x + w, y + h),color, 0)

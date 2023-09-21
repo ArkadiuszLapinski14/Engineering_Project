@@ -1,17 +1,14 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 import requests
 import os
 import numpy as np
 import pandas as pd
 import time
 import Levenshtein
-from scipy.spatial import distance
 import textdistance
-from components.Launcher import Launcher
-from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
+from front.components.Launcher import Launcher
 from screeninfo import get_monitors
 
 

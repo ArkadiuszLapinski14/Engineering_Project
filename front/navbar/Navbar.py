@@ -1,18 +1,18 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from components.Title import Title
+from front.components.Title import Title
 import numpy as np
-from keyboards_back.EightPen import EightPen
-from keyboards_back.HandMovingKeyboard import HandMovingKeyboard
-from keyboards_back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
-from keyboards_back.Keyboard import Keyboard
-from keyboards_back.EPKeyboard import EPKeyboard
-from keyboards_back.Hover import Hover
-from keyboards_back.QWERTY import QWERTY
-from keyboards_back.QwertyKeyboard import QwertyKeyboard
-from keyboards_back.HeadMovingKeyboardUpdated import HeadMovingKeyboard
-from keyboards_back.HeadMovingKeyboardStatic import HeadMovingKeyboardStatic
+from back.EightPen import EightPen
+from back.HandMovingKeyboard import HandMovingKeyboard
+from back.HandMovingKeyboardStatic import HandMovingKeyboardStatic
+from back.Keyboard import Keyboard
+from back.EPKeyboard import EPKeyboard
+from back.Hover import Hover
+from back.QWERTY import QWERTY
+from back.QwertyKeyboard import QwertyKeyboard
+from back.HeadMovingKeyboard import HeadMovingKeyboard
+from back.HeadMovingKeyboardStatic import HeadMovingKeyboardStatic
 
 class Navbar(QWidget):
     def __init__(self, parent = None):

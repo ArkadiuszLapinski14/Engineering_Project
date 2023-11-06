@@ -1,9 +1,8 @@
 import cv2
-import string
 import numpy as np
 import back.modules.FaceMeshModule as mtm
 import back.modules.HandTrackingModule as htm
-import time
+
 
 class tilesData:
     def __init__(self, x1, x2, y1, y2, letter):
@@ -45,10 +44,7 @@ class QWERTY:
         self.old_w=0
         self.typable = True
         self.margin=None
-        self.keyboard_bin_tab = np.ones(32)
-        self.mask = np.ones(32)
-        self.cutBy3_next = 1
-        self.choice = 0
+
         if methode == "palec":
             self.detector = htm.handDetector()
             self.lm_index = [8, 4]
@@ -87,63 +83,15 @@ class QWERTY:
 
     def getText(self):
         return self.sentance
-        
-    def cutBy3_1(self):
-        '''Highlight part of keyboard'''
-        try:
-            # Define the indices of the keys to highlight
-            keys_to_highlight = ["Q", "W", "E", "R", "T", "A", "S", "D", "F", "G", "Z", "X", "C", "V", "B"]
-
-            # Update the keyboard_bin_tab with the highlighted keys
-            for i, tile in enumerate(self.tiles):
-                if tile.getLetter() in keys_to_highlight:
-                    self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
-                else:
-                    self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
-
-        except:
-            print("Cut by 3 doesn't work / Keys not found")
-
-    def cutBy3_2(self):
-        #Highlight part of keyboard
-        try:
-            # Define the indices of the keys to highlight
-            keys_to_highlight = ["Y", "U", "I", "O", "P", "H", "J", "K", "L", "!", "N", "M", ",", ".", "?"]
-
-            # Update the keyboard_bin_tab with the highlighted keys
-            for i, tile in enumerate(self.tiles):
-                if tile.getLetter() in keys_to_highlight:
-                    self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
-                else:
-                    self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
-
-        except:
-            print("Cut by 3 doesn't work / Keys not found")
-        
-    def cutBy3_3(self):
-        #Highlight part of keyboard
-        try:
-            # Define the indices of the keys to highlight
-            keys_to_highlight = ["spacebar", "backspace"]
-
-            # Update the keyboard_bin_tab with the highlighted keys
-            for i, tile in enumerate(self.tiles):
-                if tile.getLetter() in keys_to_highlight:
-                    self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
-                else:
-                    self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
-
-        except:
-            print("Cut by 3 doesn't work / Keys not found")
 
     def update(self, img, keyboard):
         self.img = img
-        h, w, d = img.shape
+        h,w, d = img.shape
         if self.old_w != w:
             self.old_w = w
-            self.tiles = []
+            self.tiles=[]
             self.updateSizes(w)
-            self.fillTiles(w, h)
+            self.fillTiles(w,h)
 
         if self.methode == "palec":
             self.img = self.detector.findHands(self.img, False)
@@ -151,27 +99,29 @@ class QWERTY:
             self.img, faces = self.detector.findFaceMesh(self.img, False)
 
         self.lmList = self.detector.findPosition(self.img, 0, False)
-        
-        if self.cutBy3_next == 1:
-            self.cutBy3_1()  # Call the method to highlight the keys
-        elif self.cutBy3_next == 2:
-            self.cutBy3_2()  # Call the method to highlight the keys
-        else:
-            self.cutBy3_3()  # Call the method to highlight the keys
 
-        # Toggle between cutBy3_1, cutBy3_2, and cutBy3_3 with 4 seconds of delay
-        current_time = int(time.time()) % 12
-        if current_time >= 0 and current_time < 4 and self.choice == 0:
-            self.cutBy3_next = 1
-        elif current_time >= 4 and current_time < 8 and self.choice == 0:
-            self.cutBy3_next = 2
-        elif self.choice == 0:
-            self.cutBy3_next = 3
+        if (len(self.lmList) > 0):
+            if self.typable == True:
+                if np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (
+                        self.lmList[8][2] - self.lmList[4][2]) ** 2) < self.deadZone:
+                    for i in range(0, int(len(self.tiles))):
+                        if self.tiles[i].compare(self.lmList[8][1], self.lmList[8][2]):
+                            if (self.tiles[i].letter == "spacebar"):
+                                self.sentance = self.sentance + " "
+                            elif (self.tiles[i].letter == "backspace"):
+                                self.sentance = self.sentance[0:-1]
+                                print("też jej")
+                            else:
+                                self.sentance += self.tiles[i].getLetter()
+                    self.typable = False
+            elif self.typable == False:
+                if np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (
+                        self.lmList[8][2] - self.lmList[4][2]) ** 2) > self.deadZone + self.margin:
+                    self.typable = True
 
-        # Change the color of the highlighted keys to red
-        for i, tile in enumerate(self.tiles):
-            if self.keyboard_bin_tab[i] == 1:
-                cv2.rectangle(self.img, (tile.x1, tile.y1), (tile.x2, tile.y2), (0, 0, 255), cv2.FILLED)
+            # print(self.lmList[8][1],self.lmList[8][2],np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (self.lmList[8][2] - self.lmList[4][2]) ** 2))
+            cv2.circle(self.img, (self.lmList[8][1], self.lmList[8][2]), 7, (255, 0, 0), cv2.FILLED)
+            cv2.circle(self.img, (self.lmList[4][1], self.lmList[4][2]), 7, (0, 255, 0), cv2.FILLED)
 
         self.img = keyboard.generateKeyboard(img)
         return self.img, list(self.sentance)

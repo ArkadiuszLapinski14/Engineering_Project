@@ -47,7 +47,6 @@ class QWERTY:
         self.margin=None
         self.keyboard_bin_tab = np.ones(32)
         self.mask = np.ones(32)
-        self.cutBy3_next = 1
         self.choice = 0
         if methode == "palec":
             self.detector = htm.handDetector()
@@ -87,55 +86,629 @@ class QWERTY:
 
     def getText(self):
         return self.sentance
+    
+    '''Highlight part of keyboard'''
+    def cutBy3(self, iteration):        
+        if iteration==1:
+            try:
+                # Define the indices of the keys to highlight
+                keys_to_highlight = ["Q", "W", "E", "R", "T", "A", "S", "D", "F", "G", "Z", "X", "C", "V", "B"]
+
+                # Update the keyboard_bin_tab with the highlighted keys
+                for i, tile in enumerate(self.tiles):
+                    if tile.getLetter() in keys_to_highlight:
+                        self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                    else:
+                        self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+            except:
+                print("Cut by 3 doesn't work / Keys not found")
+        elif iteration==2:
+            try:
+                # Define the indices of the keys to highlight
+                keys_to_highlight = ["Y", "U", "I", "O", "P", "H", "J", "K", "L", "!", "N", "M", ",", ".", "?"]
+
+                # Update the keyboard_bin_tab with the highlighted keys
+                for i, tile in enumerate(self.tiles):
+                    if tile.getLetter() in keys_to_highlight:
+                        self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                    else:
+                        self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+            except:
+                print("Cut by 3 doesn't work / Keys not found")
+
+        elif iteration==3:
+            try:
+                # Define the indices of the keys to highlight
+                keys_to_highlight = ["spacebar", "backspace"]
+
+                # Update the keyboard_bin_tab with the highlighted keys
+                for i, tile in enumerate(self.tiles):
+                    if tile.getLetter() in keys_to_highlight:
+                        self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                    else:
+                        self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+            except:
+                print("Cut by 3 doesn't work / Keys not found")
+    
+    '''Highlights rows from chosen part'''
+    def cutBy3Row(self, firstChoice, iteration):        
+        if firstChoice==1:
+            if iteration==1:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["Q", "W", "E", "R", "T"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 3 rows doesn't work / Keys not found")
+            
+            elif iteration==2:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["A", "S", "D", "F", "G"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 3 rows doesn't work / Keys not found")
+
+            elif iteration==3:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["Z", "X", "C", "V", "B"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 3 rows doesn't work / Keys not found")
+        elif firstChoice==2:
+            if iteration==1:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["Y", "U", "I", "O", "P"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 3 rows doesn't work / Keys not found")
+            
+            elif iteration==2:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["H", "J", "K", "L", "!"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 3 rows doesn't work / Keys not found")
+
+            elif iteration==3:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["N", "M", ",", ".", "?"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 3 rows doesn't work / Keys not found")
+        elif firstChoice==3:
+            if iteration==1:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["spacebar"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 3 rows doesn't work / Keys not found")
+            
+            elif iteration==2:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["backspace"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 3 rows doesn't work / Keys not found")
+
+    '''Highlights single letters from chosen row'''
+    def cutBy5(self, firstChoice, secondChoice, iteration):
+        if firstChoice==1 and secondChoice==1:
+            if iteration==1:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["Q"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+            
+            elif iteration==2:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["H"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==3:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["E"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+                
+            elif iteration==4:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["R"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==5:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["T"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+        if firstChoice==1 and secondChoice==2:
+            if iteration==1:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["A"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+            
+            elif iteration==2:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["S"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==3:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["D"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+                
+            elif iteration==4:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["F"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==5:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["G"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+        if firstChoice==1 and secondChoice==3:
+            if iteration==1:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["Z"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+            
+            elif iteration==2:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["X"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==3:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["C"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+                
+            elif iteration==4:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["V"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==5:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["B"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+        if firstChoice==2 and secondChoice==1:
+            if iteration==1:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["Y"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+            
+            elif iteration==2:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["U"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==3:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["I"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+                
+            elif iteration==4:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["O"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==5:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["P"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+        if firstChoice==2 and secondChoice==2:
+            if iteration==1:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["H"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+            
+            elif iteration==2:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["J"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==3:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["K"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+                
+            elif iteration==4:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["L"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==5:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["!"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+        if firstChoice==2 and secondChoice==3:
+            if iteration==1:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["N"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+            
+            elif iteration==2:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["M"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==3:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = [","]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+                
+            elif iteration==4:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["."]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
+
+            elif iteration==5:
+                try:
+                    # Define the indices of the keys to highlight
+                    keys_to_highlight = ["?"]
+
+                    # Update the keyboard_bin_tab with the highlighted keys
+                    for i, tile in enumerate(self.tiles):
+                        if tile.getLetter() in keys_to_highlight:
+                            self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                        else:
+                            self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+
+                except:
+                    print("Cut by 5 doesn't work / Keys not found")
         
-    def cutBy3_1(self):
-        '''Highlight part of keyboard'''
-        try:
-            # Define the indices of the keys to highlight
-            keys_to_highlight = ["Q", "W", "E", "R", "T", "A", "S", "D", "F", "G", "Z", "X", "C", "V", "B"]
-
-            # Update the keyboard_bin_tab with the highlighted keys
-            for i, tile in enumerate(self.tiles):
-                if tile.getLetter() in keys_to_highlight:
-                    self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
-                else:
-                    self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
-
-        except:
-            print("Cut by 3 doesn't work / Keys not found")
-
-    def cutBy3_2(self):
-        #Highlight part of keyboard
-        try:
-            # Define the indices of the keys to highlight
-            keys_to_highlight = ["Y", "U", "I", "O", "P", "H", "J", "K", "L", "!", "N", "M", ",", ".", "?"]
-
-            # Update the keyboard_bin_tab with the highlighted keys
-            for i, tile in enumerate(self.tiles):
-                if tile.getLetter() in keys_to_highlight:
-                    self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
-                else:
-                    self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
-
-        except:
-            print("Cut by 3 doesn't work / Keys not found")
-        
-    def cutBy3_3(self):
-        #Highlight part of keyboard
-        try:
-            # Define the indices of the keys to highlight
-            keys_to_highlight = ["spacebar", "backspace"]
-
-            # Update the keyboard_bin_tab with the highlighted keys
-            for i, tile in enumerate(self.tiles):
-                if tile.getLetter() in keys_to_highlight:
-                    self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
-                else:
-                    self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
-
-        except:
-            print("Cut by 3 doesn't work / Keys not found")
-
     def update(self, img, keyboard):
         self.img = img
         h, w, d = img.shape
@@ -152,23 +725,22 @@ class QWERTY:
 
         self.lmList = self.detector.findPosition(self.img, 0, False)
         
-        if self.cutBy3_next == 1:
-            self.cutBy3_1()  # Call the method to highlight the keys
-        elif self.cutBy3_next == 2:
-            self.cutBy3_2()  # Call the method to highlight the keys
-        else:
-            self.cutBy3_3()  # Call the method to highlight the keys
-
-        # Toggle between cutBy3_1, cutBy3_2, and cutBy3_3 with 4 seconds of delay
+        # Toggle between iterations of cutBy3
         current_time = int(time.time()) % 12
-        if current_time >= 0 and current_time < 4 and self.choice == 0:
-            self.cutBy3_next = 1
-        elif current_time >= 4 and current_time < 8 and self.choice == 0:
-            self.cutBy3_next = 2
-        elif self.choice == 0:
-            self.cutBy3_next = 3
+        current_time2 = int(time.time()) % 20
+        if self.firstChoice == 0:  # Duza czesc
+            iteration = (current_time // 4) + 1
+            self.cutBy3(iteration)
 
-        # Change the color of the highlighted keys to red
+        elif self.firstChoice != 0 and self.secondChoice == 0:  # Wiersze w duzej czesci
+            iteration = (current_time // 4) + 1
+            self.cutBy3Row(self.firstChoice, iteration)
+
+        elif self.firstChoice != 0 and self.secondChoice != 0:  # Pojedyncze znaki
+            iteration = (current_time2 // 4) + 1
+            self.cutBy5(self.firstChoice, self.secondChoice, iteration)
+
+        # Change the color of the highlighted keys
         for i, tile in enumerate(self.tiles):
             if self.keyboard_bin_tab[i] == 1:
                 cv2.rectangle(self.img, (tile.x1, tile.y1), (tile.x2, tile.y2), (0, 0, 255), cv2.FILLED)

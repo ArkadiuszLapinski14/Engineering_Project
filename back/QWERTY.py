@@ -157,7 +157,7 @@ class QWERTY:
             else:
                 self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
     
-    def findGesture(self, iteration, letter):
+    def findGesture(self, iteration):
         if np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (
                      self.lmList[8][2] - self.lmList[4][2]) ** 2) < self.deadZone:
                 self.gesture = True
@@ -171,8 +171,13 @@ class QWERTY:
                 elif self.thirdChoice == False:
                     self.thirdChoice = True
 
+    def addSentence(self, key_to_highlight):
+        self.sentance+=key_to_highlight
+
     def update(self, img, keyboard):
         self.img = img
+        global key_to_highlight
+        keys_to_highlight = []
         h,w, d = img.shape
         if self.old_w != w:
             self.old_w = w
@@ -230,8 +235,12 @@ class QWERTY:
                 key_to_highlight = keys_to_highlight[iteration]
                 print("Key to highlight:", key_to_highlight)
                 self.updateKeyboardBinTab(key_to_highlight)
+
         if self.thirdChoice == True:
-            self.sentance += key_to_highlight
+            #key_to_highlight = keys_to_highlight[iteration]
+            print(key_to_highlight)
+            self.sentance += key_to_highlight            
+
         if (len(self.lmList) > 0):                 
             self.findGesture(iteration)            
             cv2.circle(self.img, (self.lmList[8][1], self.lmList[8][2]), 7, (255, 0, 0), cv2.FILLED)

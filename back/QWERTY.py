@@ -237,9 +237,12 @@ class QWERTY:
                 self.updateKeyboardBinTab(key_to_highlight)
 
         if self.thirdChoice == True:
-            #key_to_highlight = keys_to_highlight[iteration]
             print(key_to_highlight)
-            self.sentance += key_to_highlight            
+            self.sentance += key_to_highlight
+            self.firstChoice=False
+            self.secondChoice=False
+            self.thirdChoice=False   
+            key_to_highlight=None
 
         if (len(self.lmList) > 0):                 
             self.findGesture(iteration)            
@@ -252,3 +255,7 @@ class QWERTY:
 
         self.img = keyboard.generateKeyboard(img)
         return self.img, list(self.sentance)
+
+#zrobić okienko czasowe żeby nie łapało jednego gestu jako kilka
+#dodać obsługe dla backspace, spacji i przycisku back
+#naprawić problem z nie podświetlaniem sie jednej litery z rzędu

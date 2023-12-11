@@ -52,6 +52,8 @@ class QWERTY:
         self.typable = True
         self.margin=None
         self.gesture = False
+        self.last_gesture_time = time.time()
+        self.gesturePause = 1
         self.firstChoice = False
         self.secondChoice = False
         self.thirdChoice = False
@@ -92,64 +94,6 @@ class QWERTY:
     def getText(self):
         return self.sentance
 
-    '''def cutBy3(self):
-            try:
-                while self.gesture == False:
-                    current_time = int(time.time()) % 12
-                    iteration = (current_time // 4) + 1
-                    keys_to_highlight = self.keys_list[iteration - 1]
-                    self.updateKeyboardBinTab(keys_to_highlight)
-                    self.findGesture()
-                    if self.gesture == True:
-                        print("dziala")
-                        self.cutBy3Row(iteration)
-            except Exception as e:
-                print("cutBy3 doesn't work for iteration / Keys not found", e)'''
-
-    '''def cutBy3Row(self, firstChoice):
-        self.gesture = False
-        current_time = int(time.time()) % 12
-        iteration = (current_time // 4) + 1        
-
-        try:
-            key_mapping = {
-                (1, 1): ["Q", "W", "E", "R", "T"],
-                (1, 2): ["A", "S", "D", "F", "G"],
-                (1, 3): ["Z", "X", "C", "V", "B"],
-                (2, 1): ["Y", "U", "I", "O", "P"],
-                (2, 2): ["H", "J", "K", "L", "!"],
-                (2, 3): ["N", "M", ",", ".", "?"],
-                (3, 1): ["spacebar"],
-                (3, 2): ["backspace"],
-            }
-
-            keys_to_highlight = key_mapping.get((firstChoice, iteration), [])
-            self.updateKeyboardBinTab(keys_to_highlight)
-
-        except:
-            print("Cut by 3 rows doesn't work / Keys not found")'''
-        
-    '''def cutBy5(self, firstChoice, secondChoice, iteration):
-        self.gesture = False
-        try:
-            key_mapping = {
-                (1, 1): ["Q", "H", "E", "R", "T"],
-                (1, 2): ["A", "S", "D", "F", "G"],
-                (1, 3): ["Z", "X", "C", "V", "B"],
-                (2, 1): ["Y", "U", "I", "O", "P"],
-                (2, 2): ["H", "J", "K", "L", "!"],
-                (2, 3): ["N", "M", ",", ".", "?"],
-            }
-
-            keys_to_highlight = key_mapping.get((firstChoice, secondChoice), [])
-            if keys_to_highlight and iteration in range(1, 6):
-                keys_to_highlight = [keys_to_highlight[iteration - 1]]
-            else:
-                print("Cut by 5 doesn't work / Keys not found")
-
-        except:
-            print("Cut by 5 doesn't work / Keys not found")'''
-
     def updateKeyboardBinTab(self, keys_to_highlight):
         for i, tile in enumerate(self.tiles):
             if tile.getLetter() in keys_to_highlight:
@@ -158,6 +102,9 @@ class QWERTY:
                 self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
     
     def findGesture(self, iteration):
+        current_time_gesture = time.time()
+        if current_time_gesture - self.last_gesture_time < self.gesturePause:
+            return
         if np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (
                      self.lmList[8][2] - self.lmList[4][2]) ** 2) < self.deadZone:
                 self.gesture = True
@@ -170,6 +117,7 @@ class QWERTY:
                     self.secondChoiceNum = iteration
                 elif self.thirdChoice == False:
                     self.thirdChoice = True
+                self.last_gesture_time = current_time_gesture
 
     def addSentence(self, key_to_highlight):
         self.sentance+=key_to_highlight
@@ -256,6 +204,6 @@ class QWERTY:
         self.img = keyboard.generateKeyboard(img)
         return self.img, list(self.sentance)
 
-#zrobić okienko czasowe żeby nie łapało jednego gestu jako kilka
 #dodać obsługe dla backspace, spacji i przycisku back
 #naprawić problem z nie podświetlaniem sie jednej litery z rzędu
+#dodać przycisk w GUI

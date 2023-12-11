@@ -89,13 +89,11 @@ class QWERTY:
             tilesData(x1=int(self.spacebar_x + SP_x), x2=int(self.x1 + SP_x), y1=int(self.spacebar_y + SP_y),
                       y2=int(self.spacebar_y + self.tileSize + SP_y), letter="backspace"))
 
-        # for i in range(0,len(self.tiles)): print(self.tiles[i].letter, self.tiles[i].x1,self.tiles[i].x2,self.tiles[i].y1,self.tiles[i].y2)
-
     def getText(self):
         return self.sentance
 
     def updateKeyboardBinTab(self, keys_to_highlight):
-        for i, tile in enumerate(self.tiles):
+        for i, tile in enumerate(self.tiles):            
             if tile.getLetter() in keys_to_highlight:
                 self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
             else:
@@ -159,10 +157,15 @@ class QWERTY:
                 (3, 1): ["spacebar"],
                 (3, 2): ["backspace"],
             }
-
-            keys_to_highlight = key_mapping.get((self.firstChoiceNum, iteration), [])
-            #keys_to_highlight = key_mapping.get((1, iteration), [])
-            self.updateKeyboardBinTab(keys_to_highlight)
+            if self.firstChoiceNum == 3:
+                if iteration % 2 == 1:
+                    key_to_highlight = "spacebar"
+                else:
+                    key_to_highlight = "backspace"
+                self.updateKeyboardBinTab([key_to_highlight])                    
+            else:
+                keys_to_highlight = key_mapping.get((self.firstChoiceNum, iteration), [])              
+                self.updateKeyboardBinTab(keys_to_highlight)
         
         elif self.firstChoice == True and self.secondChoice == True and self.thirdChoice == False:
             print("dziala2")
@@ -178,11 +181,21 @@ class QWERTY:
             }
             
             keys_to_highlight = key_mapping.get((self.firstChoiceNum, self.secondChoiceNum), [])
-            #keys_to_highlight = key_mapping.get((1, 2), [])
             if keys_to_highlight and iteration in range(0, 5):
                 key_to_highlight = keys_to_highlight[iteration]
                 print("Key to highlight:", key_to_highlight)
                 self.updateKeyboardBinTab(key_to_highlight)
+
+        if self.firstChoiceNum == 3 and self.secondChoice == True:
+            print(key_to_highlight)
+            if key_to_highlight == "spacebar":
+                self.sentance += " "
+            elif key_to_highlight == "backspace":
+                self.sentance = self.sentance[0:-1]
+            self.firstChoice = False
+            self.secondChoice = False
+            self.thirdChoice = False
+            key_to_highlight = None
 
         if self.thirdChoice == True:
             print(key_to_highlight)
@@ -204,6 +217,3 @@ class QWERTY:
         self.img = keyboard.generateKeyboard(img)
         return self.img, list(self.sentance)
 
-#dodać obsługe dla backspace, spacji i przycisku back
-#naprawić problem z nie podświetlaniem sie jednej litery z rzędu
-#dodać przycisk w GUI

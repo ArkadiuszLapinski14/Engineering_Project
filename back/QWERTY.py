@@ -35,6 +35,10 @@ class QWERTY:
         self.Y = []
         self.X = []
         self.lmList = []
+
+        #interval in seconds between each key/part of keyboard highlighted
+        self.interval = 4
+
         self.alphabet = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
                          ["A", "S", "D", "F", "G", "H", "J", "K", "L", "!"],
                          ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]]
@@ -45,7 +49,7 @@ class QWERTY:
         ]
         self.keyboard_bin_tab = np.ones(32)
         self.tiles = []
-        self.sentance = ""
+        self.sentence = ""
         self.img = None
         self.methode = methode
         self.old_w=0
@@ -90,14 +94,14 @@ class QWERTY:
                       y2=int(self.spacebar_y + self.tileSize + SP_y), letter="backspace"))
 
     def getText(self):
-        return self.sentance
+        return self.sentence
 
     def updateKeyboardBinTab(self, keys_to_highlight):
         for i, tile in enumerate(self.tiles):            
             if tile.getLetter() in keys_to_highlight:
-                self.keyboard_bin_tab[i] = 1  # Set the key as highlighted (active)
+                self.keyboard_bin_tab[i] = 1  # Highlight key
             else:
-                self.keyboard_bin_tab[i] = 0  # Set other keys as not highlighted (inactive)
+                self.keyboard_bin_tab[i] = 0
     
     def findGesture(self, iteration):
         current_time_gesture = time.time()
@@ -117,9 +121,6 @@ class QWERTY:
                     self.thirdChoice = True
                 self.last_gesture_time = current_time_gesture
 
-    def addSentence(self, key_to_highlight):
-        self.sentance+=key_to_highlight
-
     def update(self, img, keyboard):
         self.img = img
         global key_to_highlight
@@ -135,10 +136,11 @@ class QWERTY:
 
         self.lmList = self.detector.findPosition(self.img, 0, False)        
         current_time = int(time.time()) % 12
-        iteration = (current_time % 4)
+        iteration = (current_time // self.interval) + 1
+
         if self.firstChoice == False:
             #current_time = int(time.time()) % 12
-            #iteration = (current_time % 4) + 1
+            #iteration = (current_time // self.interval) + 1
             keys_to_highlight = self.keys_list[(iteration - 1) % len(self.keys_list)]
             print("Keys to highlight:", keys_to_highlight)
             self.updateKeyboardBinTab(keys_to_highlight)
@@ -146,7 +148,7 @@ class QWERTY:
         if  self.firstChoice == True and self.secondChoice == False:
             print("dziala")
             #current_time = int(time.time()) % 12
-            #iteration = (current_time % 4) + 1  
+            #iteration = (current_time // self.interval) + 1  
             key_mapping = {
                 (1, 1): ["Q", "W", "E", "R", "T"],
                 (1, 2): ["A", "S", "D", "F", "G"],
@@ -166,11 +168,11 @@ class QWERTY:
             else:
                 keys_to_highlight = key_mapping.get((self.firstChoiceNum, iteration), [])              
                 self.updateKeyboardBinTab(keys_to_highlight)
-        
+                    
         elif self.firstChoice == True and self.secondChoice == True and self.thirdChoice == False:
             print("dziala2")
-            #current_time = int(time.time()) % 12
-            #iteration = current_time % 4 + 1
+            current_time2 = int(time.time()) % 20
+            iteration2 = (current_time2 // self.interval)
             key_mapping = {
                 (1, 1): ["Q", "W", "E", "R", "T"],
                 (1, 2): ["A", "S", "D", "F", "G"],
@@ -181,17 +183,17 @@ class QWERTY:
             }
             
             keys_to_highlight = key_mapping.get((self.firstChoiceNum, self.secondChoiceNum), [])
-            if keys_to_highlight and iteration in range(0, 5):
-                key_to_highlight = keys_to_highlight[iteration]
+            if keys_to_highlight and iteration in range(len(keys_to_highlight)):
+                key_to_highlight = keys_to_highlight[iteration2]
                 print("Key to highlight:", key_to_highlight)
                 self.updateKeyboardBinTab(key_to_highlight)
 
         if self.firstChoiceNum == 3 and self.secondChoice == True:
             print(key_to_highlight)
             if key_to_highlight == "spacebar":
-                self.sentance += " "
+                self.sentence += " "
             elif key_to_highlight == "backspace":
-                self.sentance = self.sentance[0:-1]
+                self.sentence = self.sentence[0:-1]
             self.firstChoice = False
             self.secondChoice = False
             self.thirdChoice = False
@@ -199,7 +201,7 @@ class QWERTY:
 
         if self.thirdChoice == True:
             print(key_to_highlight)
-            self.sentance += key_to_highlight
+            self.sentence += key_to_highlight
             self.firstChoice=False
             self.secondChoice=False
             self.thirdChoice=False   
@@ -215,5 +217,4 @@ class QWERTY:
                 cv2.rectangle(self.img, (tile.x1, tile.y1), (tile.x2, tile.y2), (0, 0, 255), cv2.FILLED)
 
         self.img = keyboard.generateKeyboard(img)
-        return self.img, list(self.sentance)
-
+        return self.img, list(self.sentence)

@@ -37,11 +37,10 @@ class QWERTY:
         self.alphabet = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
                          ["A", "S", "D", "F", "G", "H", "J", "K", "L", "!"],
                          ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]]
-        self.keys_list = [
-            ["Q", "W", "E", "R", "T", "A", "S", "D", "F", "G", "Z", "X", "C", "V", "B"],
-            ["Y", "U", "I", "O", "P", "H", "J", "K", "L", "!", "N", "M", ",", ".", "?"],
-            ["spacebar", "backspace"]
-        ]
+        
+        self.keys_list = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
+                         "A", "S", "D", "F", "G", "H", "J", "K", "L", "!",
+                         "Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]
         self.keyboard_bin_tab = np.zeros(32)
         self.tiles = []
         self.sentence = []
@@ -52,7 +51,7 @@ class QWERTY:
         self.start = True
         self.gesture = False
         self.last_gesture_time = time.time()
-        self.gesturePause = 1
+        self.gesturePause = 3
         self.lms = None
         self.calibration_delay = 0
         self.calibration_loading = 0
@@ -62,7 +61,6 @@ class QWERTY:
         self.detector = htm.handDetector()
         self.lm_index = [8, 4]
         
-        self.keys = list(string.ascii_uppercase + "!" + '?'+','+'.'+'backspace'+"space")
         self.key_to_highlight = None
         self.Finger = None  # Initialize self.Finger
 
@@ -103,47 +101,60 @@ class QWERTY:
             else:
                 self.keyboard_bin_tab[i] = 0
 
-    def highlightNextKey(self):
-            current_index = np.argmax(self.keyboard_bin_tab)
-            if current_index < len(self.keyboard_bin_tab):
-                self.keyboard_bin_tab[current_index] = 0
-                self.key_to_highlight = self.tiles[current_index]
-                self.keyboard_bin_tab[self.key_to_highlight] = 1
-
     def highlightPreviousKey(self):
         current_index = np.argmax(self.keyboard_bin_tab)
         if current_index > 0:
+            new_index = current_index - 1
+            self.key_to_highlight = self.tiles[new_index]
             self.keyboard_bin_tab[current_index] = 0
-            self.key_to_highlight = self.tiles[current_index - 1]
-            self.keyboard_bin_tab[self.key_to_highlight] = 1
+            self.keyboard_bin_tab[new_index] = 1
+
+    def highlightNextKey(self):
+        current_index = np.argmax(self.keyboard_bin_tab)
+        if current_index < len(self.keyboard_bin_tab) - 1:
+            new_index = current_index + 1
+            self.key_to_highlight = self.tiles[new_index]
+            self.keyboard_bin_tab[current_index] = 0
+            self.keyboard_bin_tab[new_index] = 1
 
     def highlightKeyAbove(self):
         current_index = np.argmax(self.keyboard_bin_tab)
-        current_row = current_index // len(self.alphabet[0])
-        current_col = current_index % len(self.alphabet[0])
-        if current_row > 0:
-            self.key_to_highlight = self.tiles[(current_row - 1) * len(self.alphabet[0]) + current_col]
+        if current_index - 10 > 0:
+            new_index = current_index - 10
+            self.key_to_highlight = self.tiles[new_index]
             self.keyboard_bin_tab[current_index] = 0
-            self.keyboard_bin_tab[self.key_to_highlight] = 1
+            self.keyboard_bin_tab[new_index] = 1
+        '''current_index = np.argmax(self.keyboard_bin_tab)
+        current_row = current_index // len(self.keys_list[0])
+        current_col = current_index % len(self.keys_list[0])
+        if current_row > 0:
+            new_index = (current_row - 1) * len(self.keys_list[0]) + current_col
+            self.key_to_highlight = self.tiles[new_index]
+            self.keyboard_bin_tab[current_index] = 0
+            self.keyboard_bin_tab[self.tiles.index(self.key_to_highlight)] = 1'''
 
     def highlightKeyBelow(self):
         current_index = np.argmax(self.keyboard_bin_tab)
-        current_row = current_index // len(self.alphabet[0])
-        current_col = current_index % len(self.alphabet[0])
-        if current_row < len(self.alphabet):
-            self.key_to_highlight = self.tiles[(current_row + 1) * len(self.alphabet[0]) + current_col]
+        if current_index + 10 < len(self.keyboard_bin_tab) - 1:
+            new_index = current_index + 10
+            self.key_to_highlight = self.tiles[new_index]
             self.keyboard_bin_tab[current_index] = 0
-            self.keyboard_bin_tab[self.key_to_highlight] = 1
-
+            self.keyboard_bin_tab[new_index] = 1
+        '''current_index = np.argmax(self.keyboard_bin_tab)
+        current_row = current_index // len(self.keys_list[0])
+        current_col = current_index % len(self.keys_list[0])
+        if current_row < len(self.keys_list) - 1:
+            new_index = (current_row + 1) * len(self.keys_list[0]) + current_col
+            self.key_to_highlight = self.tiles[new_index]
+            self.keyboard_bin_tab[current_index] = 0
+            self.keyboard_bin_tab[self.tiles.index(self.key_to_highlight)] = 1
+'''
     def setResult(self, key):
-        '''Append the result by the letter we picked or delete last of them, then set a keyboard to default values'''
-        ###Usuwanie
         if key == "backspace":
             if len(self.sentence) > 0:
                 del self.sentence[-1]
         elif key == "space":
             self.sentence.append(" ")
-        ###Dodawanie
         else:
             self.sentence.append(key)
 
@@ -153,10 +164,11 @@ class QWERTY:
             return
         elif np.sqrt((self.lms[8][1] - self.lms[4][1]) ** 2 + (self.lms[8][2] - self.lms[4][2]) ** 2) < self.deadZone:
             self.start = False
-            #key_to_highlight = self.key_to_highlight.getLetter()
-            idxs = np.where(self.keyboard_bin_tab == 1)
-            self.setResult(self.keys[idxs[0][0]])
-        else:
+            index_of_highlighted_key = np.argmax(self.keyboard_bin_tab)
+            if self.keyboard_bin_tab[index_of_highlighted_key] == 1:
+                self.setResult(self.keys_list[index_of_highlighted_key])
+            self.last_gesture_time = current_time_gesture
+        elif self.is_calibrated: #ostatnia zmiana, powinno działać, do sprawdzenia
             if (self.Finger and self.prevFinger):
                 # left
                 if self.Finger[1] < self.prevFinger[0][1] - 300:
@@ -177,7 +189,8 @@ class QWERTY:
                 elif self.Finger[2] < self.prevFinger[0][2] - 180:
                     self.start = False
                     self.highlightKeyAbove()
-                    self.prevFingerListReset()            
+                    self.prevFingerListReset()
+                self.last_gesture_time = current_time_gesture       
 
     def centerCoo(self, screen, w, h):
         y, x, c = screen.shape
@@ -276,17 +289,17 @@ class QWERTY:
             self.findGesture()            
             cv2.circle(screen, (self.lms[8][1], self.lms[8][2]), 7, (255, 0, 0), cv2.FILLED)
             cv2.circle(screen, (self.lms[4][1], self.lms[4][2]), 7, (0, 255, 0), cv2.FILLED)
-        try:
-            if self.is_calibrated == True:
-                screen = self.afterCalibrationDelay(screen, 100, 100)
-                self.findGesture()
-                #screen = keyboard.generateKeyboard(screen)
-                #screen = self.calibrate(screen, keyboard)
-            else:
-                self.calibration_delay = 10
-                screen = self.calibrate(screen)
-        except Exception as e:
-            print("update doesn't work", e)
+            try:
+                if self.is_calibrated == True:
+                    screen = self.afterCalibrationDelay(screen, 100, 100)
+                    self.findGesture()
+                    #screen = keyboard.generateKeyboard(screen)
+                    #screen = self.calibrate(screen, keyboard)
+                else:
+                    self.calibration_delay = 10
+                    screen = self.calibrate(screen)
+            except Exception as e:
+                print("update doesn't work", e)
          
         print(self.keyboard_bin_tab)
         return screen, list(self.sentence)

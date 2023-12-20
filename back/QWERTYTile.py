@@ -31,8 +31,6 @@ class QWERTYTile:
         self.Y = []
         self.X = []
 
-        # interval in seconds between each key/part of keyboard highlighted
-        self.interval = 4
 
         self.alphabet = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
                          ["A", "S", "D", "F", "G", "H", "J", "K", "L", "!"],
@@ -40,7 +38,8 @@ class QWERTYTile:
         
         self.keys_list = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
                          "A", "S", "D", "F", "G", "H", "J", "K", "L", "!",
-                         "Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]
+                         "Z", "X", "C", "V", "B", "N", "M", ",", ".", "?",
+                         "spacebar", "backspace"]
         self.keyboard_bin_tab = np.zeros(32)
         self.tiles = []
         self.sentence = []
@@ -49,7 +48,6 @@ class QWERTYTile:
         self.old_w = 0
         self.margin = None
         self.start = True
-        self.gesture = False
         self.last_gesture_time = time.time()
         self.gesturePause = 3
         self.lms = None
@@ -59,10 +57,9 @@ class QWERTYTile:
         self.point = 8
         self.is_calibrated = False
         self.detector = htm.handDetector()
-        self.lm_index = [8, 4]
         
         self.key_to_highlight = None
-        self.Finger = None  # Initialize self.Finger
+        self.Finger = None
 
     def updateSizes(self, w):
         self.margin = int(w / 100)
@@ -91,9 +88,6 @@ class QWERTYTile:
             tilesData(x1=int(self.spacebar_x + SP_x), x2=int(self.x1 + SP_x), y1=int(self.spacebar_y + SP_y),
                       y2=int(self.spacebar_y + self.tileSize + SP_y), letter="backspace"))
 
-    def getText(self):
-        return self.sentence
-
     def updateKeyboardBinTab(self, keys_to_highlight):
         for i, tile in enumerate(self.tiles):
             if tile.getLetter() in keys_to_highlight:
@@ -119,38 +113,38 @@ class QWERTYTile:
 
     def highlightKeyAbove(self):
         current_index = np.argmax(self.keyboard_bin_tab)
-        if current_index - 10 > 0:
+        if current_index - 10 >= 0:
             new_index = current_index - 10
             self.key_to_highlight = self.tiles[new_index]
             self.keyboard_bin_tab[current_index] = 0
             self.keyboard_bin_tab[new_index] = 1        
-        elif current_index > 30:
-            if current_index == 31:
-                self.keyboard_bin_tab[24] = 1
+        elif current_index >= 30:
+            if current_index == 30:
+                self.keyboard_bin_tab[23] = 1
                 self.keyboard_bin_tab[current_index] = 0
-            elif current_index == 32:
-                self.keyboard_bin_tab[29] = 1
+            elif current_index == 31:
+                self.keyboard_bin_tab[28] = 1
                 self.keyboard_bin_tab[current_index] = 0
 
     def highlightKeyBelow(self):
         current_index = np.argmax(self.keyboard_bin_tab)
-        if current_index + 10 < len(self.keyboard_bin_tab) - 1:
+        if current_index + 10 < len(self.keyboard_bin_tab):
             new_index = current_index + 10
             self.key_to_highlight = self.tiles[new_index]
             self.keyboard_bin_tab[current_index] = 0
             self.keyboard_bin_tab[new_index] = 1
-        elif 21 <= current_index <= 27:
-            self.keyboard_bin_tab[31] = 1
+        elif 20 <= current_index <= 26:
+            self.keyboard_bin_tab[30] = 1
             self.keyboard_bin_tab[current_index] = 0
-        elif 28 <= current_index <= 30:
-            self.keyboard_bin_tab[32] = 1
+        elif 27 <= current_index <= 29:
+            self.keyboard_bin_tab[31] = 1
             self.keyboard_bin_tab[current_index] = 0
 
     def setResult(self, key):
         if key == "backspace":
             if len(self.sentence) > 0:
                 del self.sentence[-1]
-        elif key == "space":
+        elif key == "spacebar":
             self.sentence.append(" ")
         else:
             self.sentence.append(key)
@@ -233,7 +227,6 @@ class QWERTYTile:
     def calibrate(self, screen):
         x, y, w, h = self.centerCoo(screen, 100, 100)
         try:            
-            #screen = keyboard.generateKeyboard(screen)
             if self.Finger:
                 if (self.Finger[1] > x and self.Finger[1] < x + w) and (self.Finger[2] > y and self.Finger[2] < y + h):
                     screen = self.CalibrationLoading(screen, x, y, w, h)
@@ -263,7 +256,6 @@ class QWERTYTile:
         return screen
 
     def update(self, screen, keyboard):
-        #global key_to_highlight
         h, w, d = screen.shape
         if self.old_w != w:
             self.old_w = w
@@ -279,9 +271,7 @@ class QWERTYTile:
         screen = keyboard.generateKeyboard(screen)
         self.FingerUpdate()
         if self.start == True:
-            self.keyboard_bin_tab[14] = 1
-        #    self.key_to_highlight = 6
-        #    self.updateKeyboardBinTab([self.key_to_highlight])
+            self.keyboard_bin_tab[14] = 1 #highlight letter "G" at the start
         if (len(self.lms) > 0):                 
             self.findGesture()            
             cv2.circle(screen, (self.lms[8][1], self.lms[8][2]), 7, (255, 0, 0), cv2.FILLED)
@@ -290,8 +280,6 @@ class QWERTYTile:
                 if self.is_calibrated == True:
                     screen = self.afterCalibrationDelay(screen, 100, 100)
                     self.findGesture()
-                    #screen = keyboard.generateKeyboard(screen)
-                    #screen = self.calibrate(screen, keyboard)
                 else:
                     self.calibration_delay = 10
                     screen = self.calibrate(screen)

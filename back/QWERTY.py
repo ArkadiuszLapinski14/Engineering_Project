@@ -1,4 +1,3 @@
-import time
 import cv2
 import numpy as np
 import back.modules.FaceMeshModule as mtm
@@ -35,36 +34,23 @@ class QWERTY:
         self.Y = []
         self.X = []
         self.lmList = []
-
-        #interval in seconds between each key/part of keyboard highlighted
-        self.interval = 4
-
         self.alphabet = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
                          ["A", "S", "D", "F", "G", "H", "J", "K", "L", "!"],
                          ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]]
-        self.keys_list = [
-            ["Q", "W", "E", "R", "T", "A", "S", "D", "F", "G", "Z", "X", "C", "V", "B"],
-            ["Y", "U", "I", "O", "P", "H", "J", "K", "L", "!", "N", "M", ",", ".", "?"],
-            ["spacebar", "backspace"]
-        ]
-        self.keyboard_bin_tab = np.ones(32)
         self.tiles = []
-        self.sentence = ""
+        self.sentance = ""
         self.img = None
         self.methode = methode
         self.old_w=0
         self.typable = True
         self.margin=None
-        self.gesture = False
-        self.last_gesture_time = time.time()
-        self.gesturePause = 1
-        self.firstChoice = False
-        self.secondChoice = False
-        self.thirdChoice = False
-        self.firstChoiceNum = None
-        self.secondChoiceNum = None     
-        self.detector = htm.handDetector()
-        self.lm_index = [8, 4]
+
+        if methode == "palec":
+            self.detector = htm.handDetector()
+            self.lm_index = [8, 4]
+        else:
+            self.detector = mtm.FaceMeshDetector()
+            self.lm_index = 2
 
     def updateSizes(self,w):
         self.margin=int(w/100)
@@ -93,38 +79,13 @@ class QWERTY:
             tilesData(x1=int(self.spacebar_x + SP_x), x2=int(self.x1 + SP_x), y1=int(self.spacebar_y + SP_y),
                       y2=int(self.spacebar_y + self.tileSize + SP_y), letter="backspace"))
 
-    def getText(self):
-        return self.sentence
+        # for i in range(0,len(self.tiles)): print(self.tiles[i].letter, self.tiles[i].x1,self.tiles[i].x2,self.tiles[i].y1,self.tiles[i].y2)
 
-    def updateKeyboardBinTab(self, keys_to_highlight):
-        for i, tile in enumerate(self.tiles):            
-            if tile.getLetter() in keys_to_highlight:
-                self.keyboard_bin_tab[i] = 1  # Highlight key
-            else:
-                self.keyboard_bin_tab[i] = 0
-    
-    def findGesture(self, iteration):
-        current_time_gesture = time.time()
-        if current_time_gesture - self.last_gesture_time < self.gesturePause:
-            return
-        if np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (
-                     self.lmList[8][2] - self.lmList[4][2]) ** 2) < self.deadZone:
-                self.gesture = True
-                print(iteration)
-                if self.firstChoice == False:
-                    self.firstChoice = True
-                    self.firstChoiceNum = iteration
-                elif self.secondChoice == False:
-                    self.secondChoice = True
-                    self.secondChoiceNum = iteration
-                elif self.thirdChoice == False:
-                    self.thirdChoice = True
-                self.last_gesture_time = current_time_gesture
+    def getText(self):
+        return self.sentance
 
     def update(self, img, keyboard):
         self.img = img
-        global key_to_highlight
-        keys_to_highlight = []
         h,w, d = img.shape
         if self.old_w != w:
             self.old_w = w
@@ -132,89 +93,35 @@ class QWERTY:
             self.updateSizes(w)
             self.fillTiles(w,h)
 
-        self.img = self.detector.findHands(self.img, False)
+        if self.methode == "palec":
+            self.img = self.detector.findHands(self.img, False)
+        else:
+            self.img, faces = self.detector.findFaceMesh(self.img, False)
 
-        self.lmList = self.detector.findPosition(self.img, 0, False)        
-        current_time = int(time.time()) % 12
-        iteration = (current_time // self.interval) + 1
+        self.lmList = self.detector.findPosition(self.img, 0, False)
 
-        if self.firstChoice == False:
-            #current_time = int(time.time()) % 12
-            #iteration = (current_time // self.interval) + 1
-            keys_to_highlight = self.keys_list[(iteration - 1) % len(self.keys_list)]
-            print("Keys to highlight:", keys_to_highlight)
-            self.updateKeyboardBinTab(keys_to_highlight)
-            print("Updated Keyboard Bin Tab:", self.keyboard_bin_tab)
-        if  self.firstChoice == True and self.secondChoice == False:
-            print("dziala")
-            #current_time = int(time.time()) % 12
-            #iteration = (current_time // self.interval) + 1  
-            key_mapping = {
-                (1, 1): ["Q", "W", "E", "R", "T"],
-                (1, 2): ["A", "S", "D", "F", "G"],
-                (1, 3): ["Z", "X", "C", "V", "B"],
-                (2, 1): ["Y", "U", "I", "O", "P"],
-                (2, 2): ["H", "J", "K", "L", "!"],
-                (2, 3): ["N", "M", ",", ".", "?"],
-                (3, 1): ["spacebar"],
-                (3, 2): ["backspace"],
-            }
-            if self.firstChoiceNum == 3:
-                if iteration % 2 == 1:
-                    key_to_highlight = "spacebar"
-                else:
-                    key_to_highlight = "backspace"
-                self.updateKeyboardBinTab([key_to_highlight])                    
-            else:
-                keys_to_highlight = key_mapping.get((self.firstChoiceNum, iteration), [])              
-                self.updateKeyboardBinTab(keys_to_highlight)
-                    
-        elif self.firstChoice == True and self.secondChoice == True and self.thirdChoice == False:
-            print("dziala2")
-            current_time2 = int(time.time()) % 20
-            iteration2 = (current_time2 // self.interval)
-            key_mapping = {
-                (1, 1): ["Q", "W", "E", "R", "T"],
-                (1, 2): ["A", "S", "D", "F", "G"],
-                (1, 3): ["Z", "X", "C", "V", "B"],
-                (2, 1): ["Y", "U", "I", "O", "P"],
-                (2, 2): ["H", "J", "K", "L", "!"],
-                (2, 3): ["N", "M", ",", ".", "?"],
-            }
-            
-            keys_to_highlight = key_mapping.get((self.firstChoiceNum, self.secondChoiceNum), [])
-            if keys_to_highlight and iteration in range(len(keys_to_highlight)):
-                key_to_highlight = keys_to_highlight[iteration2]
-                print("Key to highlight:", key_to_highlight)
-                self.updateKeyboardBinTab(key_to_highlight)
+        if (len(self.lmList) > 0):
+            if self.typable == True:
+                if np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (
+                        self.lmList[8][2] - self.lmList[4][2]) ** 2) < self.deadZone:
+                    for i in range(0, int(len(self.tiles))):
+                        if self.tiles[i].compare(self.lmList[8][1], self.lmList[8][2]):
+                            if (self.tiles[i].letter == "spacebar"):
+                                self.sentance = self.sentance + " "
+                            elif (self.tiles[i].letter == "backspace"):
+                                self.sentance = self.sentance[0:-1]
+                                print("też jej")
+                            else:
+                                self.sentance += self.tiles[i].getLetter()
+                    self.typable = False
+            elif self.typable == False:
+                if np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (
+                        self.lmList[8][2] - self.lmList[4][2]) ** 2) > self.deadZone + self.margin:
+                    self.typable = True
 
-        if self.firstChoiceNum == 3 and self.secondChoice == True:
-            print(key_to_highlight)
-            if key_to_highlight == "spacebar":
-                self.sentence += " "
-            elif key_to_highlight == "backspace":
-                self.sentence = self.sentence[0:-1]
-            self.firstChoice = False
-            self.secondChoice = False
-            self.thirdChoice = False
-            key_to_highlight = None
-
-        if self.thirdChoice == True:
-            print(key_to_highlight)
-            self.sentence += key_to_highlight
-            self.firstChoice=False
-            self.secondChoice=False
-            self.thirdChoice=False   
-            key_to_highlight=None
-
-        if (len(self.lmList) > 0):                 
-            self.findGesture(iteration)            
+            # print(self.lmList[8][1],self.lmList[8][2],np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (self.lmList[8][2] - self.lmList[4][2]) ** 2))
             cv2.circle(self.img, (self.lmList[8][1], self.lmList[8][2]), 7, (255, 0, 0), cv2.FILLED)
             cv2.circle(self.img, (self.lmList[4][1], self.lmList[4][2]), 7, (0, 255, 0), cv2.FILLED)
 
-        for i, tile in enumerate(self.tiles):
-            if self.keyboard_bin_tab[i] == 1:
-                cv2.rectangle(self.img, (tile.x1, tile.y1), (tile.x2, tile.y2), (0, 0, 255), cv2.FILLED)
-
         self.img = keyboard.generateKeyboard(img)
-        return self.img, list(self.sentence)
+        return self.img, list(self.sentance)

@@ -13,6 +13,8 @@ from back.QWERTY import QWERTY
 from back.QwertyKeyboard import QwertyKeyboard
 from back.HeadMovingKeyboard import HeadMovingKeyboard
 from back.HeadMovingKeyboardStatic import HeadMovingKeyboardStatic
+from back.QWERTYHawking import QWERTYHawking
+from back.QWERTYTile import QWERTYTile
 
 class Navbar(QWidget):
     def __init__(self, parent = None):
@@ -151,6 +153,11 @@ class Navbar(QWidget):
         self.QWERTYHoverKboardButton.setObjectName("MultiBtn")
         self.QWERTYKboardButton = self.ButtonInit(lambda: self.KeyboardTypeOnChange(QWERTY(), QwertyKeyboard(), "Pinch"), "Pinch")
         self.QWERTYKboardButton.setObjectName("MultiBtn")
+        self.QWERTYHawkingKboardButton = self.ButtonInit(lambda: self.KeyboardTypeOnChange(QWERTYHawking(), QwertyKeyboard(), "QWERTY Hawking"), "QWERTY Hawking")
+        self.QWERTYHawkingKboardButton.setObjectName("MultiBtn")
+        self.QWERTYTileKboardButton = self.ButtonInit(lambda: self.KeyboardTypeOnChange(QWERTYTile(), QwertyKeyboard(), "QWERTY Tile"), "QWERTY Tile")
+        self.QWERTYTileKboardButton.setObjectName("MultiBtn")
+
         self.headSwipeKboardButton = self.ButtonInit(lambda: self.KeyboardTypeOnChange(HeadMovingKeyboard(), Keyboard(), "Head Swipe Dynamic"), "Swipe Dynamic")
         self.headSwipeKboardButton.setObjectName("MultiBtn")
         self.headSwipeKboardStaticButton = self.ButtonInit(lambda: self.KeyboardTypeOnChange(HeadMovingKeyboardStatic(), Keyboard(), "Head Swipe Static"), "Swipe Static")
@@ -170,12 +177,16 @@ class Navbar(QWidget):
                 self.gridLayout.addWidget(self.eightpenKboardButton, 7, 0, 1, 1)
             elif self.keyboardDisplayMethod == "QWERTY":
                 self.gridLayout.addWidget(self.QWERTYKboardButton, 7, 0, 1, 1)
+                self.gridLayout.addWidget(self.QWERTYHawkingKboardButton, 7, 1, 1, 1)
+                self.gridLayout.addWidget(self.QWERTYTileKboardButton, 8, 0, 1, 1)
             else:
                 self.gridLayout.addWidget(self.swipeKboardButton, 7, 0, 1, 1)
                 self.gridLayout.addWidget(self.swipeKboardStaticButton, 8, 0, 1, 1)
                 self.gridLayout.addWidget(self.eightpenKboardButton, 7, 1, 1, 1)
                 self.gridLayout.addWidget(self.QWERTYHoverKboardButton, 8, 1, 1, 1)
                 self.gridLayout.addWidget(self.QWERTYKboardButton, 9, 0, 1, 1)
+                self.gridLayout.addWidget(self.QWERTYHawkingKboardButton, 9, 1, 1, 1)
+                self.gridLayout.addWidget(self.QWERTYTileKboardButton, 10, 0, 1, 1)
         elif self.headHand == "Head":
             if self.keyboardDisplayMethod == "Line":
                 self.gridLayout.addWidget(self.headSwipeKboardButton, 7, 0, 1, 1)
@@ -205,5 +216,5 @@ class Navbar(QWidget):
 
         self.parent.cameraView.Launcher.keyboardType.emit(type)
         self.parent.cameraView.Launcher.keyboard.emit(method)
-        self.ButtonReplace([self.headSwipeKboardButton, self.headSwipeKboardStaticButton, self.headEightpenKboardButton, self.swipeKboardButton, self.swipeKboardStaticButton, self.eightpenKboardButton, self.QWERTYHoverKboardButton, self.QWERTYKboardButton], self.keyboardTypeButton, 7)
+        self.ButtonReplace([self.headSwipeKboardButton, self.headSwipeKboardStaticButton, self.headEightpenKboardButton, self.swipeKboardButton, self.swipeKboardStaticButton, self.eightpenKboardButton, self.QWERTYHoverKboardButton, self.QWERTYKboardButton, self.QWERTYHawkingKboardButton, self.QWERTYTileKboardButton], self.keyboardTypeButton, 7)
         

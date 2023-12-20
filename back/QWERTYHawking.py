@@ -23,7 +23,7 @@ class tilesData:
         return self.letter
 
 
-class QWERTY:
+class QWERTYHawking:
     def __init__(self, methode="palec",margin=20):
         self.deadZone = None
         self.spacebar_y = None

@@ -19,7 +19,7 @@ class tilesData:
     def getLetter(self):
         return self.letter
 
-class QWERTY:
+class QWERTYTile:
     def __init__(self, methode="palec", margin=20):
         self.deadZone = None
         self.spacebar_y = None
@@ -123,15 +123,14 @@ class QWERTY:
             new_index = current_index - 10
             self.key_to_highlight = self.tiles[new_index]
             self.keyboard_bin_tab[current_index] = 0
-            self.keyboard_bin_tab[new_index] = 1
-        '''current_index = np.argmax(self.keyboard_bin_tab)
-        current_row = current_index // len(self.keys_list[0])
-        current_col = current_index % len(self.keys_list[0])
-        if current_row > 0:
-            new_index = (current_row - 1) * len(self.keys_list[0]) + current_col
-            self.key_to_highlight = self.tiles[new_index]
-            self.keyboard_bin_tab[current_index] = 0
-            self.keyboard_bin_tab[self.tiles.index(self.key_to_highlight)] = 1'''
+            self.keyboard_bin_tab[new_index] = 1        
+        elif current_index > 30:
+            if current_index == 31:
+                self.keyboard_bin_tab[24] = 1
+                self.keyboard_bin_tab[current_index] = 0
+            elif current_index == 32:
+                self.keyboard_bin_tab[29] = 1
+                self.keyboard_bin_tab[current_index] = 0
 
     def highlightKeyBelow(self):
         current_index = np.argmax(self.keyboard_bin_tab)
@@ -140,15 +139,13 @@ class QWERTY:
             self.key_to_highlight = self.tiles[new_index]
             self.keyboard_bin_tab[current_index] = 0
             self.keyboard_bin_tab[new_index] = 1
-        '''current_index = np.argmax(self.keyboard_bin_tab)
-        current_row = current_index // len(self.keys_list[0])
-        current_col = current_index % len(self.keys_list[0])
-        if current_row < len(self.keys_list) - 1:
-            new_index = (current_row + 1) * len(self.keys_list[0]) + current_col
-            self.key_to_highlight = self.tiles[new_index]
+        elif 21 <= current_index <= 27:
+            self.keyboard_bin_tab[31] = 1
             self.keyboard_bin_tab[current_index] = 0
-            self.keyboard_bin_tab[self.tiles.index(self.key_to_highlight)] = 1
-'''
+        elif 28 <= current_index <= 30:
+            self.keyboard_bin_tab[32] = 1
+            self.keyboard_bin_tab[current_index] = 0
+
     def setResult(self, key):
         if key == "backspace":
             if len(self.sentence) > 0:
@@ -168,25 +165,25 @@ class QWERTY:
             if self.keyboard_bin_tab[index_of_highlighted_key] == 1:
                 self.setResult(self.keys_list[index_of_highlighted_key])
             self.last_gesture_time = current_time_gesture
-        elif self.is_calibrated: #ostatnia zmiana, powinno działać, do sprawdzenia
+        elif self.is_calibrated:
             if (self.Finger and self.prevFinger):
                 # left
-                if self.Finger[1] < self.prevFinger[0][1] - 300:
+                if self.Finger[1] < self.prevFinger[0][1] - 100:
                     self.start = False
                     self.highlightPreviousKey()
                     self.prevFingerListReset()
                 # right
-                elif self.Finger[1] > self.prevFinger[0][1] + 300:
+                elif self.Finger[1] > self.prevFinger[0][1] + 100:
                     self.start = False
                     self.highlightNextKey()
                     self.prevFingerListReset()
                 # up
-                elif self.Finger[2] > self.prevFinger[0][2] + 200:
+                elif self.Finger[2] > self.prevFinger[0][2] + 100:
                     self.start = False
                     self.highlightKeyBelow()
                     self.prevFingerListReset()
                 # down
-                elif self.Finger[2] < self.prevFinger[0][2] - 180:
+                elif self.Finger[2] < self.prevFinger[0][2] - 100:
                     self.start = False
                     self.highlightKeyAbove()
                     self.prevFingerListReset()

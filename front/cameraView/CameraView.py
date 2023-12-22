@@ -198,10 +198,15 @@ class CameraView(QWidget):
 
         df = pd.DataFrame(data)
 
-        if os.path.exists("stats.csv"):
-            df.to_csv("stats.csv", mode='a', index=False, header=False )
-        else:
+        file_empty = not os.path.exists("stats.csv") or os.stat("stats.csv").st_size == 0
+
+        if file_empty:
+            # Write column names if the file is empty
             df.to_csv("stats.csv", index=False)
+        else:
+            # Append data if the file is not empty
+            df.to_csv("stats.csv", mode='a', index=False, header=False)
+
 
         self.reset = True
         self.confirmResetTextBtn.setEnabled(True)

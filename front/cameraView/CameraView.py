@@ -187,6 +187,7 @@ class CameraView(QWidget):
         err, rat_ob, jaro_wr = self.getSimilarity(self.textToCheck, self.textToWrite)
 
         data = {
+            "Keyboard": [self.type.__class__.__name__ if self.type else ""],
             "Text": [self.textToWrite], 
             "User Text": [self.textToCheck], 
             "Elapsed Time (seconds)": [self.elapsedTime],

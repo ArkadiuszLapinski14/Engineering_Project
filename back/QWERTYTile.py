@@ -31,7 +31,6 @@ class QWERTYTile:
         self.Y = []
         self.X = []
 
-
         self.alphabet = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
                          ["A", "S", "D", "F", "G", "H", "J", "K", "L", "!"],
                          ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]]
@@ -49,15 +48,14 @@ class QWERTYTile:
         self.margin = None
         self.start = True
         self.last_gesture_time = time.time()
-        self.gesturePause = 3
+        self.gesturePause = 0.5
         self.lms = None
         self.calibration_delay = 0
         self.calibration_loading = 0
         self.prevFinger = []
         self.point = 8
         self.is_calibrated = False
-        self.detector = htm.handDetector()
-        
+        self.detector = htm.handDetector()        
         self.key_to_highlight = None
         self.Finger = None
 
@@ -239,8 +237,7 @@ class QWERTYTile:
                 self.is_calibrated = False
                 self.calibration_loading = 0
         except Exception as e:
-            print("Calibration doesnt work", e)
-        
+            print("Calibration doesnt work", e)        
         return screen
 
     def drawRec(self, screen, color, x, y, w, h):

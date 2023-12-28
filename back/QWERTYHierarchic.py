@@ -218,3 +218,6 @@ class QWERTYHierarchic:
 
         self.img = keyboard.generateKeyboard(img)
         return self.img, list(self.sentence)
+    
+    #TODO:
+    #Przyspieszyć zmianę podświetlenia klawiszy dbając o to aby nie mogło wykryć jednego gestu jako np 2

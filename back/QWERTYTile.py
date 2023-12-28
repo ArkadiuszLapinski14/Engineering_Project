@@ -49,6 +49,7 @@ class QWERTYTile:
         self.start = True
         self.last_gesture_time = time.time()
         self.gesturePause = 0.5
+        self.gesturePauseConfirm = 1
         self.lms = None
         self.calibration_delay = 0
         self.calibration_loading = 0
@@ -149,15 +150,18 @@ class QWERTYTile:
 
     def findGesture(self):
         current_time_gesture = time.time()
-        if current_time_gesture - self.last_gesture_time < self.gesturePause:
-            return
-        elif np.sqrt((self.lms[8][1] - self.lms[4][1]) ** 2 + (self.lms[8][2] - self.lms[4][2]) ** 2) < self.deadZone:
+        
+        if np.sqrt((self.lms[8][1] - self.lms[4][1]) ** 2 + (self.lms[8][2] - self.lms[4][2]) ** 2) < self.deadZone:
+            if current_time_gesture - self.last_gesture_time < self.gesturePauseConfirm:
+                return
             self.start = False
             index_of_highlighted_key = np.argmax(self.keyboard_bin_tab)
             if self.keyboard_bin_tab[index_of_highlighted_key] == 1:
                 self.setResult(self.keys_list[index_of_highlighted_key])
             self.last_gesture_time = current_time_gesture
         elif self.is_calibrated:
+            if current_time_gesture - self.last_gesture_time < self.gesturePause:
+                return
             if (self.Finger and self.prevFinger):
                 # left
                 if self.Finger[1] < self.prevFinger[0][1] - 100:

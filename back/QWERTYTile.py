@@ -287,5 +287,5 @@ class QWERTYTile:
             except Exception as e:
                 print("update doesn't work", e)
          
-        print(self.keyboard_bin_tab)
+        #print(self.keyboard_bin_tab)
         return screen, list(self.sentence)

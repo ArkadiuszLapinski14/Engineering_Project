@@ -110,7 +110,7 @@ class QWERTYHierarchic:
         if np.sqrt((self.lmList[8][1] - self.lmList[4][1]) ** 2 + (
                      self.lmList[8][2] - self.lmList[4][2]) ** 2) < self.deadZone:
                 self.gesture = True
-                print(iteration)
+                #print(iteration)
                 if self.firstChoice == False:
                     self.firstChoice = True
                     self.firstChoiceNum = iteration
@@ -135,17 +135,9 @@ class QWERTYHierarchic:
         self.img = self.detector.findHands(self.img, False)
 
         self.lmList = self.detector.findPosition(self.img, 0, False) 
-        current_time = int(time.time()) % 3  # Ensure iteration from 1 to 3
+        current_time = int(time.time()) % 3 
         iteration = current_time + 1
-        '''       
-        current_time = int(time.time()) % 12
-        #0
-        #1
-        #2
-        #3
-        #4
-        iteration = (current_time // self.interval) + 1
-        '''
+
         if self.firstChoice == False:
             #current_time = int(time.time()) % 12
             #iteration = (current_time // self.interval) + 1
@@ -154,7 +146,7 @@ class QWERTYHierarchic:
             self.updateKeyboardBinTab(keys_to_highlight)
             #print("Updated Keyboard Bin Tab:", self.keyboard_bin_tab)
         if  self.firstChoice == True and self.secondChoice == False:
-            print("dziala")
+            #print("dziala")
             #current_time = int(time.time()) % 12
             #iteration = (current_time // self.interval) + 1  
             key_mapping = {
@@ -180,7 +172,7 @@ class QWERTYHierarchic:
                 self.updateKeyboardBinTab(keys_to_highlight)
                     
         elif self.firstChoice == True and self.secondChoice == True and self.thirdChoice == False:
-            print("dziala2")
+            #print("dziala2")
             current_time = int(time.time()) % 5
             iteration = current_time
             key_mapping = {
@@ -199,7 +191,7 @@ class QWERTYHierarchic:
                 self.updateKeyboardBinTab(key_to_highlight)
 
         if self.firstChoiceNum == 3 and self.secondChoice == True:
-            print(key_to_highlight)
+            #print(key_to_highlight)
             if key_to_highlight == "spacebar":
                 self.sentence += " "
             elif key_to_highlight == "backspace":
@@ -210,7 +202,7 @@ class QWERTYHierarchic:
             key_to_highlight = None
 
         if self.thirdChoice == True:
-            print(key_to_highlight)
+            #print(key_to_highlight)
             self.sentence += key_to_highlight
             self.firstChoice=False
             self.secondChoice=False
@@ -228,6 +220,3 @@ class QWERTYHierarchic:
 
         self.img = keyboard.generateKeyboard(img)
         return self.img, list(self.sentence)
-    
-    #TODO:
-    #Przyspieszyć zmianę podświetlenia klawiszy dbając o to aby nie mogło wykryć jednego gestu jako np 2

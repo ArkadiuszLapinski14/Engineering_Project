@@ -57,7 +57,7 @@ class QWERTYHierarchic:
         self.margin=None
         self.gesture = False
         self.last_gesture_time = time.time()
-        self.gesturePause = 1
+        self.gesturePause = 0.5
         self.firstChoice = False
         self.secondChoice = False
         self.thirdChoice = False
@@ -134,10 +134,18 @@ class QWERTYHierarchic:
 
         self.img = self.detector.findHands(self.img, False)
 
-        self.lmList = self.detector.findPosition(self.img, 0, False)        
+        self.lmList = self.detector.findPosition(self.img, 0, False) 
+        current_time = int(time.time()) % 3  # Ensure iteration from 1 to 3
+        iteration = current_time + 1
+        '''       
         current_time = int(time.time()) % 12
+        #0
+        #1
+        #2
+        #3
+        #4
         iteration = (current_time // self.interval) + 1
-
+        '''
         if self.firstChoice == False:
             #current_time = int(time.time()) % 12
             #iteration = (current_time // self.interval) + 1
@@ -160,6 +168,8 @@ class QWERTYHierarchic:
                 (3, 2): ["backspace"],
             }
             if self.firstChoiceNum == 3:
+                current_time = int(time.time()) % 2
+                iteration = current_time + 1
                 if iteration % 2 == 1:
                     key_to_highlight = "spacebar"
                 else:
@@ -171,8 +181,8 @@ class QWERTYHierarchic:
                     
         elif self.firstChoice == True and self.secondChoice == True and self.thirdChoice == False:
             print("dziala2")
-            current_time2 = int(time.time()) % 20
-            iteration2 = (current_time2 // self.interval)
+            current_time = int(time.time()) % 5
+            iteration = current_time
             key_mapping = {
                 (1, 1): ["Q", "W", "E", "R", "T"],
                 (1, 2): ["A", "S", "D", "F", "G"],
@@ -184,7 +194,7 @@ class QWERTYHierarchic:
             
             keys_to_highlight = key_mapping.get((self.firstChoiceNum, self.secondChoiceNum), [])
             if keys_to_highlight and iteration in range(len(keys_to_highlight)):
-                key_to_highlight = keys_to_highlight[iteration2]
+                key_to_highlight = keys_to_highlight[iteration]
                 #print("Key to highlight:", key_to_highlight)
                 self.updateKeyboardBinTab(key_to_highlight)
 

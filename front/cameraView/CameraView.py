@@ -10,7 +10,7 @@ import Levenshtein
 import textdistance
 from front.components.Launcher import Launcher
 from screeninfo import get_monitors
-
+import matplotlib.pyplot as plt
 
 class PixmapLabel(QLabel):
     pixmapChanged = pyqtSignal()
@@ -207,6 +207,34 @@ class CameraView(QWidget):
         self.confirmResetTextBtn.setEnabled(True)
         self.testText.setEnabled(True)
         self.confirmResetTextBtn.setIcon(QIcon('./assets/acceptIC.png'))
+        self.generateGraph()
+
+    def generateGraph(self):
+        df = pd.read_csv("stats.csv")
+        plt.figure(figsize=(15, 8))
+
+        #find max time value
+        max_time = df["Elapsed Time (seconds)"].max()
+        x_values = range(len(df))
+        bar_width = 0.2
+
+        plt.bar(x_values, df["Elapsed Time (seconds)"], width=bar_width, label='Elapsed Time')
+        plt.bar([x + bar_width for x in x_values], df["Levenstein Transformations"], width=bar_width, label='Levenshtein', alpha=0.7)
+        plt.bar([x + 2 * bar_width for x in x_values], df["Ratcliff"], width=bar_width, label='Ratcliff', alpha=0.7)
+        plt.bar([x + 3 * bar_width for x in x_values], df["Jaro Winkler"], width=bar_width, label='Jaro Winkler', alpha=0.7)
+
+        plt.title('Keyboards statistics')
+        plt.xlabel('Used keyboard and typed text')
+        plt.ylabel('Values')
+        plt.legend()
+
+        plt.xticks([x + 1.5 * bar_width for x in x_values], [f"{row['Keyboard']} - {row['Text']}" for _, row in df.iterrows()], rotation=45, ha="right")
+        plt.yticks(range(0, int(max_time) + 11, 10))
+        #dynamic y axis
+        plt.ylim(0, max_time + 10)
+
+        plt.tight_layout()
+        plt.savefig('stats.png', dpi=300)
 
     def getSimilarity(self, str1, str2):
         leven = Levenshtein.distance(str1, str2)  #ile transformacji , -

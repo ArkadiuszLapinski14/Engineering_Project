@@ -1,2 +1,7 @@
 Keyboard,Text,User Text,Elapsed Time (seconds),Levenstein Transformations,Ratcliff,Jaro Winkler
-QWERTYTile,VEL TURPIS NUNC EGET,,0.0,20,0,0
+QWERTY,HELLO THERE,HELLO THERE,38.0,0,1,1
+Hover,HELLO THERE,HELLO THERE,77.0,0,1,1
+HandMovingKeyboardStatic,HELLO THERE,HELLO THERE,267.0,0,1,1
+HandMovingKeyboard,HELLO THERE,HELLO THERE,348.0,0,1,1
+EightPen,HELLO THERE,HELLO THERE,138.0,0,1,1
+EightPen,HELLO THERE,HELLO THERE,93.0,0,1,1

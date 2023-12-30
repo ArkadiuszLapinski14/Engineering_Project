@@ -119,7 +119,7 @@ class EightPen:
                     else:
                         self.sentence.append(self.alphabet[self.index-1])
                         #print(self.alphabet[self.index-1], " turns: ", self.turns)
-                        print("End of type")
+                        #print("End of type")
                     self.marker_pos=[]
                     self.start=False
                 elif self.newPosition is not self.marker_pos[np.size(self.marker_pos)-1]:

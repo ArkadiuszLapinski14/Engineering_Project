@@ -156,7 +156,6 @@ class CameraView(QWidget):
                 self.type.res = []
                 self.reset = False
 
-        
     def handleGenerateClick(self):
         paragraphs = '1'
         max_length = '20'
@@ -203,7 +202,6 @@ class CameraView(QWidget):
             df.to_csv("stats.csv", index=False)
         else:
             df.to_csv("stats.csv", mode='a', index=False, header=False)
-
 
         self.reset = True
         self.confirmResetTextBtn.setEnabled(True)

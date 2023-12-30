@@ -80,9 +80,6 @@ class QWERTY:
 
         # for i in range(0,len(self.tiles)): print(self.tiles[i].letter, self.tiles[i].x1,self.tiles[i].x2,self.tiles[i].y1,self.tiles[i].y2)
 
-    def getText(self):
-        return self.sentance
-
     def update(self, img, keyboard):
         self.img = img
         h,w, d = img.shape

@@ -7,7 +7,7 @@ class EightPen:
 
     def __init__(self, methode="palec"):
         self.methode=methode
-        self.sentance=[]
+        self.sentence=[]
         self.marker_pos=[]
         self.alphabet = ['I','O','E','.','D','U','L','S','G','W','P','C','Z','!','Q','V','Y','A','T',',','X','R','H','N','K','F','B','M','\'','?','@','J']
         self.rad=30
@@ -31,16 +31,12 @@ class EightPen:
         for x in range(0, np.size(self.marker_pos)):
             print(self.marker_pos[x], "Size: ", np.size(self.marker_pos), " Test: ",self.marker_pos[np.size(self.marker_pos)-1])
     
-    def printSentance(self):        # PRINT OUT SENTANCE
+    def printSentence(self):        # PRINT OUT SENTENCE
         out=""
-        for i in range(0,np.size(self.sentance)):
-            out+=self.sentance[i]
+        for i in range(0,np.size(self.sentence)):
+            out+=self.sentence[i]
         print(out)
 
-    def getText(self):
-        return self.sentance
-
-    
     # METHODE FOR GETTING POSITION OF MARKER
     def comparePosition(self, lm):
         h,w,c=self.img.shape
@@ -90,18 +86,18 @@ class EightPen:
                  if np.size(self.marker_pos)==4:
                     if self.marker_pos[1]==4 and self.marker_pos[3]==4: # INSERT SPACE
                         print("space")
-                        self.sentance.append(" ")
+                        self.sentence.append(" ")
                         self.marker_pos=[]
                         self.start=False
                     elif self.marker_pos[1]==2 and self.marker_pos[3]==2: # BACKSPACE
                         print("backspace")
-                        if np.size(self.sentance)>0:
-                            self.sentance.pop()
+                        if np.size(self.sentence)>0:
+                            self.sentence.pop()
                         self.marker_pos=[]
                         self.start=False
-                    elif self.marker_pos[1]==1 and self.marker_pos[3]==1: # DELETE SENTANCE
-                        print("sentance deleted")
-                        self.sentance=[]
+                    elif self.marker_pos[1]==1 and self.marker_pos[3]==1: # DELETE sentence
+                        print("sentence deleted")
+                        self.sentence=[]
                         self.marker_pos=[]
                         self.start=False
                 #########################
@@ -119,7 +115,7 @@ class EightPen:
                     if self.index>32 or self.index<=0 or np.size(self.marker_pos)>6:
                         print("Incorrect input")
                     else:
-                        self.sentance.append(self.alphabet[self.index-1])
+                        self.sentence.append(self.alphabet[self.index-1])
                         print(self.alphabet[self.index-1], " turns: ", self.turns)
                         print("End of type")
                     self.marker_pos=[]
@@ -132,4 +128,4 @@ class EightPen:
         self.img = cv2.addWeighted(self.overlay, self.alpha, self.img, 1 - self.alpha, 0)
         cv2.circle(self.img, (self.X, self.Y), 7, (255, 0, 0), cv2.FILLED)
 
-        return self.img, self.sentance
+        return self.img, self.sentence

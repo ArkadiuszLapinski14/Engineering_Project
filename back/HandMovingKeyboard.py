@@ -13,9 +13,6 @@ class HandMovingKeyboard:
         self.calibration_delay = 0  #zmienna potrzebna do zatrzymania stanu kalibracji na kilka milisekund //optymalizacja
         self.calibration_loading = 0 #zmienna potrzebna do zaladowania kalibracji (podobnie ma to zajmowac kilka milisekund) //optymalizacja
         self.point = point
-
-    def get_result(self):
-        return self.res
 		
     def update(self, screen, keyboard):
         '''Updates a keyboard according to our algorithm when calibrated'''

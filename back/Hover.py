@@ -14,9 +14,6 @@ class Hover:
         self.typing_delay = 0.8
         self.prev_time = 0
 
-    def get_result(self):
-        return self.res
-
     def update(self, screen, keyboard):
         self.keyboard = keyboard
         self.keys = self.keyboard.get_keys()

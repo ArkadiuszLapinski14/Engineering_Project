@@ -48,9 +48,6 @@ class HandMovingKeyboardStatic:
 
         screen = self.drawResult(screen, 600, 600)
         return screen, self.res
-    
-    def get_result(self):
-        return self.res
 
     def calibrate(self, screen):
         '''Checks if finger is inside the calibration box'''

@@ -27,9 +27,11 @@ class EightPen:
             self.detector = mtm.FaceMeshDetector()
             self.lm_index=2
    
+    '''    
     def printHolder(self):          # PRINT OUT CONTENTS OF ARRAY LINE BY LINE #METODA DO DEBUGOWANIA
         for x in range(0, np.size(self.marker_pos)):
             print(self.marker_pos[x], "Size: ", np.size(self.marker_pos), " Test: ",self.marker_pos[np.size(self.marker_pos)-1])
+    '''
     
     def printSentence(self):        # PRINT OUT SENTENCE
         out=""
@@ -85,18 +87,18 @@ class EightPen:
                 #########################
                  if np.size(self.marker_pos)==4:
                     if self.marker_pos[1]==4 and self.marker_pos[3]==4: # INSERT SPACE
-                        print("space")
+                        #print("space")
                         self.sentence.append(" ")
                         self.marker_pos=[]
                         self.start=False
                     elif self.marker_pos[1]==2 and self.marker_pos[3]==2: # BACKSPACE
-                        print("backspace")
+                        #print("backspace")
                         if np.size(self.sentence)>0:
                             self.sentence.pop()
                         self.marker_pos=[]
                         self.start=False
                     elif self.marker_pos[1]==1 and self.marker_pos[3]==1: # DELETE sentence
-                        print("sentence deleted")
+                        #print("sentence deleted")
                         self.sentence=[]
                         self.marker_pos=[]
                         self.start=False
@@ -116,13 +118,13 @@ class EightPen:
                         print("Incorrect input")
                     else:
                         self.sentence.append(self.alphabet[self.index-1])
-                        print(self.alphabet[self.index-1], " turns: ", self.turns)
+                        #print(self.alphabet[self.index-1], " turns: ", self.turns)
                         print("End of type")
                     self.marker_pos=[]
                     self.start=False
                 elif self.newPosition is not self.marker_pos[np.size(self.marker_pos)-1]:
                     self.marker_pos.append(self.newPosition)
-                    self.printHolder()
+                    #self.printHolder()
         
         self.img=keyboard.generateKeyboard(img)
         self.img = cv2.addWeighted(self.overlay, self.alpha, self.img, 1 - self.alpha, 0)

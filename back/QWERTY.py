@@ -106,7 +106,7 @@ class QWERTY:
                                 self.sentance = self.sentance + " "
                             elif (self.tiles[i].letter == "backspace"):
                                 self.sentance = self.sentance[0:-1]
-                                print("też jej")
+                                #print("też jej")
                             else:
                                 self.sentance += self.tiles[i].getLetter()
                     self.typable = False

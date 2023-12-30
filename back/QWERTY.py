@@ -21,7 +21,6 @@ class tilesData:
     def getLetter(self):
         return self.letter
 
-
 class QWERTY:
     def __init__(self, methode="palec",margin=20):
         self.deadZone = None

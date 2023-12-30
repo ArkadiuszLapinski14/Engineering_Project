@@ -84,7 +84,7 @@ class HeadMovingKeyboard:
         
     def update2(self, screen):
         #try:
-            screen = self.keyboard.draw_update(screen, 10, 100, 30, 30)
+            screen = self.keyboard.generateKeyboard(screen, 10, 100, 30, 30)
             self.headUpdate()
            # screen = self.backToDefault(screen)
             if self.is_calibrated == True:

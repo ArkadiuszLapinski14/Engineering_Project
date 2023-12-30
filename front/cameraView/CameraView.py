@@ -215,5 +215,3 @@ class CameraView(QWidget):
         rat_ob = textdistance.ratcliff_obershelp(str1, str2) #Ratcliff-Obershelp similarity - sekwencja, +
         jaro_wr = textdistance.jaro_winkler(str1, str2)   #jaro winkler - kolejnosc+te same, +
         return leven, rat_ob, jaro_wr
-
-

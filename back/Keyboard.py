@@ -5,7 +5,7 @@ class Keyboard:
     def __init__(self, keys = list(string.ascii_uppercase + "!" + '?'+','+'.'+'<'+"_")):
         self.keys = keys
         
-    def draw_update(self, screen, x, y, w, h, color = (192,192,192)):
+    def generateKeyboard(self, screen, x, y, w, h, color = (192,192,192)):
         '''Draws a keyboard on the screen'''
         height, width, c = screen.shape
         x = int((width - (len(self.keys) * w + len(self.keys) * 2))/2)
@@ -16,7 +16,7 @@ class Keyboard:
             x += 32
         return screen
     
-    def draw_update_hover(self, screen, x, y, w, h, color=(192, 192, 192)):
+    def generateKeyboardHover(self, screen, x, y, w, h, color=(192, 192, 192)):
         '''Draws a keyboard on the screen'''
         height, width, c = screen.shape
         x = int((width - (len(self.keys) * w + len(self.keys) * 2)) / 2)

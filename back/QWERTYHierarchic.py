@@ -22,7 +22,6 @@ class tilesData:
     def getLetter(self):
         return self.letter
 
-
 class QWERTYHierarchic:
     def __init__(self, methode="palec",margin=20):
         self.deadZone = None
@@ -35,10 +34,6 @@ class QWERTYHierarchic:
         self.Y = []
         self.X = []
         self.lmList = []
-
-        #interval in seconds between each key/part of keyboard highlighted
-        self.interval = 4
-
         self.alphabet = [["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
                          ["A", "S", "D", "F", "G", "H", "J", "K", "L", "!"],
                          ["Z", "X", "C", "V", "B", "N", "M", ",", ".", "?"]]
@@ -93,9 +88,6 @@ class QWERTYHierarchic:
             tilesData(x1=int(self.spacebar_x + SP_x), x2=int(self.x1 + SP_x), y1=int(self.spacebar_y + SP_y),
                       y2=int(self.spacebar_y + self.tileSize + SP_y), letter="backspace"))
 
-    def getText(self):
-        return self.sentence
-
     def updateKeyboardBinTab(self, keys_to_highlight):
         for i, tile in enumerate(self.tiles):            
             if tile.getLetter() in keys_to_highlight:
@@ -133,22 +125,17 @@ class QWERTYHierarchic:
             self.fillTiles(w,h)
 
         self.img = self.detector.findHands(self.img, False)
-
         self.lmList = self.detector.findPosition(self.img, 0, False) 
         current_time = int(time.time()) % 3 
         iteration = current_time + 1
 
         if self.firstChoice == False:
-            #current_time = int(time.time()) % 12
-            #iteration = (current_time // self.interval) + 1
             keys_to_highlight = self.keys_list[(iteration - 1) % len(self.keys_list)]
             #print("Keys to highlight:", keys_to_highlight)
             self.updateKeyboardBinTab(keys_to_highlight)
             #print("Updated Keyboard Bin Tab:", self.keyboard_bin_tab)
         if  self.firstChoice == True and self.secondChoice == False:
             #print("dziala")
-            #current_time = int(time.time()) % 12
-            #iteration = (current_time // self.interval) + 1  
             key_mapping = {
                 (1, 1): ["Q", "W", "E", "R", "T"],
                 (1, 2): ["A", "S", "D", "F", "G"],

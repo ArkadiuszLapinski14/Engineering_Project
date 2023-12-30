@@ -87,7 +87,7 @@ class HeadMovingKeyboardStatic:
         
     def update2(self, screen,angles):
         try:
-            screen = self.keyboard.draw_update(screen, 10, 100, 30, 30)
+            screen = self.keyboard.generateKeyboard(screen, 10, 100, 30, 30)
             screen = self.keyboard.highlight(screen, self.keyboard_bin_tab, 10, 100, 30, 30)
             self.headUpdate(angles)
             if self.is_calibrated == True:

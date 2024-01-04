@@ -22,4 +22,5 @@ To run it you will need webcam and mentioned libraries installed:
 -matplotlib
 
 To use this software you need programming editor for Python, such as Visual Studio Code.
+If you are not using laptop with built in webcam you may need to change value from 0 to 1 in front->components->Launcher.py "cap = cv2.VideoCapture(0)" (line 21).
 You need to open main folder of project in editor and run main.py.

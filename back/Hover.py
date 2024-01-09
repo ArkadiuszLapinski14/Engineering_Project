@@ -14,11 +14,14 @@ class Hover:
         self.typing_delay = 0.8
         self.prev_time = 0
 
+    def get_result(self):
+        return self.res
+
     def update(self, screen, keyboard):
         self.keyboard = keyboard
         self.keys = self.keyboard.get_keys()
         screen = self.detector.findHands(screen, draw=False)
-        lms = self.detector.findPosition(screen)
+        lms = self.detector.findPosition(screen, draw=False)
 
         try:
             screen = self.keyboard.generateKeyboardHover(screen, 10, 100, 30, 30)
@@ -45,9 +48,11 @@ class Hover:
         except Exception as e:
             print("Hover algorithm doesn't work/lms out of range:", e)
 
-        screen = self.drawResult(screen, 600, 600)
+        screen = self.drawResult(screen, 600, 600)  # Assign the updated screen to the variable
 
         return screen, self.res
+
+
 
     def setResult(self, res):
         if res == "<":

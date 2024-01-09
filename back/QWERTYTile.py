@@ -49,7 +49,7 @@ class QWERTYTile:
         self.start = True
         self.last_gesture_time = time.time()
         self.gesturePause = 0.5
-        self.gesturePauseConfirm = 1
+        self.gesturePauseConfirm = 0.5
         self.lms = None
         self.calibration_delay = 0
         self.calibration_loading = 0
@@ -112,19 +112,19 @@ class QWERTYTile:
 
     def highlightKeyAbove(self):
         current_index = np.argmax(self.keyboard_bin_tab)
-        if current_index - 10 >= 0:
-            new_index = current_index - 10
-            self.key_to_highlight = self.tiles[new_index]
-            self.keyboard_bin_tab[current_index] = 0
-            self.keyboard_bin_tab[new_index] = 1        
-        elif current_index >= 30:
+        if current_index >= 30:
             if current_index == 30:
                 self.keyboard_bin_tab[23] = 1
-                self.keyboard_bin_tab[current_index] = 0
+                #self.keyboard_bin_tab[current_index] = 0
             elif current_index == 31:
                 self.keyboard_bin_tab[28] = 1
-                self.keyboard_bin_tab[current_index] = 0
-
+                #self.keyboard_bin_tab[current_index] = 0
+        elif current_index - 10 >= 0:
+            new_index = current_index - 10
+            self.key_to_highlight = self.tiles[new_index]            
+            self.keyboard_bin_tab[new_index] = 1        
+        self.keyboard_bin_tab[current_index] = 0
+        
     def highlightKeyBelow(self):
         current_index = np.argmax(self.keyboard_bin_tab)
         if current_index + 10 < len(self.keyboard_bin_tab):
@@ -280,7 +280,7 @@ class QWERTYTile:
             try:
                 if self.is_calibrated == True:
                     screen = self.afterCalibrationDelay(screen, 100, 100)
-                    self.findGesture()
+                    #self.findGesture()
                 else:
                     self.calibration_delay = 10
                     screen = self.calibrate(screen)

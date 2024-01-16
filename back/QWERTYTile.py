@@ -48,14 +48,11 @@ class QWERTYTile:
         self.margin = None
         self.start = True
         self.last_gesture_time = time.time()
-        self.gesturePause = 0.5
+        self.gesturePause = 1.5
         self.gesturePauseConfirm = 0.5
         self.lms = None
-        self.calibration_delay = 0
-        self.calibration_loading = 0
         self.prevFinger = []
         self.point = 8
-        self.is_calibrated = False
         self.detector = htm.handDetector()        
         self.key_to_highlight = None
         self.Finger = None
@@ -115,15 +112,15 @@ class QWERTYTile:
         if current_index >= 30:
             if current_index == 30:
                 self.keyboard_bin_tab[23] = 1
-                #self.keyboard_bin_tab[current_index] = 0
+                self.keyboard_bin_tab[current_index] = 0
             elif current_index == 31:
                 self.keyboard_bin_tab[28] = 1
-                #self.keyboard_bin_tab[current_index] = 0
+                self.keyboard_bin_tab[current_index] = 0
         elif current_index - 10 >= 0:
             new_index = current_index - 10
             self.key_to_highlight = self.tiles[new_index]            
             self.keyboard_bin_tab[new_index] = 1        
-        self.keyboard_bin_tab[current_index] = 0
+            self.keyboard_bin_tab[current_index] = 0
         
     def highlightKeyBelow(self):
         current_index = np.argmax(self.keyboard_bin_tab)
@@ -148,7 +145,7 @@ class QWERTYTile:
         else:
             self.sentence.append(key)
 
-    def findGesture(self):
+    def findGesture(self, screen):
         current_time_gesture = time.time()
         
         if np.sqrt((self.lms[8][1] - self.lms[4][1]) ** 2 + (self.lms[8][2] - self.lms[4][2]) ** 2) < self.deadZone:
@@ -159,31 +156,37 @@ class QWERTYTile:
             if self.keyboard_bin_tab[index_of_highlighted_key] == 1:
                 self.setResult(self.keys_list[index_of_highlighted_key])
             self.last_gesture_time = current_time_gesture
-        elif self.is_calibrated:
+        else:
             if current_time_gesture - self.last_gesture_time < self.gesturePause:
                 return
-            if (self.Finger and self.prevFinger):
+            else:
+                x, y, w, h = self.centerCoo(screen, 100, 100)
+                if (x - 100 < self.Finger[1] < x + w + 100) and (y - 100 < self.Finger[2] < y + h + 100):
+                    return
                 # left
-                if self.Finger[1] < self.prevFinger[0][1] - 100:
+                if self.Finger[1] < x - 100:
                     self.start = False
+                    print("left")
                     self.highlightPreviousKey()
-                    self.prevFingerListReset()
+
                 # right
-                elif self.Finger[1] > self.prevFinger[0][1] + 100:
+                elif self.Finger[1] > x + w + 100:
                     self.start = False
+                    print("right")
                     self.highlightNextKey()
-                    self.prevFingerListReset()
+
                 # up
-                elif self.Finger[2] > self.prevFinger[0][2] + 100:
+                elif self.Finger[2] < y - 100:
                     self.start = False
-                    self.highlightKeyBelow()
-                    self.prevFingerListReset()
-                # down
-                elif self.Finger[2] < self.prevFinger[0][2] - 100:
-                    self.start = False
+                    print("up")
                     self.highlightKeyAbove()
-                    self.prevFingerListReset()
-                self.last_gesture_time = current_time_gesture       
+
+                # down
+                elif self.Finger[2] > y + h + 100:
+                    self.start = False
+                    print("down")
+                    self.highlightKeyBelow()
+                self.last_gesture_time = current_time_gesture
 
     def centerCoo(self, screen, w, h):
         y, x, c = screen.shape
@@ -194,66 +197,15 @@ class QWERTYTile:
     def FingerUpdate(self):
         if self.lms:
             self.Finger = self.lms[self.point]
-            self.updatePrevFingerList()
-
-    def updatePrevFingerList(self, capacity=20):
-        if len(self.prevFinger) < capacity:
-            self.prevFinger.append(self.Finger)
-        else:
-            self.prevFinger.append(self.Finger)
-            del self.prevFinger[0]
 
     def prevFingerListReset(self):
         self.prevFinger = []
 
-    def CalibrationLoading(self, screen, x, y, w, h, iters=30):
-        if self.calibration_loading > iters:
-            screen = self.drawRec(screen, (0, 255, 0), x, y, w, h)
-            self.is_calibrated = True
-        else:
-            screen = self.drawRec(screen, (0, 0, 189), x, y, w, h)
-            self.calibration_loading += 1
-            self.is_calibrated = False
-        return screen
-
-    def afterCalibrationDelay(self, screen, width, height):
-        x, y, w, h = self.centerCoo(screen, width, height)
-        if self.calibration_delay > 0:
-            self.calibration_delay -= 1
-            screen = self.drawRec(screen, (0, 255, 0), x, y, w, h)
-        else:
-            self.is_calibrated = False
-            screen = self.drawRec(screen, (0, 255, 0), x, y, w, h)
-        return screen
-
-    def calibrate(self, screen):
-        x, y, w, h = self.centerCoo(screen, 100, 100)
-        try:            
-            if self.Finger:
-                if (self.Finger[1] > x and self.Finger[1] < x + w) and (self.Finger[2] > y and self.Finger[2] < y + h):
-                    screen = self.CalibrationLoading(screen, x, y, w, h)
-                else:
-                    screen = self.drawRec(screen, (0, 0, 189), x, y, w, h)
-                    self.is_calibrated = False
-                    self.calibration_loading = 0
-            else:
-                screen = self.drawRec(screen, (0, 0, 189), x, y, w, h)
-                self.is_calibrated = False
-                self.calibration_loading = 0
-        except Exception as e:
-            print("Calibration doesnt work", e)        
-        return screen
-
     def drawRec(self, screen, color, x, y, w, h):
-        cv2.rectangle(screen, (x, y), (x + w, y + h), color, 0)
-        cv2.line(screen, (x, y), (x + 20, y), color, 4)
-        cv2.line(screen, (x, y), (x, y + 20), color, 4)
-        cv2.line(screen, (x + w, y), (x + w - 20, y), color, 4)
-        cv2.line(screen, (x + w, y), (x + w, y + 20), color, 4)
-        cv2.line(screen, (x, y + h), (x + 20, y + h), color, 4)
-        cv2.line(screen, (x, y + h), (x, y + h - 20), color, 4)
-        cv2.line(screen, (x + w, y + h), (x + w - 20, y + h), color, 4)
-        cv2.line(screen, (x + w, y + h), (x + w, y + h - 20), color, 4)
+        cv2.line(screen, (x - 100, y), (x - 100, y + h), (0, 255, 0), 2)
+        cv2.line(screen, (x + w + 100, y), (x + w + 100, y + h), (0, 255, 0), 2)
+        cv2.line(screen, (x, y - 100), (x + w, y - 100), (0, 255, 0), 2)
+        cv2.line(screen, (x, y + h + 100), (x + w, y + h + 100), (0, 255, 0), 2)
         return screen
 
     def update(self, screen, keyboard):
@@ -264,28 +216,21 @@ class QWERTYTile:
             self.updateSizes(w)
             self.fillTiles(w, h)
 
+        x, y, w, h = self.centerCoo(screen , 100, 100)
         screen = self.detector.findHands(screen, False)
         self.lms = self.detector.findPosition(screen, 0, False)
         for i, tile in enumerate(self.tiles):
             if self.keyboard_bin_tab[i] == 1:
                 cv2.rectangle(screen, (tile.x1, tile.y1), (tile.x2, tile.y2), (0, 0, 255), cv2.FILLED)
         screen = keyboard.generateKeyboard(screen)
+        screen = self.drawRec(screen, (0,255,0), x, y, w, h)
         self.FingerUpdate()
         if self.start == True:
             self.keyboard_bin_tab[14] = 1 #highlight letter "G" at the start
         if (len(self.lms) > 0):                 
-            self.findGesture()            
+            self.findGesture(screen)            
             cv2.circle(screen, (self.lms[8][1], self.lms[8][2]), 7, (255, 0, 0), cv2.FILLED)
             cv2.circle(screen, (self.lms[4][1], self.lms[4][2]), 7, (0, 255, 0), cv2.FILLED)
-            try:
-                if self.is_calibrated == True:
-                    screen = self.afterCalibrationDelay(screen, 100, 100)
-                    #self.findGesture()
-                else:
-                    self.calibration_delay = 10
-                    screen = self.calibrate(screen)
-            except Exception as e:
-                print("update doesn't work", e)
          
         #print(self.keyboard_bin_tab)
         return screen, list(self.sentence)

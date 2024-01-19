@@ -48,6 +48,7 @@ class QWERTYTile:
         self.margin = None
         self.start = True
         self.last_gesture_time = time.time()
+        self.last_gesure = None
         self.gesturePause = 1.5
         self.gesturePauseConfirm = 0.5
         self.lms = None
@@ -162,31 +163,34 @@ class QWERTYTile:
             else:
                 x, y, w, h = self.centerCoo(screen, 100, 100)
                 if (x - 100 < self.Finger[1] < x + w + 100) and (y - 100 < self.Finger[2] < y + h + 100):
+                    self.last_gesure = None
                     return
-                # left
-                if self.Finger[1] < x - 100:
-                    self.start = False
-                    print("left")
-                    self.highlightPreviousKey()
-
-                # right
-                elif self.Finger[1] > x + w + 100:
-                    self.start = False
-                    print("right")
-                    self.highlightNextKey()
-
-                # up
-                elif self.Finger[2] < y - 100:
-                    self.start = False
-                    print("up")
-                    self.highlightKeyAbove()
-
-                # down
-                elif self.Finger[2] > y + h + 100:
-                    self.start = False
-                    print("down")
-                    self.highlightKeyBelow()
-                self.last_gesture_time = current_time_gesture
+                elif self.last_gesure == None:
+                    # left
+                    if self.Finger[1] < x - 100:
+                        self.start = False
+                        #print("left")
+                        self.highlightPreviousKey()
+                        self.last_gesure = "left"
+                    # right
+                    elif self.Finger[1] > x + w + 100:
+                        self.start = False
+                        #print("right")
+                        self.highlightNextKey()
+                        self.last_gesure = "right"
+                    # up
+                    elif self.Finger[2] < y - 100:
+                        self.start = False
+                        #print("up")
+                        self.highlightKeyAbove()
+                        self.last_gesure = "up"
+                    # down
+                    elif self.Finger[2] > y + h + 100:
+                        self.start = False
+                        #print("down")
+                        self.highlightKeyBelow()
+                        self.last_gesure = "down"
+                    self.last_gesture_time = current_time_gesture
 
     def centerCoo(self, screen, w, h):
         y, x, c = screen.shape

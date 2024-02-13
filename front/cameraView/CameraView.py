@@ -190,7 +190,7 @@ class CameraView(QWidget):
             "Text": [self.textToWrite], 
             "User Text": [self.textToCheck], 
             "Elapsed Time (seconds)": [self.elapsedTime],
-            "Levenstein Transformations": [err], 
+            "Levenshtein Transformations": [err], 
             "Ratcliff": [rat_ob], 
             "Jaro Winkler": [jaro_wr]
         }
@@ -240,7 +240,7 @@ class CameraView(QWidget):
         x_values = range(len(df))
         bar_width = 0.2
 
-        plt.bar([x + bar_width for x in x_values], df["Levenstein Transformations"], width=bar_width, label='Levenstein', alpha=0.7)
+        plt.bar([x + bar_width for x in x_values], df["Levenshtein Transformations"], width=bar_width, label='Levenshtein', alpha=0.7)
         plt.bar([x + 2 * bar_width for x in x_values], df["Ratcliff"], width=bar_width, label='Ratcliff', alpha=0.7)
         plt.bar([x + 3 * bar_width for x in x_values], df["Jaro Winkler"], width=bar_width, label='Jaro Winkler', alpha=0.7)      
 

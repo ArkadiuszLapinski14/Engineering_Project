@@ -1,4 +1,4 @@
-Keyboard,Text,User Text,Elapsed Time (seconds),Levenstein Transformations,Ratcliff,Jaro Winkler
+Keyboard,Text,User Text,Elapsed Time (seconds),Levenshtein Transformations,Ratcliff,Jaro Winkler
 QWERTYHierarchic,I LIKE IT,I LIKE IT,74.0,0,1,1
 QWERTY,I LIKE IT,I LIKE IT,53.0,0,1,1
 Hover,I LIKE IT,I LIKE IT,47.0,0,1,1
@@ -14,3 +14,4 @@ QWERTYHierarchic,THIS LOOKS FINE,THIS LOOKS FINE,118.0,0,1,1
 EightPen,THIS LOOKS FINE,THIS LOOKS FINE,77.0,0,1,1
 EightPen,THIS LOOKS FINE,THIS LOOKS FINE,148.0,0,1,1
 HandMovingKeyboard,THIS LOOKS FINE,THIS LOOKS FINE,347.0,0,1,1
+HandMovingKeyboardStatic,THIS LOOKS FINE,THIS LOOKS FINE,420.0,0,1,1

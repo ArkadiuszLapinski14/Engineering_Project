@@ -1,81 +1,61 @@
 ﻿import cv2
-import back.modules.HandTrackingModule as htm
 import string
+from back.modules import HandTrackingModule as htm
 
 class HandMovingKeyboard:
-    def __init__(self, point = 8):
+    def __init__(self, point=8):
         self.Finger = None
-        self.prevFinger = [] #zmiana na liste, aby sledzic ostanie x zmian polozenia palca w celu optymalizacji 
         self.detector = htm.handDetector(maxHands=1)
-        self.KEYS = list(string.ascii_uppercase + "!" + '?'+','+'.'+'<'+"_") #tutaj jak ktoś chce użyć swoich znaków (nie zhardcodowanych) najlepiej będzie ustawiać je w konstruktorze i tak samo w klasach wyświetlających klawiwature, teraz mi sie nie chce tego zmieniac bo useless funkcjonalnosc na ten moment
+        self.KEYS = list(string.ascii_uppercase + "!" + '?' + ',' + '.' + '<' + "_")
         self.res = []
-        self.is_calibrated = False
-        self.calibration_delay = 0  #zmienna potrzebna do zatrzymania stanu kalibracji na kilka milisekund //optymalizacja
-        self.calibration_loading = 0 #zmienna potrzebna do zaladowania kalibracji (podobnie ma to zajmowac kilka milisekund) //optymalizacja
         self.point = point
-		
+        self.restart = False
+        self.last_gesture = None
+
     def update(self, screen, keyboard):
-        '''Updates a keyboard according to our algorithm when calibrated'''
         self.keyboard = keyboard
         self.keys = self.keyboard.get_keys()
-        screen = self.detector.findHands(screen, draw = False)
-        lms = self.detector.findPosition(screen, draw = False)
+        screen = self.detector.findHands(screen, draw=False)
+        lms = self.detector.findPosition(screen, draw=False)
         
-        try:
-            screen = self.keyboard.generateKeyboard(screen, 10, 100, 30, 30)
-            self.FingerUpdate(lms)
-            screen = self.backToDefault(screen)
-            if self.is_calibrated == True:
-                screen = self.afterCalibrationDelay(screen, 100, 100)
-                if len(self.keys) != 2:
-                    self.cutBy4()
-                elif len(self.keys) == 2:
-                    self.cutBy2()
-                screen = self.drawResult(screen, 600, 600)
-            else:
-                self.calibration_delay = 10 #długość delaya (10 najlepiej dziala)
-                screen = self.calibrate(screen)
-                screen = self.drawResult(screen, 600, 600)
-            return screen, self.res
-        except:
-            print("Hand Moving Keyboard algorith doesnt work/lms out of range")
-
-        screen = self.drawResult(screen, 600, 600)
-        return screen, self.res
-    
-    def calibrate(self, screen):
-        '''Checks if finger is inside the calibration box'''
         x, y, w, h = self.centerCoo(screen, 100, 100)
         try:
-            if (self.Finger):
-                if (self.Finger[1] > x and self.Finger[1] < x + w) and (self.Finger[2] > y and self.Finger[2] < y + h):
-                    screen = self.CalibrationLoading(screen, x, y, w, h)
-                else:
-                    screen = self.drawRec(screen, (0,0,189), x, y, w, h)
-                    self.is_calibrated = False
-                    self.calibration_loading = 0
+            screen = self.keyboard.generateKeyboard(screen, 10, 100, 30, 30)
+            screen = self.drawRec(screen, (0, 255, 0), x, y, w, h)
+            screen = self.backToDefault(screen)
+            if len(self.keys) > 0:
+                self.FingerUpdate(lms)            
+            if self.restart == False:
+                if len(self.keys) != 2:
+                    self.cutBy4(screen)
+                elif len(self.keys) == 2:
+                    self.cutBy2(screen)
+                screen = self.drawResult(screen, 600, 600)
             else:
-                screen = self.drawRec(screen, (0,0,189), x, y, w, h)
-                self.is_calibrated = False
-                self.calibration_loading = 0
-
-        except:
-            print("Calibration doesnt work")
-        return screen
+                screen = self.drawResult(screen, 600, 600)
+                self.restart = False
+            return screen, self.res
+        except Exception as e:
+            print("Hand Moving Keyboard algorithm doesn't work:", e)
+            screen = self.drawResult(screen, 600, 600)
+            return screen, self.res
 
     def setResult(self, res):
-        '''Append the result by the letter we picked or delete last of them, then set a keyboard to default values'''
-        ###Usuwanie
         if res == "<":
             if len(self.res) > 0:
                 del self.res[-1]
         elif res == "_":
             self.res.append(" ")
-        ###Dodawanie
         else:
             self.res.append(res)
         self.keys = self.KEYS
         self.keyboard.set_keys(self.KEYS)
+
+    def FingerUpdate(self, lms):
+        if (lms):
+            self.Finger = lms[self.point]
+            if len(self.keys) == 1:
+                self.setResult(self.keys[0])
 
     def backToDefault(self, screen):
         '''Back to the startin settings of keyboard after clicking button "Back"'''
@@ -85,7 +65,7 @@ class HandMovingKeyboard:
                 self.keys = self.KEYS
                 self.keyboard.set_keys(self.KEYS)
         return screen
-
+    
     def drawBackButton(self, screen):
         '''Draws button "Back"'''
         y, x , c = screen.shape
@@ -95,119 +75,75 @@ class HandMovingKeyboard:
         screen = cv2.rectangle(screen, (x, y), (x - 75, y + 23), (192,192,192), -1)
         cv2.putText(screen, "Back", (x-75, y+23), cv2.FONT_HERSHEY_PLAIN, 2 ,(255,255,255), 2)
         return screen, x, y
-
-    def drawResult(self, screen, x, y):
-        '''Draws a result on the screen'''
-        screen, x, y = self.drawResultBox(screen)
-        for el in self.res:
-            cv2.putText(screen, el, (x,y), cv2.FONT_HERSHEY_PLAIN, 3 ,(255,255,255), 2)
-            x += 30
-        return screen
-
-    def drawResultBox(self, screen):
-        '''Draws Result Box'''
-        y, x , c = screen.shape
-        x = int((x - 400)/2)
-        y = int((y - 200))
-        screen = cv2.rectangle(screen, (x, y), (x + 400, y + 40), (255,255,255), 2)
-        return screen, x, y + 37
-
+    
     def centerCoo(self, screen, w, h):
-        '''return x, y at the center of the screen, based on width and height of your shape'''
         y, x, c = screen.shape
         w, h = 100, 100
         y, x = int((y-h)/2), int((x-w)/2)
         return x, y, w, h
-
-    def FingerUpdate(self, lms):
-        '''Updates current finger's landmark'''
-        if (lms):
-            self.Finger = lms[self.point]
-            self.updatePrevFingerList()
-            if len(self.keys) == 1:
-                self.setResult(self.keys[0])
-
-    def updatePrevFingerList(self, capacity = 20):
-        '''Updates prevFinger[], capacity - length of list'''
-        if len(self.prevFinger) < capacity:
-            self.prevFinger.append(self.Finger)
-        else:
-            self.prevFinger.append(self.Finger)
-            del self.prevFinger[0]
-
-    def prevFingerListReset(self):
-        '''Clear prevFinger []'''
-        self.prevFinger = []
-
-    def CalibrationLoading(self, screen, x, y, w, h, iters = 30):
-        '''Set a delay before succesfully calibration (ex. 30 iterations)'''
-        if self.calibration_loading > iters:
-            screen = self.drawRec(screen, (0,255,0), x, y, w, h)
-            self.is_calibrated = True
-        else:
-            screen = self.drawRec(screen, (0,0,189), x, y, w, h)
-            self.calibration_loading += 1
-            self.is_calibrated = False     
-        return screen 
-
-    def afterCalibrationDelay(self, screen, width, height):
-        '''Set a small delay after calibration is succesfull to optimize the algorithm'''
-        x, y, w, h = self.centerCoo(screen , width, height)
-        if self.calibration_delay > 0:
-            self.calibration_delay -= 1
-            screen = self.drawRec(screen, (0,255,0), x, y, w, h)
-        else: 
-            self.is_calibrated = False
-            screen = self.drawRec(screen, (0,255,0), x, y, w, h)
+    
+    def drawResult(self, screen, x, y):
+        screen, x, y = self.drawResultBox(screen)
+        for el in self.res:
+            cv2.putText(screen, el, (x, y), cv2.FONT_HERSHEY_PLAIN, 3 ,(255,255,255), 2)
+            x += 30
         return screen
-
-    def cutBy4(self):
-        '''Cut unecessary part of keyboard when len(keayboard) > 2'''
+    
+    def drawResultBox(self, screen):
+        y, x, c = screen.shape
+        x = int((x - 400)/2)
+        y = int((y - 200))
+        screen = cv2.rectangle(screen, (x, y), (x + 400, y + 40), (255,255,255), 2)
+        return screen, x, y + 37
+    
+    def cutBy4(self, screen):
+        x, y, w, h = self.centerCoo(screen, 100, 100)
         try:
-            if (self.Finger and self.prevFinger):
-                if self.Finger[1] < self.prevFinger[0][1] - 300: #sprawdzanie ostatniego elementu listy (do listy elementy sa dodawane od tylu stad indeks 0)
-                    self.keys = self.keys[0:int(len(self.keys)/4)]
-                    self.keyboard.set_keys(self.keys)
-                    self.prevFingerListReset() 
-                elif self.Finger[1] > self.prevFinger[0][1] + 300:
-                    self.keys = self.keys[int(len(self.keys)*(3/4)):len(self.keys)]
-                    self.keyboard.set_keys(self.keys)
-                    self.prevFingerListReset()
-                elif self.Finger[2] > self.prevFinger[0][2] + 200:
-                    self.keys = self.keys[int(len(self.keys)*(1/4)):int(len(self.keys)*(2/4))]
-                    self.keyboard.set_keys(self.keys)
-                    self.prevFingerListReset()
-                elif self.Finger[2] < self.prevFinger[0][2] - 180:
-                    self.keys = self.keys[int(len(self.keys)*(2/4)):int(len(self.keys)*(3/4))]
-                    self.keyboard.set_keys(self.keys)
-                    self.prevFingerListReset()
-        except:
-            print("Cut by 3/4 doesnt work/Fingers lists out of range")  
+            if self.Finger:
+                if (x - 100 < self.Finger[1] < x + w + 100) and (y - 100 < self.Finger[2] < y + h + 100):
+                    self.last_gesture = None
+                    return
+                elif self.last_gesture == None:
+                    if self.Finger[1] < x - 100:
+                        self.keys = self.keys[0:int(len(self.keys) / 4)]
+                        self.keyboard.set_keys(self.keys)
+                        self.last_gesture = "left"
+                    elif self.Finger[1] > x + w + 100:
+                        self.keys = self.keys[int(len(self.keys) * (3 / 4)):len(self.keys)]
+                        self.keyboard.set_keys(self.keys)
+                        self.last_gesture = "right"
+                    elif self.Finger[2] > y + h + 100:
+                        self.keys = self.keys[int(len(self.keys) * (1 / 4)):int(len(self.keys) * (2 / 4))]
+                        self.keyboard.set_keys(self.keys)
+                        self.last_gesture = "up"
+                    elif self.Finger[2] < y - 100:
+                        self.keys = self.keys[int(len(self.keys) * (2 / 4)):int(len(self.keys) * (3 / 4))]
+                        self.keyboard.set_keys(self.keys)
+                        self.last_gesture = "down"
+        except Exception as e:
+            print("Cut by 3/4 doesn't work:", e)
 
-    def cutBy2(self):
-        '''Cut unecessary part of keyboard when len(keayboard) == 2'''
+    def cutBy2(self, screen):
+        x, y, w, h = self.centerCoo(screen, 100, 100)
         try:
-            if (self.Finger and self.prevFinger):
-                if self.Finger[1] < self.prevFinger[0][1] - 300:
-                    self.keys = self.keys[0:1]
+            if self.Finger:
+                if (x - 100 < self.Finger[1] < x + w + 100) and (y - 100 < self.Finger[2] < y + h + 100):
+                    self.last_gesture = None
+                    return
+                elif self.last_gesture == None:
+                    if self.Finger[1] < x - 100:
+                        self.keys = self.keys[:1]
+                    elif self.Finger[1] > x + w + 100:
+                        self.keys = self.keys[1:]
                     self.keyboard.set_keys(self.keys)
-                    self.prevFingerListReset()
-                elif self.Finger[1] > self.prevFinger[0][1] + 300:
-                    self.keys = self.keys[1:2]
-                    self.keyboard.set_keys(self.keys)
-                    self.prevFingerListReset()
-        except:
-            print("Final cut by 1/2 doesnt work/Fingers lists out of range")
-            
+                    self.restart = True
+                    self.last_gesture = "left" if self.Finger[1] < x - 100 else "right"
+        except Exception as e:
+            print("Final cut by 1/2 doesn't work:", e)
+    
     def drawRec(self, screen, color, x, y, w, h):
-        '''Draw calibration box''' #moze sie przydac pozniej
-        cv2.rectangle(screen, (x, y), (x + w, y + h),color, 0)
-        cv2.line(screen, (x, y), (x + 20, y), color, 4)
-        cv2.line(screen, (x, y), (x, y + 20 ), color, 4)
-        cv2.line(screen, (x+w, y), (x+w - 20, y), color, 4)
-        cv2.line(screen, (x+w, y), (x+w, y + 20), color, 4)
-        cv2.line(screen, (x, y+h), (x + 20, y+h), color, 4)
-        cv2.line(screen, (x, y+h), (x, y+h - 20 ), color, 4)
-        cv2.line(screen, (x+w, y+h), (x + w - 20, y+h), color, 4)
-        cv2.line(screen, (x+w, y+h), (x+w, y+h - 20), color, 4)
+        cv2.line(screen, (x - 100, y), (x - 100, y + h), (0, 255, 0), 2)
+        cv2.line(screen, (x + w + 100, y), (x + w + 100, y + h), (0, 255, 0), 2)
+        cv2.line(screen, (x, y - 100), (x + w, y - 100), (0, 255, 0), 2)
+        cv2.line(screen, (x, y + h + 100), (x + w, y + h + 100), (0, 255, 0), 2)
         return screen

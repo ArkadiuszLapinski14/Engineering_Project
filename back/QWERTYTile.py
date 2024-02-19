@@ -202,9 +202,6 @@ class QWERTYTile:
         if self.lms:
             self.Finger = self.lms[self.point]
 
-    def prevFingerListReset(self):
-        self.prevFinger = []
-
     def drawRec(self, screen, color, x, y, w, h):
         cv2.line(screen, (x - 100, y), (x - 100, y + h), (0, 255, 0), 2)
         cv2.line(screen, (x + w + 100, y), (x + w + 100, y + h), (0, 255, 0), 2)

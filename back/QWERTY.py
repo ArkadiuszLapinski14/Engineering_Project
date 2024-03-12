@@ -43,13 +43,9 @@ class QWERTY:
         self.old_w=0
         self.typable = True
         self.margin=None
+        self.detector = htm.handDetector()
+        self.lm_index = [8, 4]
 
-        if methode == "palec":
-            self.detector = htm.handDetector()
-            self.lm_index = [8, 4]
-        else:
-            self.detector = mtm.FaceMeshDetector()
-            self.lm_index = 2
 
     def updateSizes(self,w):
         self.margin=int(w/100)

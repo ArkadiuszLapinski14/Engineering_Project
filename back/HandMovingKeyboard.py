@@ -120,8 +120,8 @@ class HandMovingKeyboard:
                         self.keys = self.keys[int(len(self.keys) * (2 / 4)):int(len(self.keys) * (3 / 4))]
                         self.keyboard.set_keys(self.keys)
                         self.last_gesture = "down"
-        except Exception as e:
-            print("Cut by 3/4 doesn't work:", e)
+        except:
+            print("Cut by 3/4 doesnt work/Fingers lists out of range") 
 
     def cutBy2(self, screen):
         x, y, w, h = self.centerCoo(screen, 100, 100)

@@ -133,7 +133,7 @@ class QWERTYHierarchic:
             keys_to_highlight = self.keys_list[(iteration - 1) % len(self.keys_list)]
             #print("Keys to highlight:", keys_to_highlight)
             self.updateKeyboardBinTab(keys_to_highlight)
-            #print("Updated Keyboard Bin Tab:", self.keyboard_bin_tab)
+            
         if  self.firstChoice == True and self.secondChoice == False:
             #print("dziala")
             key_mapping = {
